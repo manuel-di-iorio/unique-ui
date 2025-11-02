@@ -24,7 +24,7 @@ Whether you're building in-game editors, debug tools, or dynamic menus, UniqueUI
 ## 📦 Installation
 
 1. Download or copy the UniqueUI files from the Github Repository.  
-2. Import the `ueui.yymps` file by dragging it into your GameMaker project.  
+2. Import the `uui.yymps` file by dragging it into your GameMaker project.  
 3. You’re ready to start building your UI system!
 
 ---

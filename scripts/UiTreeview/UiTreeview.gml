@@ -10,7 +10,6 @@ function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
     self.onRemoveItem = undefined;
     self.onItemSelected = undefined;
     self.onAssetDrop = undefined;
-    self.onModelImport = undefined;
     
     // Create the items container
     self.Items = new UiNode({ name: "UiTreeview.Items", marginTop: 5, paddingBottom: 5 });
