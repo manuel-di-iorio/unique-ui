@@ -25,7 +25,10 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
         paddingRight: 5, 
         flex: 1,
         height: "100%" 
+    }, {
+        focusable: true,
     });
+
     self.add(self.Input);
 
     with (self.Input) {
@@ -253,66 +256,14 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             self.lastClickPos = clickPos;
         }); 
          
-        // Set focus to textbox
+        // Set focus to textbox (simplified - delegates to focus manager)
         self.focus = function() {
-            self.focused = true;
-            self.cursorBlinkTime = current_time;
-            self.showCursor = true;
-            
-            // Clear any pending keyboard input to prevent unwanted character insertion
-            keyboard_lastchar = "";
+            global.UI.focusManager.setFocus(self);
         };
         
-        // Remove focus from textbox
+        // Remove focus from textbox (simplified - delegates to focus manager)
         self.blur = function() {
-            self.focused = false;
-            self.keyRepeat.key = -1;
-            self.keyRepeat.pressed = false;
-            self.isDragging = false;
-            
-            // Clean up incomplete numeric values on blur
-            var format = self.parent.format;
-            var value = self.parent.value;
-            
-            if (format == "integer" || format == "float") {
-                // Remove trailing decimal point or minus sign
-                if (string_char_at(value, string_length(value)) == "." || 
-                    string_char_at(value, string_length(value)) == "-") {
-                    value = string_copy(value, 1, string_length(value) - 1);
-                }
-                
-                // If empty, set to 0 or min value if specified
-                if (value == "") {
-                    if (self.parent.min != undefined) {
-                        value = string(self.parent.min);
-                    } else {
-                        value = "0";
-                    }
-                }
-                
-                // Clamp to min/max range
-                var numValue = real(value);
-                if (self.parent.min != undefined && numValue < self.parent.min) {
-                    numValue = self.parent.min;
-                }
-                if (self.parent.max != undefined && numValue > self.parent.max) {
-                    numValue = self.parent.max;
-                }
-                
-                // Format the final value
-                if (format == "integer") {
-                    value = string(floor(numValue));
-                } else {
-                    value = string(numValue);
-                }
-                
-                self.parent.value = value;
-                self.parent.onChange(self.parent.value, self.parent);
-            }
-            
-            global.UI.needsRedraw = true;
-            
-            if (self.parent.onBlur != undefined) self.parent.onBlur(self.parent.value, self.parent);
+            global.UI.focusManager.blur();
         };
         
         // Update horizontal scroll based on cursor position
@@ -707,7 +658,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
         // Main update loop
         self.onStep(function() {
             // Handle mouse up event
-            if (global.UI.mouseLeftReleased) {
+            if (global.UI.mouseReleased) {
                 self.isDragging = false;
             }
             
@@ -723,11 +674,6 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                 self.updateKeyRepeat();
                 self.handleKeyInput();
                 self.handleMouseDrag();
-                
-                // Lose focus if clicking elsewhere
-                if (mouse_check_button_pressed(mb_left) && !self.hovered) {
-                    self.blur();
-                }
             }
         });
     
@@ -886,6 +832,64 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                     return true;
             }
         };
+    
+        self.onFocus = function() {
+            self.focused = true;
+            self.cursorBlinkTime = current_time;
+            self.showCursor = true;
+            keyboard_lastchar = "";
+        };
+
+        self.onBlur = function() {
+            self.focused = false;
+            self.keyRepeat.key = -1;
+            self.keyRepeat.pressed = false;
+            self.isDragging = false;
+            
+            // Clean up incomplete numeric values on blur
+            var format = self.parent.format;
+            var value = self.parent.value;
+            
+            if (format == "integer" || format == "float") {
+                // Remove trailing decimal point or minus sign
+                if (string_char_at(value, string_length(value)) == "." || 
+                    string_char_at(value, string_length(value)) == "-") {
+                    value = string_copy(value, 1, string_length(value) - 1);
+                }
+                
+                // If empty, set to 0 or min value if specified
+                if (value == "") {
+                    if (self.parent.min != undefined) {
+                        value = string(self.parent.min);
+                    } else {
+                        value = "0";
+                    }
+                }
+                
+                // Clamp to min/max range
+                var numValue = real(value);
+                if (self.parent.min != undefined && numValue < self.parent.min) {
+                    numValue = self.parent.min;
+                }
+                if (self.parent.max != undefined && numValue > self.parent.max) {
+                    numValue = self.parent.max;
+                }
+                
+                // Format the final value
+                if (format == "integer") {
+                    value = string(floor(numValue));
+                } else {
+                    value = string(numValue);
+                }
+                
+                self.parent.value = value;
+                self.parent.onChange(self.parent.value, self.parent);
+            }
+            
+            global.UI.needsRedraw = true;
+            
+            if (self.parent.onBlur != undefined) self.parent.onBlur(self.parent.value, self.parent);
+        }
     }
     
     // Update value from external source
