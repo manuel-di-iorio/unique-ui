@@ -17,129 +17,102 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
     self.hoveredElements = [];
     
     // Focus management
-    self.focusManager = {
-        focusedElement: undefined,
-        focusableElements: [],
-        
-        register: function(element) {
-            if (array_find_index(self.focusableElements, method({ element }, function(item) {
-                return item == element;
-            })) == -1) {
-                array_push(self.focusableElements, element);
-            }
-        },
-        
-        unregister: function(element) {
-            var index = array_find_index(self.focusableElements, method({ element }, function(item) {
-                return item == element;
-            }));
-            
-            if (index != -1) {
-                array_delete(self.focusableElements, index, 1);
-            }
-            
-            if (self.focusedElement == element) {
-                self.focusedElement = undefined;
-            }
-        },
-        
-        setFocus: function(element) {
-            if (self.focusedElement != undefined && self.focusedElement != element) {
-                self.blur();
-            }
-            
-            self.focusedElement = element;
-            
-            if (element[$ "onFocus"] != undefined) {
-                element.onFocus();
-            }
-            
-            global.UI.needsRedraw = true;
-        },
-        
-        blur: function() {
-            if (self.focusedElement != undefined) {
-                if (self.focusedElement[$ "onBlur"] != undefined) {
-                    self.focusedElement.onBlur();
-                }
-                
-                self.focusedElement = undefined;
-                global.UI.needsRedraw = true;
-            }
-        },
-        
-        hasFocus: function(element) {
-            return self.focusedElement == element;
-        },
-        
-        getFocused: function() {
-            return self.focusedElement;
-        },
-        
-        hasAnyFocus: function() {
-            return self.focusedElement != undefined;
-        },
-        
-        focusNext: function() {
-            if (array_length(self.focusableElements) == 0) return;
-            
-            var currentIndex = -1;
-            if (self.focusedElement != undefined) {
-                currentIndex = array_find_index(self.focusableElements, method({ el: self.focusedElement }, function(item) {
-                    return item == el;
-                }));
-            }
-            
-            var nextIndex = (currentIndex + 1) % array_length(self.focusableElements);
-            var nextElement = self.focusableElements[nextIndex];
-            
-            var attempts = 0;
-            while ((nextElement[$ "visible"] == false || nextElement[$ "disabled"] == true) && 
-                   attempts < array_length(self.focusableElements)) {
-                nextIndex = (nextIndex + 1) % array_length(self.focusableElements);
-                nextElement = self.focusableElements[nextIndex];
-                attempts++;
-            }
-            
-            if (nextElement[$ "visible"] != false && nextElement[$ "disabled"] != true) {
-                self.setFocus(nextElement);
-            }
-        },
-        
-        focusPrevious: function() {
-            if (array_length(self.focusableElements) == 0) return;
-            
-            var currentIndex = -1;
-            if (self.focusedElement != undefined) {
-                currentIndex = array_find_index(self.focusableElements, method({ el: self.focusedElement }, function(item) {
-                    return item == el;
-                }));
-            }
-            
-            var prevIndex = currentIndex - 1;
-            if (prevIndex < 0) prevIndex = array_length(self.focusableElements) - 1;
-            
-            var prevElement = self.focusableElements[prevIndex];
-            
-            var attempts = 0;
-            while ((prevElement[$ "visible"] == false || prevElement[$ "disabled"] == true) && 
-                   attempts < array_length(self.focusableElements)) {
-                prevIndex--;
-                if (prevIndex < 0) prevIndex = array_length(self.focusableElements) - 1;
-                prevElement = self.focusableElements[prevIndex];
-                attempts++;
-            }
-            
-            if (prevElement[$ "visible"] != false && prevElement[$ "disabled"] != true) {
-                self.setFocus(prevElement);
-            }
-        },
-        
-        clear: function() {
-            self.blur();
-            self.focusableElements = [];
+    self.focusedElement = undefined;
+    self.focusableElements = [];
+    
+    // Register an element as focusable
+    function __registerFocus(element) {
+        if (array_find_index(self.focusableElements, method({ element }, function(item) {
+            return item == element;
+        })) == -1) {
+            array_insert(self.focusableElements, 0, element);
         }
-    };
+    }
+    
+    // Unregister an element from being focusable
+    function __unregisterFocus(element) {
+        var index = array_find_index(self.focusableElements, method({ element }, function(item) {
+            return item == element;
+        }));
+        
+        if (index != -1) {
+            array_delete(self.focusableElements, index, 1);
+        }
+        
+        if (self.focusedElement == element) {
+            self.focusedElement = undefined;
+        }
+    }
+    
+    // Check if any element is currently focused
+    function hasAnyFocus() {
+        return self.focusedElement != undefined;
+    }
+    
+    // Cycle focus to the next focusable element
+    function focusNext() {
+        if (array_length(self.focusableElements) == 0) return;
+        
+        var currentIndex = -1;
+        if (self.focusedElement != undefined) {
+            currentIndex = array_find_index(self.focusableElements, method({ el: self.focusedElement }, function(item) {
+                return item == el;
+            }));
+        }
+        
+        var nextIndex = (currentIndex + 1) % array_length(self.focusableElements);
+        var nextElement = self.focusableElements[nextIndex];
+        
+        var attempts = 0;
+        while ((nextElement[$ "visible"] == false || nextElement[$ "disabled"] == true) && 
+               attempts < array_length(self.focusableElements)) {
+            nextIndex = (nextIndex + 1) % array_length(self.focusableElements);
+            nextElement = self.focusableElements[nextIndex];
+            attempts++;
+        }
+        
+        if (nextElement[$ "visible"] != false && nextElement[$ "disabled"] != true) {
+            nextElement.focus();
+        }
+    }
+    
+    // Cycle focus to the previous focusable element
+    function focusPrevious() {
+        if (array_length(self.focusableElements) == 0) return;
+        
+        var currentIndex = -1;
+        if (self.focusedElement != undefined) {
+            currentIndex = array_find_index(self.focusableElements, method({ el: self.focusedElement }, function(item) {
+                return item == el;
+            }));
+        }
+        
+        var prevIndex = currentIndex - 1;
+        if (prevIndex < 0) prevIndex = array_length(self.focusableElements) - 1;
+        
+        var prevElement = self.focusableElements[prevIndex];
+        
+        var attempts = 0;
+        while ((prevElement[$ "visible"] == false || prevElement[$ "disabled"] == true) && 
+               attempts < array_length(self.focusableElements)) {
+            prevIndex--;
+            if (prevIndex < 0) prevIndex = array_length(self.focusableElements) - 1;
+            prevElement = self.focusableElements[prevIndex];
+            attempts++;
+        }
+        
+        if (prevElement[$ "visible"] != false && prevElement[$ "disabled"] != true) {
+            prevElement.focus();
+        }
+    }
+    
+    // Clear focus and the list of focusable elements
+    function clearAllFocused() {
+        if (self.focusedElement != undefined) {
+            self.focusedElement.blur();
+        }
+        self.focusableElements = [];
+    }
 
     // Spatial partition grid props
     self.grid = ds_grid_create(0, 0);
@@ -150,6 +123,10 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
     // Root drag props
     self.potentialDraggedElement = undefined;
     self.draggedElement = undefined;
+    
+    // Tooltip props
+    self.tooltipElement = undefined;
+    self.tooltipTimer = -1;
     
     // Set the size of the root node
     // @override
@@ -212,7 +189,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             
             // Register focusable elements
             if (elem.focusable) {
-                self.focusManager.register(elem);
+                self.__registerFocus(elem);
             }
             
             if (elem.onMount != undefined) elem.onMount();
@@ -352,6 +329,26 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             }
         }
         
+        // Tooltip logic
+        if (self.deepestTarget != self.tooltipElement) {
+            // Target changed
+            if (global.UI.Tooltip != undefined) global.UI.Tooltip.hide();
+            self.tooltipElement = self.deepestTarget;
+            self.tooltipTimer = -1;
+            
+            if (self.tooltipElement != undefined && self.tooltipElement.tooltip != undefined) {
+                self.tooltipTimer = current_time + self.tooltipElement.tooltipDelay;
+            }
+        } else if (self.tooltipElement != undefined && self.tooltipTimer != -1) {
+            // Waiting for timer
+            if (current_time >= self.tooltipTimer) {
+                if (global.UI.Tooltip != undefined) {
+                    global.UI.Tooltip.show(self.tooltipElement, self.tooltipElement.tooltip);
+                }
+                self.tooltipTimer = -1; // Tooltip shown
+            }
+        }
+        
         
         // Click event handled only on root
         if (self.deepestTarget != undefined) {
@@ -367,16 +364,12 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
                 global.UI_CLICK_START = self.deepestTarget;
                 global.UI.dispatchEvent(UI_EVENT.mousedown, self.deepestTarget);
 
+                // We check for any button press (left, right, middle) to ensure focus is lost when clicking outside
+                if (self.focusedElement != undefined && (self.deepestTarget == undefined || !self.deepestTarget.focusable)) {
+                    self.focusedElement.blur();
+                }
+
                 if (mouse_check_button_pressed(mb_left)) {
-                    // Handle focus management: blur current element if clicking on a non-focusable element
-                    if (self.focusManager.focusedElement != undefined) {
-                        if (self.deepestTarget == undefined || !self.deepestTarget.focusable) {
-                            self.focusManager.blur();
-                        } else if (self.deepestTarget.focusable && self.deepestTarget != self.focusManager.focusedElement) {
-                            // Will be handled by the element's focus() method
-                        }
-                    }
-                    
                     if (self.deepestTarget.draggable) {
                         self.potentialDraggedElement = self.deepestTarget;
                         self.potentialDraggedElement.dragStartX = self.mouseX;
@@ -385,6 +378,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
                 }
             }
         }
+        
         
         // Handle mouse release
         if (self.mouseReleased) {
@@ -423,9 +417,9 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         // Handle Tab navigation for focus management
         if (keyboard_check_pressed(vk_tab)) {
             if (keyboard_check(vk_shift)) {
-                self.focusManager.focusPrevious();
+                self.focusPrevious();
             } else {
-                self.focusManager.focusNext();
+                self.focusNext();
             }
         }
         

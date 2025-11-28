@@ -64,6 +64,16 @@ UiScrollbar(style = {}, props = {})
 | `createThumb()`          | Creates and attaches the internal thumb node. *(Executed in constructor)*                                |
 | `__computeThumbHeight()` | Internal helper (inlined) to calculate thumb size and position.                                          |
 
+**Internal Nodes**
+
+| Node                  | Description |
+| --------------------- | ----------- |
+| `Thumb`               | Internal `UiScrollbarThumb` node used as the draggable thumb. Exposes mouse handlers for drag start and step updates. |
+
+**UiScrollbarThumb behavior**
+
+- The thumb node sets `pointerEvents = true` and handles `onMouseDown` to start dragging. While dragging the thumb expands slightly in width and offsets to provide visual feedback; on release it restores its original size and offset.
+
 **Mouse interactions**
 
 | Event                  | Description                                                            |

@@ -39,6 +39,8 @@ new UiNode(style = {}, props = {})
 | `layout`         | `struct`               | Layout box (position, margins, paddings, size). |
 | `onDraw`         | `function`             | Called every frame before drawing.              |
 | `onDestroy`      | `function`             | Called when the node is destroyed.              |
+| `tooltip`        | `string|function`      | Optional tooltip text or function. If set, `tooltipDelay` (ms) controls how long the cursor must hover before the tooltip is shown. |
+| `tooltipDelay`   | `integer`              | Milliseconds to wait before showing the tooltip (default `500`). |
 
 **Hierarchy methods**
 

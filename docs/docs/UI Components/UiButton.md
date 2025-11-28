@@ -34,6 +34,9 @@ new UiButton(textOrImage, style = {}, props = {})
 | `handpoint`     | `boolean`              | Shows a hand cursor when hovering (UI convenience flag).                   |
 | `pointerEvents` | `boolean`              | Enables pointer interaction (always `true` for buttons).                   |
 | `hovered`       | `boolean`              | True when the mouse is over the button.                                    |
+| `selected`      | `boolean`              | Indicates selection state for toggle-like buttons.                         |
+| `enableRipple`  | `boolean`              | Enables ripple click animation when pressed (default `true`).             |
+| `ripples`       | `array`                | Internal array of active ripple effects (used by the renderer).           |
 
 **Methods**
 
@@ -42,8 +45,7 @@ new UiButton(textOrImage, style = {}, props = {})
 | `resize()`          | `void`  | Updates width and height to fit text or sprite content. |
 | `setText(text)`     | `void`  | Sets the button text and resizes it automatically.      |
 | `setSprite(sprite)` | `void`  | Sets the button sprite and resizes it automatically.    |
-
----
+| `onClick(handler)`  | `void`  | Attach a click handler. When `enableRipple` is true the built-in click handler will also spawn a ripple animation centered on the click position. |
 
 **Drawing Behavior**
 

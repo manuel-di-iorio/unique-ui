@@ -1,7 +1,7 @@
 function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
     var _this = self;
     setName(props[$ "name"] ?? "UiDropdown");
-    self.value = props[$ "value"] ?? false;
+    self.value = props[$ "value"];
     self.items = props[$ "items"] ?? [];
     self.itemsGetter = props[$ "itemsGetter"];
     self.label = props[$ "label"] ?? undefined;
@@ -18,7 +18,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
         // Check if current value is still valid
         if (self.value != undefined) {
             var found = false;
-            for (var i = 0; i < array_length(self.items); i++) {
+            for (var i = 0, l = array_length(self.items); i < l; i++) {
                 if (self.items[i].value == self.value) {
                     found = true;
                     break;
@@ -74,14 +74,19 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             }));
        
             var _text = _selectedIndex != -1 ? self.parent.items[_selectedIndex].label : "Select...";
+            
+            // Clip text to button width
+            var _scissor = gpu_get_scissor();
+            gpu_set_scissor(self.x1, self.y1, self.x2 - self.x1 - 25, self.y2 - self.y1);
             draw_text(self.x1 + 5, ~~mean(self.y1, self.y2), _text);
+            gpu_set_scissor(_scissor);
          };
     } 
      
     self.createList = function() { 
         var _Dropdown = self;
         var _Input = self.Input;
-        self.List = new UiNode({ 
+        self.List = new UiNode({
             name: "UiDropdown.List", position: "absolute", padding: 5, maxHeight: 500, 
             left: -9999, top: -9999
         });
@@ -110,7 +115,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             self.onStep(function() {
                 self.computePosition();
                 
-                if (global.UI.mouseLeftReleased) {
+                if (global.UI.mouseReleased) {
                     var y1 = min(self.y1, self.Dropdown.y1);
                     var y2 = max(self.y2, self.Dropdown.y2);
                     
@@ -140,6 +145,8 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
                         name: "UiDropdown.List.Item",
                         width: "100%",
                         height: 25
+                    }, {
+                        tooltip: _item[$ "tooltip"]
                     });
                     _itemNode.label = _item.label;
                     _itemNode.value = _item.value;
@@ -150,8 +157,10 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
                         
                         self.onClick(function() {
                             var Dropdown = self.parent.parent.Dropdown;
-                            Dropdown.value = self.value;
-                            Dropdown.onChange(self.value);
+                            if (Dropdown.value != self.value) {
+                                Dropdown.value = self.value;
+                                Dropdown.onChange(self.value);
+                            }
                             Dropdown.closeList();
                         });
                         
@@ -164,7 +173,10 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
                         });
                         
                         self.onDraw = function() {
-                            if (self.parent.parent.Dropdown.value == self.value || self.hovered) {
+                            if (self.parent.parent.Dropdown.value == self.value) {
+                                draw_set_color(global.UI_COL_SELECTED);
+                                draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
+                            } else if (self.hovered) {
                                 draw_set_color(global.UI_COL_INSPECTOR_BG);
                                 draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
                             }
@@ -196,7 +208,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             }
             
             // Create the items container
-            self.Items = new UiNode({ height: "100%" });
+            self.Items = new UiNode({ height: "100%", maxHeight: 450 });
             self.add(self.Items);
             
             // Create the initial items

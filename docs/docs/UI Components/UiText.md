@@ -43,6 +43,7 @@ If an icon is provided, it will be drawn next to the text with proper spacing.
 **🧠 Behavior**
 
 - If autoResize is true, the node automatically adjusts its size when the text changes.
+ - If `autoResize` is true (the default when no explicit width/height is provided in `style`), the node automatically adjusts its size when the text changes by calling `computeSize()` which measures text width/height and optionally accounts for an icon.
 - When a valueGetter is provided, the node automatically refreshes every frame to display up-to-date values.
 - Supports both static and reactive UI text.
 

@@ -54,6 +54,11 @@ mySprite.setSize(64, 64);
 
 Supports all event listeners (onClick, onMouseEnter, etc.) from UiNode.
 
+**Notes**
+
+- By default the node initializes its size to the sprite dimensions. If you pass explicit `width`/`height` via `style`, those values will override the automatic sizing.
+- The `subimg` property controls the subimage/frame index drawn; change it at runtime to animate sprite frames inside UI.
+
 **💡 Example**
 ```js
 var icon = new UiSprite(spr_button_icon, {
