@@ -1,3 +1,7 @@
+---
+sidebar_position: 6
+---
+
 # UiContextMenu
 
 A context menu component that appears at a specific position (usually on right-click), displaying a list of actionable items.
