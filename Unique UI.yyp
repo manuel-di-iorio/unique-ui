@@ -17,12 +17,13 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.14.1.210",
+    "IDEVersion":"2024.14.2.213",
   },
   "name":"Unique UI",
   "resources":[
     {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
     {"id":{"name":"__UniqueUI_Globals","path":"scripts/__UniqueUI_Globals/__UniqueUI_Globals.yy",},},
+    {"id":{"name":"UiAccordion","path":"scripts/UiAccordion/UiAccordion.yy",},},
     {"id":{"name":"UiButton","path":"scripts/UiButton/UiButton.yy",},},
     {"id":{"name":"UiCheckbox","path":"scripts/UiCheckbox/UiCheckbox.yy",},},
     {"id":{"name":"UiContextMenu","path":"scripts/UiContextMenu/UiContextMenu.yy",},},

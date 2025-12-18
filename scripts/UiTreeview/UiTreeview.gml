@@ -1,6 +1,8 @@
 /**
  * Treeview - Free-form hierarchical tree structure
  * Supports flexible asset organization with drag & drop
+ *
+ * * @note This component is very opinionated and some things are still hardcoded, adapt it to your needs
  */
 function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
     setName(style[$ "name"] ?? "UiTreeview");
@@ -12,7 +14,7 @@ function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
     self.onContextMenu = undefined; // Callback for showing context menu
     
     // Create the items container
-    self.Items = new UiNode({ name: "UiTreeview.Items", marginTop: 5, paddingBottom: 5 });
+    self.Items = new UiNode({ name: "UiTreeview.Items", marginTop: 5, paddingBottom: 5, flex: 1, width: "100%" });
     self.add(self.Items);
     
     // Handle delete shortcut
@@ -49,11 +51,6 @@ function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
         // Cannot drop on itself
         if (draggedItem == targetItem) return false;
         
-        // Textures and Materials cannot be moved
-        if (draggedType == "Texture" || draggedType == "Material") {
-            return false;
-        }
-        
         // Check if target accepts this type
         if (targetItem[$ "acceptsDropOf"] != undefined) {
             var accepts = targetItem.acceptsDropOf;
@@ -67,10 +64,96 @@ function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
             if (!found) return false;
         }
         
-        // Folders can accept anything
-        if (targetType == "Folder") return true;
-        
         return false;
+    }
+    
+    /**
+     * Filter the treeview items by name
+     * @param {String} searchText - The text to filter by
+     */
+    function filter(searchText) {
+        var _lowerSearch = string_lower(searchText);
+        
+        // Internal recursive function
+        var _filterItem = undefined;
+        _filterItem = method({ _lowerSearch, _filterItem:  function(item) {
+                // Check if this item matches
+                var nameToCheck = (item.asset != undefined) ? item.asset.name : item.name;
+                var matches = (_lowerSearch == "" || string_pos(_lowerSearch, string_lower(nameToCheck)) > 0);
+                
+                var hasMatchingChildren = false;
+                
+                // Check children items
+                if (item.Items != undefined && item.Items.children != undefined) {
+                    var children = item.Items.children;
+                    for (var i = 0; i < array_length(children); i++) {
+                        var child = children[i];
+                        // Recursively check child
+                        if (self._filterItem(child)) {
+                            hasMatchingChildren = true;
+                        }
+                    }
+                }
+                
+                var shouldBeVisible = matches || hasMatchingChildren;
+                
+                if (shouldBeVisible) {
+                    item.show();
+                    // If we have matching children and there is a search term, expand to show them
+                    if (hasMatchingChildren && _lowerSearch != "") {
+                        if (item.collapsed) item.expandItem();
+                    }
+                } else {
+                    item.hide();
+                }
+                
+                return shouldBeVisible;
+            } 
+        }, function(item) {
+            return _filterItem(item);
+        });
+        
+        // Apply to root items
+        if (self.Items.children != undefined) {
+            var rootItems = self.Items.children;
+            for (var i = 0; i < array_length(rootItems); i++) {
+                _filterItem(rootItems[i]);
+            }
+        }
+    }
+
+    /**
+     * Recursively collapse all items
+     */
+    function collapseAll() {
+        var context = {
+            run: function(item) {
+                if (item.isScrollbar) return;
+                
+                 // Collapse self
+                if (item[$ "collapseItem"] != undefined) {
+                    item.collapseItem();
+                }
+                
+                // Recurse children
+                if (item.Items != undefined && item.Items.children != undefined) {
+                    var children = item.Items.children;
+                    for (var i = 0; i < array_length(children); i++) {
+                        self.run(children[i]);
+                    }
+                }
+            }
+        };
+        
+        var _recursiveCollapse = method(context, context.run);
+        
+        // Apply to root items
+        if (self.Items.children != undefined) {
+            var rootItems = self.Items.children;
+            for (var i = 0; i < array_length(rootItems); i++) {
+                _recursiveCollapse(rootItems[i]);
+            }
+        }
     }
 }
 
@@ -89,8 +172,6 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     self.collapsed = props[$ "collapsed"] ?? true;
     self.asset = props[$ "asset"] ?? undefined;
     self.acceptsDropOf = props[$ "acceptsDropOf"] ?? undefined;
-    self.collapseSprite = undefined;
-    self.expandSprite = undefined;
     
     // Store back-reference in asset for efficient lookup
     if (self.asset != undefined) {
@@ -152,19 +233,25 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
         self.onDraw = method({ item: treeviewItem, node: contentNode }, function() {
             if (node.hovered) {
                 draw_set_color(global.UI_COL_BTN_HOVER);
-                draw_rectangle(0, node.yp1 + 3, node.xp2-2, node.yp2 - 1, false);
+                draw_rectangle(0, node.y1 + 3, node.x2-2, node.y2 - 1, false);
             }
             
             if (item.selected) {
                 draw_set_color(global.UI_COL_SELECTED);
-                draw_rectangle(0, node.yp1 + 3, node.xp2-2, node.yp2 - 1, false);
+                draw_rectangle(0, node.y1 + 3, node.x2-2, node.y2 - 1, false);
             }
             
             // Draw the icon
             var xx = node.x1 + 30;
             var meanY = (node.y1 + node.y2) / 2;
-            if (item.icon) {
-                draw_sprite(item.icon, 0, xx + 10, meanY);
+            
+            var iconToDraw = item.icon;
+            if (item.assetType == "Folder" && item.collapsed) {
+                iconToDraw = sprUiFolderCollapsed;
+            }
+            
+            if (iconToDraw) {
+                draw_sprite(iconToDraw, 0, xx + 10, meanY);
                 xx += 25;
             }
             
@@ -188,15 +275,23 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     }
     
     // Left and right content
-    self.LeftContent = new UiNode({ name: "UiTreeview.Item.Content.LeftContent", flexDirection: "row", alignItems: "center"  });
-    // self.RightContent = new UiNode({ name: "UiTreeview.Item.Content.RightContent", flexDirection: "row", alignItems: "center"  });
-    self.Content.add(self.LeftContent/*, self.RightContent*/);
+    self.LeftContent = new UiNode({ 
+      name: "UiTreeview.Item.Content.LeftContent", 
+      flexDirection: "row", 
+      alignItems: "center",
+      width: 20,
+      height: 20,
+    });
+    self.Content.add(self.LeftContent);
 
     // Arrow
-    self.Arrow = new UiButton(sprUiTreeviewArrowDown, { 
-        name: "UiTreeview.Item.Content.ArrowBtn",
-        padding: 4, marginLeft: 5, marginRight: 10, width: 14, height: 9,
-    }, { outline: true, visible: false });
+    self.Arrow = new UiSprite(sprUiTreeviewArrowDown, { 
+      name: "UiTreeview.Item.Content.ArrowBtn",
+      marginLeft: 5, 
+      marginRight: 10,
+      width: 20,
+      height: 20,
+    }, { outline: true, visible: false, pointerEvents: true });
     
     self.Arrow.onClick(method(self, function() {
         if (self.collapsed) {
@@ -213,7 +308,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     
     // Methods 
     function __addItem() {
-        var child = new UiTreeviewItem({ name: "UiTreeview.Item", marginLeft: 15, paddingVertical: 2.5 }, {
+        var child = new UiTreeviewItem({ name: "UiTreeview.Item", marginLeft: 15 }, {
             treeview: self.treeview,
             assetType: self.assetType,
             type: self.assetType,
@@ -253,7 +348,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
         }
     }
     
-    function moveItemTo(targetParent, shouldExpand = true, onClearCb = undefined) {
+    function moveItemTo(targetParent, shouldExpand = true) {
         // Save reference to the old parent before removing
         var oldParent = undefined;
         if (self.parent != undefined && self.parent.parent != undefined) {
@@ -265,7 +360,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
         
         // If selected, deselect it first to clean up any gizmos/helpers
         if (wasSelected) {
-            if (onClearCb != undefined) onClearCb();
+            oSceneEditor.editorManager.clearActiveAsset(true); // Keep scene active
         }
         
         // Remove from current parent
@@ -285,7 +380,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
         if (targetParent[$ "__updateArrowVisibility"]) {
             targetParent.__updateArrowVisibility();
         }
-        if (shouldExpand && targetParent.collapsed) {
+        if (shouldExpand && targetParent[$ "collapsed"] != undefined && targetParent.collapsed) {
             targetParent.expandItem();
         }
         
@@ -320,7 +415,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     
     function expandItem() {
         self.collapsed = false;
-        self.Arrow.sprite = self.expandSprite;
+        self.Arrow.sprite = sprUiTreeviewArrowDown;
         self.Arrow.show();
         self.Items.show();
         
@@ -346,7 +441,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     
     function collapseItem() {
         self.collapsed = true;
-        self.Arrow.sprite = self.collapseSprite;
+        self.Arrow.sprite = sprUiTreeviewArrowRight;
         self.Items.hide();
     }
     
