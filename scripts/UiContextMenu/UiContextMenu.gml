@@ -36,8 +36,8 @@ function UiContextMenu(x, y, items) constructor {
             paddingVertical: 6,
             left: _x,
             top: _y,
-            minWidth: 160
-        });
+            minWidth: 210
+        }, { pointerEvents: true });
         
         with (self.Menu) {
             self.ContextMenu = _contextMenu;
@@ -124,11 +124,11 @@ function UiContextMenu(x, y, items) constructor {
                 
                 with (menuItem) {
                     self.onMouseEnter(function() {
-                        global.UI.needsRedraw = true;
+                        global.UI.requestRedraw();
                     });
                     
                     self.onMouseLeave(function() {
-                        global.UI.needsRedraw = true;
+                        global.UI.requestRedraw();
                     });
                     
                     self.onMouseDown(method({ item: menuItem, contextMenu: _contextMenu }, function() {

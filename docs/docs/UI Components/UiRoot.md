@@ -43,9 +43,15 @@ Usually, you only need one instance of UiRoot per scene or project.
 
 | Method                               | Returns         | Description                                                                                                               |
 | ------------------------------------ | --------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `setSize(w, h)`                      | `UiRoot`        | Sets the root node’s dimensions and resizes the spatial grid accordingly.                                                 |
+| `setSize(w, h)`                      | `UiRoot`        | Sets the root node’s dimensions and updates the spatial tree bounds.                                                      |
 | `update()`                           | `void`          | Updates layout, mouse input, hover detection, drag events, and dispatches UI events. Should be called every step.         |
 | `render(debug = false)`              | `void`          | Renders the UI tree to an internal surface and draws it to the screen. If `debug = true`, draws element bounds and names. |
+| `requestUpdate(element?)`            | `void`          | Marks the UI (or a specific element) as needing a layout update on the next `update()` call.                              |
+| `requestRedraw(element?)`            | `void`          | Marks the UI (or a specific element) as needing a redraw on the next `render()` call.                                     |
+| `focusNext()`                        | `void`          | Moves focus to the next focusable element (Tab navigation).                                                               |
+| `focusPrevious()`                    | `void`          | Moves focus to the previous focusable element (Shift+Tab navigation).                                                     |
+| `clearAllFocused()`                  | `void`          | Blurs the current focused element and clears the list of focusable elements.                                              |
+| `hasAnyFocus()`                      | `boolean`       | Returns `true` if any element currently has focus.                                                                        |
 | `setName(name)`                      | `void`          | Inherited from `UiNode`; sets the FlexPanel node name (used in debug view).                                               |
 
 ---
@@ -69,7 +75,7 @@ var input = new UiTextbox({
 
 ### Handling Focus Events
 
-You can respond to focus changes using the `onFocus` and `onBlur` callbacks.
+You can respond to focus changes using the `onFocus` and `onBlur` callbacks on any `UiNode`.
 
 ```gml
 var button = new UiButton("Submit");
@@ -87,39 +93,19 @@ button.onBlur = function() {
 
 ### Programmatic Control
 
-The focus system is managed by `global.UI.focusManager`. You can use it to control focus from code.
+The focus system is managed directly by the `UiRoot` instance (usually `global.UI`).
 
-#### `global.UI.focusManager.setFocus(element)`
-Sets focus to a specific element.
+#### `global.UI.focusNext()`
+Moves focus to the next available focusable element.
 
-```gml
-global.UI.focusManager.setFocus(myTextbox);
-```
+#### `global.UI.focusPrevious()`
+Moves focus to the previous focusable element.
 
-#### `global.UI.focusManager.blur()`
-Removes focus from the currently focused element.
+#### `global.UI.hasAnyFocus()`
+Returns whether any element in the UI currently has focus.
 
-```gml
-global.UI.focusManager.blur();
-```
-
-#### `global.UI.focusManager.getFocused()`
-Returns the currently focused element, or `undefined` if none.
-
-```gml
-var current = global.UI.focusManager.getFocused();
-```
-
-#### Checking Focus State
-To check if a specific element has focus, use `hasFocus()`:
-
-```gml
-if (global.UI.focusManager.hasFocus(myElement)) {
-    // myElement is focused
-}
-```
-
-> **Note:** The `focused` property on a `UiNode` is **not** automatically updated by the focus manager. If you need to track focus state within your component (e.g., for rendering), you should update a state variable inside your `onFocus` and `onBlur` callbacks.
+#### `global.UI.clearAllFocused()`
+Removes focus from any currently focused element.
 
 ### Keyboard Navigation
 

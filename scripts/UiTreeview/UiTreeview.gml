@@ -1,8 +1,7 @@
 /**
  * Treeview - Free-form hierarchical tree structure
  * Supports flexible asset organization with drag & drop
- *
- * * @note This component is very opinionated and some things are still hardcoded, adapt it to your needs
+ * @note This component is opinionated and should be customized.
  */
 function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
     setName(style[$ "name"] ?? "UiTreeview");
@@ -51,6 +50,11 @@ function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
         // Cannot drop on itself
         if (draggedItem == targetItem) return false;
         
+        // Textures and Materials cannot be moved
+        if (draggedType == "Texture" || draggedType == "Material") {
+            return false;
+        }
+        
         // Check if target accepts this type
         if (targetItem[$ "acceptsDropOf"] != undefined) {
             var accepts = targetItem.acceptsDropOf;
@@ -63,6 +67,9 @@ function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
             }
             if (!found) return false;
         }
+        
+        // Folders can accept anything
+        if (targetType == "Folder") return true;
         
         return false;
     }
@@ -78,14 +85,20 @@ function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
         var _filterItem = undefined;
         _filterItem = method({ _lowerSearch, _filterItem:  function(item) {
                 // Check if this item matches
-                var nameToCheck = (item.asset != undefined) ? item.asset.name : item.name;
-                var matches = (_lowerSearch == "" || string_pos(_lowerSearch, string_lower(nameToCheck)) > 0);
+                var nameToCheck = "";
+                if (item[$ "asset"] != undefined) {
+                    nameToCheck = item.asset[$ "name"] ?? "";
+                } else {
+                    nameToCheck = item[$ "name"] ?? "";
+                }
+                var matches = (_lowerSearch == "" || (nameToCheck != "" && string_pos(_lowerSearch, string_lower(nameToCheck)) > 0));
                 
                 var hasMatchingChildren = false;
                 
                 // Check children items
-                if (item.Items != undefined && item.Items.children != undefined) {
-                    var children = item.Items.children;
+                var itemsNode = item[$ "Items"];
+                if (itemsNode != undefined && itemsNode[$ "children"] != undefined) {
+                    var children = itemsNode.children;
                     for (var i = 0; i < array_length(children); i++) {
                         var child = children[i];
                         // Recursively check child
@@ -136,8 +149,9 @@ function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
                 }
                 
                 // Recurse children
-                if (item.Items != undefined && item.Items.children != undefined) {
-                    var children = item.Items.children;
+                var itemsNode = item[$ "Items"];
+                if (itemsNode != undefined && itemsNode[$ "children"] != undefined) {
+                    var children = itemsNode.children;
                     for (var i = 0; i < array_length(children); i++) {
                         self.run(children[i]);
                     }
@@ -167,7 +181,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     self.assetType = props[$ "assetType"];
     self.type = props[$ "type"];
     self.icon = props[$ "icon"];
-    self.name = props[$ "name"];
+    self.name = props[$ "name"] ?? style[$ "name"] ?? "UiTreeview.Item";
     self.selected = false;
     self.collapsed = props[$ "collapsed"] ?? true;
     self.asset = props[$ "asset"] ?? undefined;
@@ -204,11 +218,11 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
         self.handpoint = true;
         
         self.onMouseEnter(function() {
-            global.UI.needsRedraw = true;
+            global.UI.requestRedraw();
         });
         
         self.onMouseLeave(function() {
-            global.UI.needsRedraw = true; 
+            global.UI.requestRedraw(); 
         });
         
         self.onMouseDown(method({ item: treeviewItem }, function() {
@@ -257,7 +271,13 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
             
             // Draw the label
             draw_set_color(c_white); draw_set_halign(fa_left); draw_set_valign(fa_middle); draw_set_font(fText);
-            draw_text(xx, meanY, item.asset == undefined ? item.name : item.asset.name);
+            var labelText = "";
+            if (item[$ "asset"] != undefined) {
+                labelText = item.asset[$ "name"] ?? "Unnamed Asset";
+            } else {
+                labelText = item[$ "name"] ?? "Unnamed Item";
+            }
+            draw_text(xx, meanY, labelText);
         });
         
         // Use the external onAssetDrop callback if available
@@ -285,7 +305,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     self.Content.add(self.LeftContent);
 
     // Arrow
-    self.Arrow = new UiSprite(sprUiTreeviewArrowDown, { 
+    self.Arrow = new UiSprite(self.collapsed ? sprUiTreeviewArrowRight : sprUiTreeviewArrowDown, { 
       name: "UiTreeview.Item.Content.ArrowBtn",
       marginLeft: 5, 
       marginRight: 10,
@@ -301,9 +321,16 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
         }
     }));
     
+    // Stop propagation on mousedown so clicking the arrow doesn't trigger 
+    // selection/expansion on the parent Content node
+    self.Arrow.onMouseDown(function() {
+        return true; 
+    });
+    
     self.LeftContent.add(self.Arrow);
     
     self.Items = new UiNode({ marginLeft: 15 });
+    if (self.collapsed) self.Items.hide();
     self.add(self.Items);
     
     // Methods 
@@ -327,8 +354,6 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
         
         if (expand) {
             self.expandItem();
-        } else {
-            self.collapseItem();
         }
     }
     
@@ -340,7 +365,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     }
     
     function __updateArrowVisibility() {
-        var hasChildren = (self.Items.count() > 0);
+        var hasChildren = self.Items.count() > 0;
         self.Arrow.visible = hasChildren;
         
         if (!hasChildren && !self.collapsed) {
@@ -414,10 +439,16 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     }
     
     function expandItem() {
+        if (!self.collapsed) return;
         self.collapsed = false;
         self.Arrow.sprite = sprUiTreeviewArrowDown;
         self.Arrow.show();
         self.Items.show();
+        
+        // Trigger onExpand callback if defined
+        if (self.treeview[$ "onExpand"] != undefined) {
+            self.treeview.onExpand(self);
+        }
         
         // Temporarily hide children to prevent visual glitch
         // They will be shown once the layout is updated
@@ -431,8 +462,11 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
                 hasRun.value = true;
                 items.visible = true;
                 
+                // Request another update so the now-visible items are added to the spatial tree
+                global.UI.requestUpdate();
+                
                 // Defer removal to next frame to avoid modifying array during iteration
-                call_later(1, time_source_units_frames, method(items, function() {
+                runLater(method(items, function() {
                     __removeStepHandler();
                 }));
             }
@@ -440,9 +474,15 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     }
     
     function collapseItem() {
+        if (self.collapsed) return;
         self.collapsed = true;
         self.Arrow.sprite = sprUiTreeviewArrowRight;
         self.Items.hide();
+        
+        // Trigger onCollapse callback if defined
+        if (self.treeview[$ "onCollapse"] != undefined) {
+            self.treeview.onCollapse(self);
+        }
     }
     
     function onDraw() {

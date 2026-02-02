@@ -20,7 +20,7 @@ const FeatureList = [
       <>
         Handle interaction with precision and control.
         It automatically manages mouse events - including hover, click, wheel, and drag-and-drop - through a hierarchical dispatch system.
-        Event propagation is optimized using the spatial partition grid, ensuring accurate hit detection even in complex UIs.
+        Event propagation is optimized using a Dynamic AABB Tree, ensuring accurate hit detection even in complex UIs.
       </>
     ),
   },
@@ -30,7 +30,7 @@ const FeatureList = [
     description: (
       <>
         Designed for scalability and speed.
-        It leverages spatial partitioning to minimize per-frame checks, recalculating only what's necessary.
+        It leverages a spatial tree structure to minimize per-frame checks, recalculating only what's necessary.
         Combined with cached surfaces and deferred redraws, this allows large interfaces to remain responsive and lightweight.
       </>
     ),

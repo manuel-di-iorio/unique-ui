@@ -12,11 +12,11 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     self.enableRipple = props[$ "enableRipple"] ?? true; // @todo missing doc
     
     self.onMouseEnter(function() {
-        global.UI.needsRedraw = true;
+        global.UI.requestRedraw();
     });
     
     self.onMouseLeave(function() {
-        global.UI.needsRedraw = true;
+        global.UI.requestRedraw();
     });
     
     self.ripples = [];
@@ -27,8 +27,8 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
         var mx = window_mouse_get_x();
         var my = window_mouse_get_y();
         
-        var w = self.xp2 - self.xp1;
-        var h = self.yp2 - self.yp1;
+        var w = self.x2 - self.x1;
+        var h = self.y2 - self.y1;
         var maxR = sqrt(w*w + h*h) * 1.2;
         
         array_push(self.ripples, {
@@ -38,7 +38,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
             alpha: 0.4,
             maxRadius: maxR
         });
-        global.UI.needsRedraw = true;
+        global.UI.requestRedraw();
     });
     
     function resize() {
@@ -75,20 +75,20 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     function onDraw() {
         if (self.selected && self.hovered) {
             draw_set_color(global.UI_COL_SELECTED_HOVER);
-            draw_rectangle(self.xp1, self.yp1, self.xp2, self.yp2, false);
+            draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
         } else if (self.selected) {
             draw_set_color(global.UI_COL_SELECTED);
-            draw_rectangle(self.xp1, self.yp1, self.xp2, self.yp2, false);
+            draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
         }
         else if (self.hovered) {
             draw_set_color(global.UI_COL_BTN_HOVER);
-            draw_rectangle(self.xp1, self.yp1, self.xp2, self.yp2, false);
+            draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
         }
         
         // Ripples
         if (array_length(self.ripples) > 0) {
             var _scissor = gpu_get_scissor();
-            gpu_set_scissor(self.xp1, self.yp1, self.xp2 - self.xp1, self.yp2 - self.yp1);
+            gpu_set_scissor(self.x1, self.y1, self.x2 - self.x1, self.y2 - self.y1);
             
             for (var i = array_length(self.ripples) - 1; i >= 0; i--) {
                 var r = self.ripples[i];
@@ -108,13 +108,13 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
             draw_set_alpha(1);
             
             if (array_length(self.ripples) > 0) {
-                global.UI.needsRedraw = true;
+                global.UI.requestRedraw();
             }
         }
         
         if (!self.outline) {
             draw_set_color(global.UI_COL_BOX);
-            draw_rectangle(self.xp1, self.yp1, self.xp2, self.yp2, true);
+            draw_rectangle(self.x1, self.y1, self.x2, self.y2, true);
         }
 
         var xm;

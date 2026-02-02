@@ -62,6 +62,15 @@ new UiNode(style = {}, props = {})
 | `traverseChildren(cb, recursive = true)`    | Calls `cb(node)` on children (recursively if true). |
 | `reduceChildren(cb, acc, recursive = true)` | Reduces the node tree into a single value.          |
 
+**Focus management**
+
+| Method         | Description                                     |
+| -------------- | ----------------------------------------------- |
+| `focus()`      | Gives focus to this element.                    |
+| `blur()`       | Removes focus from this element.                |
+| `hasFocus()`   | Returns `true` if this element is focused.      |
+| `getFocused()` | Returns the currently focused element (static). |
+
 **Layout & style**
 
 | Method                             | Description                       |
@@ -135,7 +144,7 @@ UI_EVENT.mouseleave
 | `click()`          | Manually triggers a click event. |
 | `onStep(cb)`       | Adds a per-frame step handler.   |
 
-> 🧠 Note: The UI system uses an internal spatial partitioning grid for event dispatch, optimizing hit detection and interaction on complex interfaces.
+> 🧠 Note: The UI system uses an internal **Dynamic AABB Tree 2D** for event dispatch, optimizing hit detection and interaction on complex interfaces with many elements.
 
 **Drag & Drop**
 
@@ -170,6 +179,6 @@ UI_EVENT.mouseleave
 **⚡ Performance Notes**
 
 - UiNode is backed by GameMaker's FlexPanel functions, a lightweight Yoga-style layout engine.
-- The event system uses a spatial partitioning grid to efficiently resolve pointer targets.
+- The event system uses a **Dynamic AABB Tree 2D** to efficiently resolve pointer targets, allowing for high performance even with thousands of nodes.
 - Internal caching (e.g., for scroll bounds) avoids redundant computations.
 - All core methods are marked with gml_pragma("forceinline") for maximum performance.

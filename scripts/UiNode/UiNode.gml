@@ -85,14 +85,27 @@ function UiNode(style = {}, props = {}) constructor {
     self.onDrop = undefined;
 
     
+
     /** Methods */
+    
+    // Request a layout update
+    function requestUpdate() {
+        gml_pragma("forceinline");
+        global.UI.requestUpdate(self);
+    }
+
+    // Request a redraw
+    function requestRedraw() {
+        gml_pragma("forceinline");
+        global.UI.requestRedraw(self);
+    }
     
     // Set the size of the node
     function setSize(w, h) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_width(self.node, w, flexpanel_unit.point);
         flexpanel_node_style_set_height(self.node, h, flexpanel_unit.point);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
         return self;
     }
     
@@ -111,7 +124,7 @@ function UiNode(style = {}, props = {}) constructor {
             self.childrenLength++;
             elem.parent = self;
         }
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
         
         return self;
     }
@@ -119,7 +132,7 @@ function UiNode(style = {}, props = {}) constructor {
     // Remove a child
     function remove(child) {
         gml_pragma("forceinline");
-        global.UI.needsUpdate = true; 
+        self.requestUpdate();  
         child.parent = undefined;
         flexpanel_node_remove_child(self.node, child.node);
         
@@ -131,15 +144,54 @@ function UiNode(style = {}, props = {}) constructor {
             }
         }
         
+        // Remove child and all its descendants from the spatial tree
+        __removeFromSpatialTree(child);
         
         return self;
     }
     
+    // Helper: recursively remove element and children from spatial tree
+    static __removeFromSpatialTree = function(elem) {
+        // Clear hover state and deepestTarget if this element was being tracked
+        elem.hovered = false;
+        if (global.UI.deepestTarget == elem) {
+            global.UI.deepestTarget = undefined;
+        }
+        
+        // Remove this element from spatial tree
+        if (variable_struct_exists(elem, "__spatialProxyId") && elem.__spatialProxyId != undefined) {
+            global.UI.spatialTree.remove(elem.__spatialProxyId);
+            elem.__spatialProxyId = undefined;
+        }
+        
+        // Recursively remove children
+        var _children = elem.children;
+        var _len = elem.childrenLength;
+        for (var i = 0; i < _len; i++) {
+            __removeFromSpatialTree(_children[i]);
+        }
+        
+        // Also handle scrollbar if present
+        if (variable_struct_exists(elem, "__UiScrollbar") && elem.__UiScrollbar != undefined) {
+            __removeFromSpatialTree(elem.__UiScrollbar);
+        }
+    };
+    
     // Remove all children from the node tree (not from the memory, use destroy() for that)
     function clear() {
         gml_pragma("forceinline");
+        
+        // Remove all children from spatial tree first
+        var _children = self.children;
+        var _len = is_array(_children) ? array_length(_children) : 0;
+        for (var i = 0; i < _len; i++) {
+            if (_children[i] != undefined) {
+                __removeFromSpatialTree(_children[i]);
+            }
+        }
+        
         flexpanel_node_remove_all_children(self.node);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
         self.children = [];
         self.childrenLength = 0;
         return self;
@@ -148,12 +200,16 @@ function UiNode(style = {}, props = {}) constructor {
     // Delete this node and optionally also its children from memory
     function destroy() {
         gml_pragma("forceinline");
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
         
         // Unregister from focus manager if focusable
         if (self.focusable && !self.root) {
             global.UI.__unregisterFocus(self);
         }
+        
+        // Remove this element and ALL descendants from spatial tree FIRST
+        // This also clears hover state and deepestTarget
+        __removeFromSpatialTree(self);
         
         for (var i = self.childrenLength - 1; i >= 0; i--) {
             self.children[i].destroy();
@@ -189,6 +245,10 @@ function UiNode(style = {}, props = {}) constructor {
         
         for (var i = self.childrenLength - 1; i >= 0; i--) {
             var elem = self.children[i];
+            
+            // Remove from spatial tree first (recursively for all descendants)
+            __removeFromSpatialTree(elem);
+            
             elem.destroyChildren();
             
             var elemOnDestroy = elem[$ "onDestroy"];
@@ -204,7 +264,7 @@ function UiNode(style = {}, props = {}) constructor {
         flexpanel_node_remove_all_children(self.node);
         self.__UiScrollbar = undefined;
          
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
         self.children = [];
         self.childrenLength = 0;
         return self; 
@@ -267,7 +327,7 @@ function UiNode(style = {}, props = {}) constructor {
             self.onFocus();
         }
         
-        global.UI.needsRedraw = true;
+        global.UI.requestRedraw();
         return self;
     }
     
@@ -279,7 +339,7 @@ function UiNode(style = {}, props = {}) constructor {
             }
             
             global.UI.focusedElement = undefined;
-            global.UI.needsRedraw = true;
+            global.UI.requestRedraw();
         }
         return self;
     }
@@ -314,14 +374,14 @@ function UiNode(style = {}, props = {}) constructor {
         gml_pragma("forceinline");
         flexpanel_node_style_set_display(self.node, flexpanel_display.flex);
         self.display = true;
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     function hide() {
         gml_pragma("forceinline");
         flexpanel_node_style_set_display(self.node, flexpanel_display.none);
         self.display = false;
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     // Scrolling bound check    
@@ -331,22 +391,24 @@ function UiNode(style = {}, props = {}) constructor {
 
         if (self.isScrollbar || _scrollableParent == undefined) return true;
         
-        if (self.__scrollBoundsCachedScrollTop == self.scrollTop && !global.UI.layoutUpdated) {
+        // Use parent's scrollTop for cache check (not self.scrollTop which is always 0 for non-scrollable elements)
+        var _parentScrollTop = _scrollableParent.scrollTop;
+        if (self.__scrollBoundsCachedScrollTop == _parentScrollTop && 
+            self.__scrollBoundsCachedValue != undefined && 
+            !global.UI.layoutUpdated) {
             return self.__scrollBoundsCachedValue;
         }
         
-        self.__scrollBoundsCachedScrollTop = _scrollableParent.scrollTop;
+        self.__scrollBoundsCachedScrollTop = _parentScrollTop;
     
-        // Relative start position
-        var elemLayout = self.layout;
-        var elemTop = elemLayout.top - elemLayout.paddingTop;
-        var elemBottom = elemTop + elemLayout.height + elemLayout.paddingBottom;
+        // Use absolute coordinates (y1/y2) which are already calculated
+        // These account for scroll offset and absolute positioning
+        var elemTop = self.y1;
+        var elemBottom = self.y2;
     
-        var parentLayout = _scrollableParent.layout;
-
-        // Calculate the visible area based on the scroll
-        var visibleTop = parentLayout.top + _scrollableParent.scrollTop;
-        var visibleBottom = visibleTop + parentLayout.height;
+        // Parent's visible area in absolute coordinates
+        var visibleTop = _scrollableParent.y1;
+        var visibleBottom = _scrollableParent.y2;
 
         // If fully outside then it is invisible
         if (elemBottom < visibleTop || elemTop > visibleBottom) {
@@ -376,7 +438,7 @@ function UiNode(style = {}, props = {}) constructor {
     function setWidth(value) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_width(self.node, value, flexpanel_unit.point);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     } 
     
     function getWidth() {
@@ -387,7 +449,7 @@ function UiNode(style = {}, props = {}) constructor {
     function setHeight(value) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_height(self.node, value, flexpanel_unit.point);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     function getHeight() {
@@ -398,7 +460,7 @@ function UiNode(style = {}, props = {}) constructor {
     function setLeft(value) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_position(self.node, flexpanel_edge.left, value, flexpanel_unit.point);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     function getLeft() {
@@ -409,7 +471,7 @@ function UiNode(style = {}, props = {}) constructor {
     function setTop(value) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_position(self.node, flexpanel_edge.top, value, flexpanel_unit.point);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     function getTop() {
@@ -420,7 +482,7 @@ function UiNode(style = {}, props = {}) constructor {
     function setRight(value) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_position(self.node, flexpanel_edge.right, value, flexpanel_unit.point);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     function getRight() {
@@ -431,7 +493,7 @@ function UiNode(style = {}, props = {}) constructor {
     function setBottom(value) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_position(self.node, flexpanel_edge.bottom, value, flexpanel_unit.point);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     function getBottom() {
@@ -444,7 +506,7 @@ function UiNode(style = {}, props = {}) constructor {
     function setMarginTop(value) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_margin(self.node, flexpanel_edge.top, value);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     function getMarginTop() {
@@ -455,7 +517,7 @@ function UiNode(style = {}, props = {}) constructor {
     function setMarginLeft(value) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_margin(self.node, flexpanel_edge.left, value);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     function getMarginLeft() {
@@ -466,7 +528,7 @@ function UiNode(style = {}, props = {}) constructor {
     function setMarginRight(value) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_margin(self.node, flexpanel_edge.right, value);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     function getMarginRight() {
@@ -477,7 +539,7 @@ function UiNode(style = {}, props = {}) constructor {
     function setMarginBottom(value) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_margin(self.node, flexpanel_edge.bottom, value);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     function getMarginBottom() {
@@ -489,7 +551,7 @@ function UiNode(style = {}, props = {}) constructor {
     function setPaddingTop(value) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_padding(self.node, flexpanel_edge.top, value);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     function getPaddingTop() {
@@ -500,7 +562,7 @@ function UiNode(style = {}, props = {}) constructor {
     function setPaddingLeft(value) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_padding(self.node, flexpanel_edge.left, value);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     function getPaddingLeft() {
@@ -511,7 +573,7 @@ function UiNode(style = {}, props = {}) constructor {
     function setPaddingRight(value) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_padding(self.node, flexpanel_edge.right, value);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     function getPaddingRight() {
@@ -522,7 +584,7 @@ function UiNode(style = {}, props = {}) constructor {
     function setPaddingBottom(value) {
         gml_pragma("forceinline");
         flexpanel_node_style_set_padding(self.node, flexpanel_edge.bottom, value);
-        global.UI.needsUpdate = true;
+        self.requestUpdate();
     }
     
     function getPaddingBottom() {

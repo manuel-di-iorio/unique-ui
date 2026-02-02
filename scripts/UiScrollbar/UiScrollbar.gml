@@ -20,12 +20,12 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
     function onMount() {
         self.parent.onWheelUp(function(ev) {
             self.parent.scrollTop = max(0, self.parent.scrollTop - 30);
-            global.UI.needsRedraw = true;
+            global.UI.requestRedraw();
         });
         
         self.parent.onWheelDown(function(ev) {
             self.parent.scrollTop = min(self.__maxScroll, self.parent.scrollTop + 30);
-            global.UI.needsRedraw = true;
+            global.UI.requestRedraw();
         });
     }
     
@@ -65,14 +65,14 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
                     // Convert thumb movement to scroll position
                     var scrollDelta = (deltaY / self.__maxThumbPosition) * self.__maxScroll;
                     self.parent.scrollTop = clamp(self.dragStartScrollTop + scrollDelta, 0, self.__maxScroll);
-                    global.UI.needsRedraw = true;
+                    global.UI.requestRedraw();
                 }
             }
         }
         
         // Compute the thumb max scroll and position
         if (self.__maxScroll > 0) {
-            var thumbPosition = (self.parent.scrollTop / self.__maxScroll) * self.__maxThumbPosition; 
+            var thumbPosition = floor((self.parent.scrollTop / self.__maxScroll) * self.__maxThumbPosition); 
             if (self.Thumb.getTop() != thumbPosition) {
                 self.Thumb.setTop(thumbPosition);
             }
@@ -89,6 +89,7 @@ function UiScrollbarThumb(style = {}, props = {}): UiNode(style, props) construc
         self.parent.dragged = true;
         self.parent.dragStartY = global.UI.mouseY;
         self.parent.dragStartScrollTop = self.parent.parent.scrollTop;
+        global.UI.isScrolling = true;
         
         self.setWidth(17);
         self.setLeft(-3);
@@ -99,6 +100,7 @@ function UiScrollbarThumb(style = {}, props = {}): UiNode(style, props) construc
         if (global.UI.mouseReleased) {
             if (self.parent.dragged) {
                 self.parent.dragged = false;
+                global.UI.isScrolling = false;
                 self.setWidth(11);
                 self.setLeft(0);
             }
