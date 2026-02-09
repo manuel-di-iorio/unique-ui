@@ -115,6 +115,7 @@ UI_EVENT.wheeldown
 UI_EVENT.mousedown
 UI_EVENT.mouseup
 UI_EVENT.click
+UI_EVENT.doubleclick
 UI_EVENT.mouseover
 UI_EVENT.mouseout
 UI_EVENT.mouseenter
@@ -141,6 +142,7 @@ UI_EVENT.mouseleave
 | `onMouseLeave(cb)` | Triggered when the mouse leaves. |
 | `onWheelUp(cb)`    | Triggered on scroll up.          |
 | `onWheelDown(cb)`  | Triggered on scroll down.        |
+| `onDoubleClick(cb)`| Triggered on double click.       |
 | `click()`          | Manually triggers a click event. |
 | `onStep(cb)`       | Adds a per-frame step handler.   |
 
