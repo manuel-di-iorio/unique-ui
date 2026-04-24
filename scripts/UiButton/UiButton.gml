@@ -73,16 +73,22 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     }
     
     function onDraw() {
+        var radius = 6;
+        
+        // Background
         if (self.selected && self.hovered) {
             draw_set_color(global.UI_COL_SELECTED_HOVER);
-            draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
+            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
         } else if (self.selected) {
             draw_set_color(global.UI_COL_SELECTED);
-            draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
+            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
         }
         else if (self.hovered) {
             draw_set_color(global.UI_COL_BTN_HOVER);
-            draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
+            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
+        } else if (!self.outline) {
+            draw_set_color(global.UI_COL_BOX);
+            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
         }
         
         // Ripples
@@ -112,9 +118,22 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
             }
         }
         
-        if (!self.outline) {
-            draw_set_color(global.UI_COL_BOX);
-            draw_rectangle(self.x1, self.y1, self.x2, self.y2, true);
+        // Border / Outline
+        if (self.outline) {
+            draw_set_color(global.UI_COL_BORDER);
+            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, true);
+        } else {
+            // Subtle top highlight for depth
+            draw_set_color(c_white);
+            draw_set_alpha(0.04);
+            draw_line(self.x1 + radius, self.y1, self.x2 - radius, self.y1);
+            draw_set_alpha(1);
+            
+            // Outer subtle border
+            draw_set_color(#101014);
+            draw_set_alpha(0.3);
+            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, true);
+            draw_set_alpha(1);
         }
 
         var xm;

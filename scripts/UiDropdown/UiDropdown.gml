@@ -64,7 +64,13 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             }
             
             // Button
-            draw_sprite(sprUiDropdownArrow, 0, self.x2 - 12, self.y2 - 12);
+            if (sprUiDropdownArrow != -1) {
+                draw_sprite(sprUiDropdownArrow, 0, self.x2 - 12, self.y2 - 12);
+            } else {
+                // Fallback: draw a small triangle
+                draw_set_color(c_white);
+                draw_triangle(self.x2 - 17, self.y1 + 8, self.x2 - 7, self.y1 + 8, self.x2 - 12, self.y2 - 8, false);
+            }
             draw_line(self.x2 - 25, self.y1 - 1, self.x2 - 25, self.y2);
             
             // Selected value
@@ -106,7 +112,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
                 if (abs(self.width - Input.width) > 1) self.setWidth(Input.width); 
                 
                 var yy = floor(Input.y1 + 30);
-                if (yy + _height > oSceneEditor.winH) {
+                if (yy + _height > display_get_gui_height()) {
                     yy = floor(yy - 30 - self.layout.height);
                 }
                 if (abs(self.y1 - yy) > 1) self.setTop(yy);
@@ -221,7 +227,8 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             self.add(self.Items);
             
             // Create the initial items
-            if (_Dropdown.itemsGetter != undefined) _Dropdown.items = _Dropdown.itemsGetter(self.Search.value);
+            var initialSearch = self[$ "Search"] != undefined ? self.Search.value : "";
+            if (_Dropdown.itemsGetter != undefined) _Dropdown.items = _Dropdown.itemsGetter(initialSearch);
             self.createItems(); 
         }
         

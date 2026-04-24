@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"__TestUiRoot",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"__TestUiRoot",
+  "parent":{
+    "name":"UniqueUI",
+    "path":"folders/UniqueUI.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

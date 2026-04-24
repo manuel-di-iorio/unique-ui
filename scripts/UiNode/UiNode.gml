@@ -759,7 +759,7 @@ function UiNode(style = {}, props = {}) constructor {
                 
                 if (!_stopped) {
                     for (var j = 0, jl = array_length(targetListeners.bubble); j < jl; j++) {
-                        if (targetListeners.bubble[j](event)) {
+                        if (targetListeners.bubble[j](target)) {
                             _stopped = true;
                             break;
                         }

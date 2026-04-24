@@ -387,6 +387,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             
             self.parent.value = newValue;
             self.parent.onChange(self.parent.value, self.parent);
+            self.redoStack = [];
             self.cursorPos += string_length(filteredText);
             self.selectionStart = self.cursorPos;
             self.selectionEnd = self.cursorPos;
@@ -576,9 +577,23 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                 return;
             }
             
-            // Character input
+            // Character input using GameMaker's keyboard_string
+            if (keyboard_string != "") {
+                var newText = keyboard_string;
+                keyboard_string = ""; // Clear string immediately after reading
+                
+                // Process each character
+                for (var i = 1; i <= string_length(newText); i++) {
+                    var inputChar = string_char_at(newText, i);
+                    if (ord(inputChar) >= 32) { // Allow space and all printable characters
+                        self.insertText(inputChar);
+                    }
+                }
+            }
+            
+            // Legacy fallback just in case
             var inputChar = keyboard_lastchar;
-            if (inputChar != "" && ord(inputChar) >= 32 && ord(inputChar) <= 126) {
+            if (inputChar != "" && ord(inputChar) >= 32 && ord(inputChar) <= 126 && keyboard_string == "") {
                 self.insertText(inputChar);
                 keyboard_lastchar = "";
             }
@@ -842,6 +857,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             self.focused = true;
             self.cursorBlinkTime = current_time;
             self.showCursor = true;
+            keyboard_string = ""; // Reset string buffer on focus
             keyboard_lastchar = "";
         };
 

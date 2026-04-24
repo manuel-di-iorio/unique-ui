@@ -40,7 +40,8 @@ function UiAccordion(text, style = {}, data = {}) : UiNode(style, data) construc
       width: "100%",
       flexDirection: "column",
       display: self.collapsed ? "none" : "flex",
-      paddingLeft: 0 
+      paddingLeft: 12,
+      paddingBottom: 8
   });
   
   // Add internal nodes to self using the inherited add (before we override)

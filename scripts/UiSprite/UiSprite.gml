@@ -7,6 +7,8 @@ function UiSprite(sprite, style = {}, props = {}): UiNode(style, props) construc
     if (self.autoResize) setSize(sprite_get_width(sprite), sprite_get_height(sprite));
     
     function onDraw() {
-        draw_sprite(self.sprite, self.subimg, ~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2));
+        if (self.sprite != -1) {
+            draw_sprite(self.sprite, self.subimg, ~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2));
+        }
     }
 }

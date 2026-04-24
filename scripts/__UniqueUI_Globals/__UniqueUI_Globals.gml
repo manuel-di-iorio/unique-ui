@@ -1,14 +1,30 @@
 // UniqueUI Version: 2.1.0
 
-// UI Theme
-global.UI_COL_BTN_HOVER        = #393B47; // 57,59,71
-global.UI_COL_BOX              = #191A21; // 25,26,33
-global.UI_COL_TREE_BG          = #2D3039; // 45,48,57
-global.UI_COL_INSPECTOR_BG     = #282A36; // 40,42,54
-global.UI_COL_INPUT_BG         = #21222C; // 33,34,44
-global.UI_COL_SELECTION        = #464a53; // 53,57,66
-global.UI_COL_CHECKBOX_HOVER   = #8993a0; // 137,147,160
-global.UI_COL_DROPDOWN_LIST_BG = #181818; // 24,24,24
-global.UI_COL_BAR_BG           = #0B0B0F; // 11,11,15
-global.UI_COL_SELECTED         = #1166FF; // 11,107,255
-global.UI_COL_SELECTED_HOVER   = #3A7DFA; // 58,127,250
+// UI Theme — Premium Glass Dark Theme
+global.UI_COL_BTN_HOVER        = #2F334D;
+global.UI_COL_BOX              = #1E2030;
+global.UI_COL_TREE_BG          = #131421;
+global.UI_COL_INSPECTOR_BG     = #1A1B26;
+global.UI_COL_INPUT_BG         = #16161E;
+global.UI_COL_SELECTION        = #3E4468;
+global.UI_COL_CHECKBOX_HOVER   = #565F89;
+global.UI_COL_DROPDOWN_LIST_BG = #16161E;
+global.UI_COL_BAR_BG           = #1A1B26;
+global.UI_COL_SELECTED         = #7AA2F7;
+global.UI_COL_SELECTED_HOVER   = #82AAFF;
+global.UI_COL_BORDER           = #3B4261;
+
+draw_set_circle_precision(64);
+
+// Missing Asset Mocks (required for components to function without crashes)
+#macro fText -1
+#macro fTextSmall -1
+#macro sprUiTreeviewArrowRight -1
+#macro sprUiTreeviewArrowDown -1
+#macro sprUiFolderCollapsed -1
+#macro sprUiFolderExpanded -1
+#macro sprUiCheckboxChecked -1
+#macro sprUiCheckboxUnchecked -1
+#macro sprUiDropdownArrow -1
+#macro fTextItalic -1
+#macro sprUiCheckTick -1

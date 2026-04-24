@@ -2,7 +2,7 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
     setName(props[$ "name"] ?? "UiCheckbox");
     self.value = props[$ "value"] ?? false;
     self.label = props[$ "label"] ?? undefined;
-    self.onChange = props[$ "onChange"] ?? function(input, value) {};
+    self.onChange = props[$ "onChange"] ?? function(value, input) {};
     self.valueGetter = props[$ "valueGetter"] ?? undefined;
     
     var _marginLeft = self.label == undefined ? 0 : 3 + string_width(self.label) + 20;
@@ -37,7 +37,16 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
             }
             
             if (self.parent.value) {
-                draw_sprite(sprUiCheckTick, 0, ~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2));
+                if (sprUiCheckTick != -1) {
+                    draw_sprite(sprUiCheckTick, 0, ~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2));
+                } else {
+                    // Fallback: draw a checkmark
+                    draw_set_color(c_white);
+                    var cx = ~~mean(self.x1, self.x2);
+                    var cy = ~~mean(self.y1, self.y2);
+                    draw_line_width(cx - 4, cy, cx - 1, cy + 3, 2);
+                    draw_line_width(cx - 1, cy + 3, cx + 5, cy - 4, 2);
+                }
             }
         };
     }
