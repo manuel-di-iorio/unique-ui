@@ -589,13 +589,13 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                         self.insertText(inputChar);
                     }
                 }
-            }
-            
-            // Legacy fallback just in case
-            var inputChar = keyboard_lastchar;
-            if (inputChar != "" && ord(inputChar) >= 32 && ord(inputChar) <= 126 && keyboard_string == "") {
-                self.insertText(inputChar);
-                keyboard_lastchar = "";
+            } else if (keyboard_check_pressed(vk_anykey)) {
+                // Robust fallback for single character presses if keyboard_string is eaten by something else
+                var inputChar = keyboard_lastchar;
+                if (inputChar != "" && ord(inputChar) >= 32 && ord(inputChar) <= 126) {
+                    self.insertText(inputChar);
+                    keyboard_lastchar = "";
+                }
             }
         };
         

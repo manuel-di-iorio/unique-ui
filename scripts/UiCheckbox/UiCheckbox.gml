@@ -28,6 +28,11 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
         });
         
         self.onDraw = function() {
+            // Checkbox background
+            draw_set_color(global.UI_COL_INPUT_BG);
+            draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
+            
+            // Checkbox border
             draw_set_color(global.UI_COL_BOX);
             draw_rectangle(self.x1, self.y1, self.x2, self.y2, true);
             

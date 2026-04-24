@@ -34,12 +34,19 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
         
         if (layoutUpdated) {
             // Height calculation
-            self.__contentHeight = self.parent.reduceChildren(function(height, child) {
-                if (child.isScrollbar) return height;
-                return height + child.layout.height;
+            self.__contentHeight = self.parent.reduceChildren(function(maxH, child) {
+                if (child.isScrollbar) return maxH;
+                var mBottom = child.getMarginBottom();
+                if (is_undefined(mBottom) || is_nan(mBottom)) mBottom = 0;
+                var childBottom = child.y2 + child.parent.scrollTop - child.parent.y1 + mBottom;
+                return max(maxH, childBottom);
             }, 0, false);
+            
+            var pBottom = self.parent.getPaddingBottom();
+            if (is_undefined(pBottom) || is_nan(pBottom)) pBottom = 0;
+            self.__contentHeight += pBottom;
            
-            var _thumbHeight = ~~(max(10, min(layoutHeight, layoutHeight * (layoutHeight / __contentHeight))));
+            var _thumbHeight = ~~(max(10, min(layoutHeight, layoutHeight * (layoutHeight / max(1, self.__contentHeight)))));
             
             if (_thumbHeight != self.Thumb.getHeight()) {
                 self.Thumb.setHeight(_thumbHeight);

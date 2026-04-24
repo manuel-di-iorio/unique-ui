@@ -350,7 +350,7 @@ function ui_demo_create() {
     scrollBox.enableScrollbar(#7AA2F7);
     
     for (var i = 0; i < 25; i++) {
-        var lineNode = new UiNode({ width: "100%", height: 26, paddingLeft: 12, flexShrink: 0 });
+        var lineNode = new UiNode({ width: "100%", height: 26, paddingLeft: 12, flexShrink: 0, flexBasis: 26 });
         lineNode.__lineIdx = i;
         lineNode.onDraw = method(lineNode, function() {
             // Alternate row color
