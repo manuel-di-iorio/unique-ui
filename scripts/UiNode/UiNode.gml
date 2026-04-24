@@ -324,9 +324,11 @@ function UiNode(style = {}, props = {}) constructor {
             if (global.UI.focusedElement[$ "onBlur"] != undefined) {
                 global.UI.focusedElement.onBlur();
             }
+            global.UI.focusedElement.focused = false;
         }
         
         global.UI.focusedElement = self;
+        self.focused = true;
         
         if (self[$ "onFocus"] != undefined) {
             self.onFocus();
@@ -343,6 +345,7 @@ function UiNode(style = {}, props = {}) constructor {
                 self.onBlur();
             }
             
+            self.focused = false;
             global.UI.focusedElement = undefined;
             global.UI.requestRedraw();
         }

@@ -8,7 +8,6 @@ function ui_demo_create() {
     
     // Overlay node (needed for dropdowns/context menus)
     global.UI.Overlay = new UiNode({ name: "Overlay", position: "absolute", left: 0, top: 0, width: W, height: H });
-    global.UI.add(global.UI.Overlay);
     
     // Tooltip
     global.UI.Tooltip = new UiTooltip();
@@ -72,7 +71,7 @@ function ui_demo_create() {
     
     for (var i = 0; i < array_length(sections); i++) {
         var navBtn = new UiButton(sections[i], { 
-            width: 200, height: 30, marginBottom: 2
+            width: 200, height: 30, marginBottom: 2, paddingLeft: 6
         }, { halign: fa_left, outline: true, enableRipple: true });
         navBtn.onClick(method({ idx: i }, function() {
             if (idx < array_length(global.__demo_sections)) {
@@ -98,7 +97,7 @@ function ui_demo_create() {
         paddingLeft: 36,
         paddingRight: 36,
         paddingBottom: 40,
-    });
+    }, { pointerEvents: true });
     Content.onDraw = method(Content, function() {
         draw_set_color(#11121A);
         draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
@@ -149,8 +148,8 @@ function ui_demo_create() {
     var btnRow = new UiNode({ flexDirection: "row", marginBottom: 12 });
     secButtons.add(btnRow);
     
-    var btn1 = new UiButton("Primary", { marginRight: 10 });
-    var btn2 = new UiButton("Secondary", { marginRight: 10 });
+    var btn1 = new UiButton("Primary", { marginRight: 10 }, { variant: "primary" });
+    var btn2 = new UiButton("Secondary", { marginRight: 10 }, { variant: "secondary" });
     var btn3 = new UiButton("Outline", { marginRight: 10 }, { outline: true });
     var btn4 = new UiButton("No Ripple", {}, { enableRipple: false });
     btnRow.add(btn1, btn2, btn3, btn4);
@@ -351,7 +350,7 @@ function ui_demo_create() {
     scrollBox.enableScrollbar(#7AA2F7);
     
     for (var i = 0; i < 25; i++) {
-        var lineNode = new UiNode({ width: "100%", height: 26, paddingLeft: 12 });
+        var lineNode = new UiNode({ width: "100%", height: 26, paddingLeft: 12, flexShrink: 0 });
         lineNode.__lineIdx = i;
         lineNode.onDraw = method(lineNode, function() {
             // Alternate row color
@@ -392,6 +391,8 @@ function ui_demo_create() {
     
     // Bottom spacer
     Content.add(new UiNode({ height: 50 }));
+    
+    global.UI.add(global.UI.Overlay);
 }
 
 /// @desc Helper: Create a styled section card

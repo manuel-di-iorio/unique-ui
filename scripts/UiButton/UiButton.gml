@@ -8,8 +8,9 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     self.pointerEvents = true;
     self.halign = props[$ "halign"] ?? fa_center;
     self.handpoint = true;
-    self.selected = false; // @todo missing doc
-    self.enableRipple = props[$ "enableRipple"] ?? true; // @todo missing doc
+    self.selected = false;
+    self.enableRipple = props[$ "enableRipple"] ?? true;
+    self.variant = props[$ "variant"] ?? "secondary";
     
     self.onMouseEnter(function() {
         global.UI.requestRedraw();
@@ -75,19 +76,27 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     function onDraw() {
         var radius = 6;
         
+        var bg_color = global.UI_COL_BOX;
+        var hover_color = global.UI_COL_BTN_HOVER;
+        
+        if (self.variant == "primary") {
+            bg_color = global.UI_COL_SELECTED;
+            hover_color = global.UI_COL_SELECTED_HOVER;
+        }
+        
         // Background
         if (self.selected && self.hovered) {
-            draw_set_color(global.UI_COL_SELECTED_HOVER);
+            draw_set_color(hover_color);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
         } else if (self.selected) {
-            draw_set_color(global.UI_COL_SELECTED);
+            draw_set_color(bg_color);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
         }
         else if (self.hovered) {
-            draw_set_color(global.UI_COL_BTN_HOVER);
+            draw_set_color(hover_color);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
         } else if (!self.outline) {
-            draw_set_color(global.UI_COL_BOX);
+            draw_set_color(bg_color);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
         }
         
@@ -138,9 +147,9 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
 
         var xm;
         switch (self.halign) {
-            case fa_left: xm = self.x1; break;
+            case fa_left: xm = self.x1 + self.layout.paddingLeft; break;
             case fa_center: xm = ~~mean(self.x1, self.x2); break;
-            case fa_right: xm = self.x2; break;
+            case fa_right: xm = self.x2 - self.layout.paddingRight; break;
         } 
         
         var ym = ~~mean(self.y1, self.y2);
