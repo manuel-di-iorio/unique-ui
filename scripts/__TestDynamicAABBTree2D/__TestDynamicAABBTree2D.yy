@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"__TestDynamicAABBTree2D",
   "parent":{
-    "name":"UniqueUI",
-    "path":"folders/UniqueUI.yy",
+    "name":"Tests",
+    "path":"folders/Tests.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

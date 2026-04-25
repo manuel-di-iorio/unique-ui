@@ -1,19 +1,27 @@
 function UiText(text = "", style = {}, props = {}): UiNode(style, props) constructor {
     setName(style[$ "name"] ?? "UiText");
     self.text = text;
+    self.style = style;
     self.autoResize = props[$ "autoResize"] ?? (style[$ "width"] == undefined && style[$ "height"] == undefined) ?? true;
     self.halign = fa_left;
     self.valign = fa_top;
     self.valueGetter = props[$ "valueGetter"];
     self.icon = props[$ "icon"];
-    self.color = props[$ "color"] ?? c_white;
+    self.color = props[$ "color"] ?? global.UI_COL_TEXT_MAIN;
     self.font = props[$ "font"] ?? fText;
     
     function computeSize() {
         draw_set_font(self.font);
         var _w = string_width(self.text);
         if (self.icon != undefined) _w += sprite_get_width(self.icon) + 10;
-        setSize(_w, string_height(self.text));
+        var _h = string_height(self.text);
+        
+        if (self.autoResize || self.style[$ "width"] == undefined) {
+            self.setWidth(_w);
+        }
+        if (self.autoResize || self.style[$ "height"] == undefined) {
+            self.setHeight(_h);
+        }
     }
     
     self.onStep(function() {

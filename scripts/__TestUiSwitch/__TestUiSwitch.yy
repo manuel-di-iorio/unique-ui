@@ -5,9 +5,9 @@
   "isDnD":false,
   "name":"__TestUiSwitch",
   "parent":{
-    "name":"UniqueUI",
-    "path":"folders/UniqueUI.yy"
+    "name":"Tests",
+    "path":"folders/Tests.yy",
   },
   "resourceType":"GMScript",
-  "resourceVersion":"2.0"
+  "resourceVersion":"2.0",
 }

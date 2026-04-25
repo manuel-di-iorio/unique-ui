@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"__TestZIndex",
   "parent":{
-    "name":"UniqueUI",
-    "path":"folders/UniqueUI.yy",
+    "name":"Tests",
+    "path":"folders/Tests.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

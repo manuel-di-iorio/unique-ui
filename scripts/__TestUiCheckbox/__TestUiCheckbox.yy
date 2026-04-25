@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"__TestUiCheckbox",
   "parent":{
-    "name":"UniqueUI",
-    "path":"folders/UniqueUI.yy",
+    "name":"Tests",
+    "path":"folders/Tests.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

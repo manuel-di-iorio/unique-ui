@@ -702,9 +702,12 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
     
         // Draw the textbox
         self.onDraw = function() {
-            // Background
+            // Background with border if focused
             draw_set_color(global.UI_COL_INPUT_BG);
-            draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
+            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
+            
+            draw_set_color(self.focused ? global.UI_COL_PRIMARY : global.UI_COL_BORDER);
+            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, true);
             
             // Set clipping region to prevent text overflow
             var _scissor = gpu_get_scissor();
@@ -717,7 +720,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             }
             
             // Text drawing settings
-            draw_set_color(c_white);
+            draw_set_color(global.UI_COL_TEXT_MAIN);
             draw_set_halign(fa_left);
             draw_set_valign(fa_middle);
             
@@ -754,7 +757,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             }
             
             // Draw text (always visible)
-            draw_set_color(c_white); draw_set_font(fText);
+            draw_set_color(global.UI_COL_TEXT_MAIN); draw_set_font(fText);
             
             if (text == "" && !self.focused && self.parent.placeholder != undefined) {
                 // Draw placeholder text
@@ -777,7 +780,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                     }
                 }
                 
-                draw_set_color(c_white);
+                draw_set_color(global.UI_COL_PRIMARY);
                 draw_line(cursorX, self.y1 + 5, cursorX, self.y2 - 5);
             }
             
@@ -928,7 +931,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
     // Draw label if present
     function onDraw() {
         if (self.label != undefined) {
-            draw_set_color(c_white); draw_set_halign(fa_left); draw_set_valign(fa_middle);
+            draw_set_color(global.UI_COL_TEXT_MAIN); draw_set_halign(fa_left); draw_set_valign(fa_middle);
             draw_text(self.x1 + 3, ~~mean(self.y1, self.y2), self.label);
         }
     }

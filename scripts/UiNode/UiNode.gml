@@ -204,6 +204,9 @@ function UiNode(style = {}, props = {}) constructor {
     
     // Delete this node and optionally also its children from memory
     function destroy() {
+        if (self.destroyed) return self;
+        self.destroyed = true;
+        
         gml_pragma("forceinline");
         self.requestUpdate();
         
@@ -220,11 +223,13 @@ function UiNode(style = {}, props = {}) constructor {
             self.children[i].destroy();
         }
         
-        self.parent.remove(self);
+        if (self.parent != undefined) {
+            self.parent.remove(self);
+        }
+        
         flexpanel_delete_node(self.node, false);
         self.children = [];
         self.childrenLength = 0;
-        self.destroyed = true;
         self.__removeStepHandler();
         
         return self; 
@@ -718,6 +723,7 @@ function UiNode(style = {}, props = {}) constructor {
     }
     
     function dispatchEvent(event, target) {
+        if (target == undefined) return self;
         gml_pragma("forceinline");
         
         // Build path from root to target

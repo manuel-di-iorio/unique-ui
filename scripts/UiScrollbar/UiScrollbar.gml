@@ -19,12 +19,12 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
     
     function onMount() {
         self.parent.onWheelUp(function(ev) {
-            self.parent.scrollTop = max(0, self.parent.scrollTop - 30);
+            self.parent.scrollTop = max(0, self.parent.scrollTop - 60);
             global.UI.requestRedraw();
         });
         
         self.parent.onWheelDown(function(ev) {
-            self.parent.scrollTop = min(self.__maxScroll, self.parent.scrollTop + 30);
+            self.parent.scrollTop = min(self.__maxScroll, self.parent.scrollTop + 60);
             global.UI.requestRedraw();
         });
     }
@@ -118,6 +118,8 @@ function UiScrollbarThumb(style = {}, props = {}): UiNode(style, props) construc
         if (getHeight() == self.parent.layout.height) return;
 
         draw_set_color(self.thumbColor);
-        draw_rectangle(self.x1, self.y1, self.x2 - 5, self.y2, false);
+        draw_set_alpha(0.4);
+        draw_roundrect_ext(self.x1 + 3, self.y1 + 4, self.x2 - 3, self.y2 - 4, 4, 4, false);
+        draw_set_alpha(1);
     }
 }

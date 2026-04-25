@@ -1,18 +1,22 @@
 // UniqueUI Version: 2.1.0
 
-// UI Theme — Premium Glass Dark Theme
-global.UI_COL_BTN_HOVER        = #2F334D;
-global.UI_COL_BOX              = #1E2030;
-global.UI_COL_TREE_BG          = #131421;
-global.UI_COL_INSPECTOR_BG     = #1A1B26;
-global.UI_COL_INPUT_BG         = #16161E;
-global.UI_COL_SELECTION        = #3E4468;
-global.UI_COL_CHECKBOX_HOVER   = #565F89;
-global.UI_COL_DROPDOWN_LIST_BG = #16161E;
-global.UI_COL_BAR_BG           = #1A1B26;
-global.UI_COL_SELECTED         = #7AA2F7;
-global.UI_COL_SELECTED_HOVER   = #82AAFF;
-global.UI_COL_BORDER           = #3B4261;
+// UI Theme — Modern Premium Palette
+global.UI_COL_PRIMARY          = #6366F1;
+global.UI_COL_PRIMARY_HOVER    = #4F46E5;
+global.UI_COL_BG_SIDEBAR       = #0F172A;
+global.UI_COL_BG_MAIN          = #F8FAFC;
+global.UI_COL_BG_CARD          = #FFFFFF;
+global.UI_COL_TEXT_MAIN        = #0F172A;
+global.UI_COL_TEXT_DIM         = #64748B;
+global.UI_COL_BORDER           = #E2E8F0;
+global.UI_COL_SELECTED         = #6366F1;
+global.UI_COL_SELECTED_HOVER   = #4F46E5;
+global.UI_COL_BTN_HOVER        = #F1F5F9;
+global.UI_COL_BOX              = #FFFFFF;
+global.UI_COL_INPUT_BG         = #F8FAFC;
+global.UI_COL_BAR_BG           = #FFFFFF;
+global.UI_COL_CHECKBOX_HOVER   = #F1F5F9;
+
 
 draw_set_circle_precision(64);
 
