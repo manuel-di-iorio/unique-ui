@@ -3,12 +3,22 @@
  * Usage: var menu = new UiContextMenu(x, y, items);
  * items = [{ label: "Action", onClick: function() {}, icon: sprite }]
  */
-function UiContextMenu(x, y, items) constructor {
+function UiContextMenu(x, y, items = []) constructor {
     var _this = self;
     self.x = x;
     self.y = y;
     self.items = items;
     self.Menu = undefined;
+    
+    function addItem(label, onClick = undefined, icon = undefined) {
+        array_push(self.items, { label: label, onClick: onClick, icon: icon });
+        return self;
+    }
+    
+    function addSeparator() {
+        array_push(self.items, { separator: true });
+        return self;
+    }
     
     /**
      * Show the context menu at the specified position

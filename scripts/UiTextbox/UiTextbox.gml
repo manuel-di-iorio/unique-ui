@@ -11,6 +11,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
     self.valueGetter = props[$ "valueGetter"] ?? undefined;
     self.onChange = props[$ "onChange"] ?? function(value, input) {};
     self.maxLength = props[$ "maxLength"] ?? 255;
+    draw_set_font(fText);
     var marginLeft = self.label == undefined ? 0 : string_width(self.label) + 15;
     self.onBlur = props[$ "onBlur"] ?? function(value, input) {};
     self.format = props[$ "format"] ?? "string"; // string, float, integer
@@ -18,20 +19,28 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
     self.max = props[$ "max"];
     self.placeholder = props[$ "placeholder"];
     self.negative = props[$ "negative"] ?? false;
-    
-    self.Input = new UiNode({ 
-      name: "UiTextbox.Input", 
-      marginLeft,
-      paddingLeft: 5, 
-      paddingRight: 5, 
-      flex: 1,
-      height: "100%" 
-    }, {
-      focusable: true,
-      border: true
-    });
-
+    self.iconLeft = props[$ "iconLeft"];
+    self.iconRight = props[$ "iconRight"];
+        // Visual container (the box)
+    self.Input = new UiNode({
+        name: "UiTextbox.Input", 
+        flex: 1,
+        height: "100%",
+        marginLeft: marginLeft,
+        flexDirection: "row",
+        alignItems: "center",
+        paddingHorizontal: 12
+    }, { focusable: true, border: true });
     self.add(self.Input);
+    
+    // Label and icons should not block pointer events
+    if (self.iconLeft != undefined) {
+        self.IconL = new UiSprite(self.iconLeft, { width: 16, height: 16, marginRight: 8 }, { pointerEvents: false });
+        self.Input.add(self.IconL);
+    }
+    
+    self.Placeholder = new UiText(self.placeholder, {}, { color: global.UI_COL_TEXT_DIM, pointerEvents: false });
+    self.Input.add(self.Placeholder);
 
     with (self.Input) {
         self.pointerEvents = true;

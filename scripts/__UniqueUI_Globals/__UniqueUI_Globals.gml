@@ -16,6 +16,12 @@ global.UI_COL_BOX              = #FFFFFF;
 global.UI_COL_INPUT_BG         = #F8FAFC;
 global.UI_COL_BAR_BG           = #FFFFFF;
 global.UI_COL_CHECKBOX_HOVER   = #F1F5F9;
+global.UI_COL_DROPDOWN_LIST_BG = #1E293B;
+global.UI_COL_INSPECTOR_BG     = #334155;
+global.UI_COL_TREE_BG          = #0F172A;
+global.UI_COL_SELECTION       = #3B82F6;
+global.UI_COL_SUCCESS         = #22C55E;
+global.UI_COL_DANGER          = #EF4444;
 
 
 draw_set_circle_precision(64);

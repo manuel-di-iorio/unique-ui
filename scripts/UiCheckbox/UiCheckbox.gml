@@ -1,4 +1,8 @@
 function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
+    self.flexDirection = "row";
+    flexpanel_node_style_set_flex_direction(self.node, flexpanel_flex_direction.row);
+    self.alignItems = "center";
+    
     setName(props[$ "name"] ?? "UiCheckbox");
     self.value = props[$ "value"] ?? false;
     self.label = props[$ "label"] ?? undefined;
@@ -7,9 +11,6 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
     self.variant = props[$ "variant"] ?? "checkbox";
     self.group = props[$ "group"];
     
-    // Setup container
-    self.flexDirection = "row";
-    self.alignItems = "center";
     self.pointerEvents = true;
     self.handpoint = true;
     

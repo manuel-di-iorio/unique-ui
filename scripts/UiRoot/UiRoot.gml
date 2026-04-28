@@ -466,6 +466,8 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
                         self.lastClickTime = now;
                         self.lastClickTarget = self.deepestTarget;
                     }
+                } else if (releasedButton == mb_right) {
+                    global.UI.dispatchEvent(UI_EVENT.contextmenu, self.deepestTarget);
                 }
             }
             
@@ -504,12 +506,6 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         elem.__drawIndex = self.rootDrawIndex++;
         var _scissor = inheritedScissor;
         var _ownScissor = false;
-
-        // Draw the border if enabled
-        if (elem.border) {
-            draw_set_color(elem.borderColor);
-            draw_rectangle(elem.x1, elem.y1, elem.x2, elem.y2, true);
-        }
         
         // Set up scissor for scrollable elements
         if (elem.__UiScrollbar != undefined || elem.__UiScrollbarH != undefined) {

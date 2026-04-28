@@ -13,26 +13,72 @@ enum UI_EVENT {
     // enter/leave do not bubble
     mouseenter,
     mouseleave,
+    contextmenu,
 }
 
 global.UI_ID = 0;
 
 function UiNode(style = {}, props = {}) constructor {
+    // Filter Yoga style properties from visual properties
+    var _layoutStyle = {};
+    var _visualProps = {
+        backgroundColor: undefined,
+        borderRadius: 0,
+        borderColor: #191A21,
+        borderWidth: 1
+    };
+    
+    var _keys = variable_struct_get_names(style);
+    for (var i = 0; i < array_length(_keys); i++) {
+        var _k = _keys[i];
+        if (_k == "backgroundColor" || _k == "borderRadius" || _k == "borderColor" || _k == "borderWidth" || _k == "border") {
+            _visualProps[$ _k] = style[$ _k];
+        } else {
+            _layoutStyle[$ _k] = style[$ _k];
+        }
+    }
+
     self.id = global.UI_ID++;
-    style.name = style[$ "name"] ?? "UiNode";
-    style.data = self;
+    _layoutStyle.name = _layoutStyle[$ "name"] ?? "UiNode";
+    _layoutStyle.data = self;
     self.type = "UiNode";
     self.isUiNode = true;
-    self.node = flexpanel_create_node(style);
+    self.node = flexpanel_create_node(_layoutStyle);
     self.root = false;
     self.parent = undefined;
     self.__drawIndex = 0;
     self.destroyed = false;
     self.onMount = undefined;
-    self.onDraw = props[$ "onDraw"] ?? undefined;
+    
+    // Visual properties
+    self.backgroundColor = _visualProps.backgroundColor;
+    self.borderRadius = _visualProps.borderRadius;
+    self.borderColor = _visualProps.borderColor;
+    self.borderWidth = _visualProps.borderWidth;
+
+    self.onDraw = props[$ "onDraw"] ?? function() {
+        if (self.backgroundColor != undefined) {
+            draw_set_color(self.backgroundColor);
+            if (self.borderRadius > 0) {
+                draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, self.borderRadius, self.borderRadius, false);
+            } else {
+                draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
+            }
+        }
+        
+        if (self.border) {
+            draw_set_color(self.borderColor);
+            if (self.borderRadius > 0) {
+                draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, self.borderRadius, self.borderRadius, true);
+            } else {
+                draw_rectangle(self.x1, self.y1, self.x2, self.y2, true);
+            }
+        }
+    };
+    
     self.onDestroy = props[$ "onDestroy"] ?? undefined;
     self.pointerEvents = props[$ "pointerEvents"] ?? false;
-    self.border = props[$ "border"] ?? false;
+    self.border = props[$ "border"] ?? (style[$ "border"] ?? false);
     self.visible = props[$ "visible"] ?? true;
     self.focusable = props[$ "focusable"] ?? false;
     self.focused = false;
@@ -717,6 +763,12 @@ function UiNode(style = {}, props = {}) constructor {
     function onDoubleClick(cb) {
         gml_pragma("forceinline");
         self.addEventListener(UI_EVENT.doubleclick, cb);
+        return self;
+    }
+    
+    function onContextMenu(cb) {
+        gml_pragma("forceinline");
+        self.addEventListener(UI_EVENT.contextmenu, cb);
         return self;
     }
     

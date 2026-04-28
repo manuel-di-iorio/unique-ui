@@ -418,23 +418,31 @@ function __ui_demo_render_anteprima(area) {
             break;
 
         case "Sprite":
-            __ui_demo_preview_section(PreviewCard, "Icona");
-            if (sprUiCheckTick != -1) {
-                PreviewCard.add(new UiSprite(sprUiCheckTick, { width: 64, height: 64 }));
-            } else {
-                PreviewCard.add(new UiText("[Sprite non caricata]", {}, { color: #EF4444 }));
-            }
-            codeLines = ["new UiSprite(sprIcon, { width: 64, height: 64 });"];
+            __ui_demo_preview_section(PreviewCard, "Esempio");
+            PreviewCard.add(new UiSprite(sprDemo, { width: 64, height: 64 }));
+            codeLines = ["new UiSprite(sprDemo, { width: 64, height: 64 });"];
+            break;
+            
+        case "ContextMenu":
+            __ui_demo_preview_section(PreviewCard, "Esempio (Tasto Destro)");
+            var zone = new UiNode({ width: "100%", height: 200, backgroundColor: #F1F5F9, borderRadius: 8, justifyContent: "center", alignItems: "center" });
+            zone.pointerEvents = true;
+            zone.add(new UiText("Clicca col tasto destro qui", {}, { color: #64748B }));
+            PreviewCard.add(zone);
+            
+            zone.onContextMenu(function() {
+                var menu = new UiContextMenu(global.UI.mouseX, global.UI.mouseY);
+                menu.addItem("Azione 1", function() { show_message("Azione 1"); });
+                menu.addItem("Azione 2", function() { show_message("Azione 2"); });
+                menu.show();
+            });
+            
+            codeLines = ["node.onContextMenu(function() { ... });"];
             break;
 
         case "Tooltip":
             PreviewCard.add(new UiButton("Passa il mouse", { width: 150 }, { tooltip: "Il mio fantastico tooltip!" }));
             codeLines = ["new UiButton(\"Text\", {}, { tooltip: \"...\" });"];
-            break;
-
-        case "ContextMenu":
-            PreviewCard.add(new UiText("Fai clic destro qui o su qualsiasi elemento.", { height: 24 }, { color: #64748B }));
-            codeLines = ["node.onRightClick(function() {", "  new UiContextMenu(...);", "});"];
             break;
             
         default:

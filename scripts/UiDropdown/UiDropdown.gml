@@ -6,6 +6,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
     self.itemsGetter = props[$ "itemsGetter"];
     self.label = props[$ "label"] ?? undefined;
     self.onChange = props[$ "onChange"] ?? function(input, value) {};
+    draw_set_font(fText);
     var _marginLeft = self.label == undefined ? 0 : 3 + string_width(self.label) + 20;
     self.List = undefined;
     self.search = props[$ "search"];
@@ -40,11 +41,15 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
    }
     
     // Input
-    self.Input = new UiButton(undefined, {
+    self.Input = new UiNode({
         name: "UiDropdown.Input", 
+        flexGrow: 1,
         marginLeft: _marginLeft,
-        height: 25
-    }, { border: true });
+        height: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        paddingHorizontal: 12
+    }, { pointerEvents: true, focusable: true, border: true, handpoint: true });
     self.add(self.Input);
     
     with (self.Input) {
@@ -59,6 +64,9 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
         
         self.onDraw = function() {
             var radius = 6;
+            draw_set_color(global.UI_COL_INPUT_BG);
+            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
+            
             if (self.hovered) {
                 draw_set_color(global.UI_COL_BTN_HOVER);
                 draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);

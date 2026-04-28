@@ -1,13 +1,14 @@
 function UiSwitch(style = {}, props = {}) : UiNode(style, props) constructor {
+    self.flexDirection = "row";
+    flexpanel_node_style_set_flex_direction(self.node, flexpanel_flex_direction.row);
+    self.alignItems = "center";
+    
     setName(props[$ "name"] ?? "UiSwitch");
     self.value = props[$ "value"] ?? false;
     self.label = props[$ "label"] ?? undefined;
     self.onChange = props[$ "onChange"] ?? function(value, input) {};
     self.valueGetter = props[$ "valueGetter"] ?? undefined;
     
-    // Setup container
-    self.flexDirection = "row";
-    self.alignItems = "center";
     self.pointerEvents = true;
     self.handpoint = true;
     
