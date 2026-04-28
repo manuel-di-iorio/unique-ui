@@ -2,6 +2,7 @@
 function ui_demo_create() {
     var W = display_get_gui_width();
     var H = display_get_gui_height();
+    display_reset(8, true); // Enable 8x MSAA for smoother primitive edges
     
     global.UI_DEMO = {
         currentPage: "Button",
@@ -429,9 +430,14 @@ function __ui_demo_render_anteprima(area) {
             alert.add(new UiText("Errore: La connessione al server è fallita.", {}, { color: #991B1B }));
             PreviewCard.add(alert);
             codeLines = [
-                "var alert = new UiNode({ padding: 16 });",
-                "alert.onDraw = function() { /* Disegna sfondo rosso */ };",
-                "alert.add(new UiText(\"Errore connection\", {}, { color: #991B1B }));"
+                "var alert = new UiNode({ width: \"100%\", padding: 16 });",
+                "alert.onDraw = function() {",
+                "    draw_set_color(#FEF2F2); // Sfondo rosso chiaro",
+                "    draw_roundrect_ext(x1, y1, x2, y2, 8, 8, false);",
+                "    draw_set_color(#FECACA); // Bordo rosso",
+                "    draw_roundrect_ext(x1, y1, x2, y2, 8, 8, true);",
+                "};",
+                "alert.add(new UiText(\"Messaggio di errore\", {}, { color: #991B1B }));"
             ];
             break;
 
@@ -445,9 +451,15 @@ function __ui_demo_render_anteprima(area) {
             card.add(new UiText("Titolo Card", { marginBottom: 8, height: 24 }, { color: #0F172A }));
             card.add(new UiText("Questo è un contenuto all'interno di una card moderna.", { height: 40 }, { color: #64748B }));
             codeLines = [
-                "var card = new UiNode({ padding: 24, flexDirection: \"column\" });",
-                "card.onDraw = function() { /* Disegna stile card */ };",
-                "card.add(new UiText(\"Titolo Card\", { height: 24 }));"
+                "var card = new UiNode({ width: \"100%\", padding: 24, flexDirection: \"column\" });",
+                "card.onDraw = function() {",
+                "    draw_set_color(c_white);",
+                "    draw_roundrect_ext(x1, y1, x2, y2, 12, 12, false);",
+                "    draw_set_color(global.UI_COL_BORDER);",
+                "    draw_roundrect_ext(x1, y1, x2, y2, 12, 12, true);",
+                "};",
+                "card.add(new UiText(\"Titolo Card\", { marginBottom: 8 }));",
+                "card.add(new UiText(\"Contenuto della card...\", {}, { color: #64748B }));"
             ];
             break;
 
@@ -468,9 +480,15 @@ function __ui_demo_render_anteprima(area) {
             var tabContent = (global.UI_DEMO.tabSelected == 0) ? "Contenuto della Tab A." : "Contenuto della Tab B.";
             PreviewCard.add(new UiText(tabContent, {}, { color: #64748B }));
             codeLines = [
-                "var btn = new UiButton(\"Tab A\", { height: 32 });",
-                "btn.onClick(function() { global.tabSelected = 0; refresh(); });",
-                "PreviewCard.add(new UiText(tabContent, {}, { color: #64748B }));"
+                "var tabRow = new UiNode({ flexDirection: \"row\", marginBottom: 20 });",
+                "",
+                "var btnA = new UiButton(\"Tab A\", { height: 32 }, { ",
+                "    variant: selected == 0 ? \"primary\" : \"ghost\" ",
+                "});",
+                "btnA.onClick(function() { selected = 0; refresh(); });",
+                "",
+                "tabRow.add(btnA);",
+                "tabRow.add(new UiText(selected == 0 ? \"Content A\" : \"Content B\"));"
             ];
             break;
 
