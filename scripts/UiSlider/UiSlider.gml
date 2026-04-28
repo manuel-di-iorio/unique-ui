@@ -43,6 +43,10 @@ function UiSlider(style = {}, props = {}) : UiNode(style, props) constructor {
         draw_set_color(c_white);
         draw_circle(fillX, cy, thumbR, false);
         
+        // Thumb outline so it remains visible on bright backgrounds
+        draw_set_color(#94A3B8);
+        draw_circle(fillX, cy, thumbR, true);
+        
         // Hover ring
         if (self.hovered || self.dragging) {
             draw_set_color(global.UI_COL_SELECTED);

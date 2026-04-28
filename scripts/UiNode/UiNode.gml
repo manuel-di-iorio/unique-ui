@@ -675,6 +675,9 @@ function UiNode(style = {}, props = {}) constructor {
     // Scrollbar
     function enableScrollbar(thumbColor = undefined) {
         gml_pragma("forceinline");
+        if (self.__UiScrollbar != undefined) return self.__UiScrollbar;
+        self.pointerEvents = true; // Ensure wheel events can target the scroll container
+        
         self.__UiScrollbar = new UiScrollbar({
             position: "absolute",
             top: 0,
@@ -683,10 +686,14 @@ function UiNode(style = {}, props = {}) constructor {
             width: 11
         }, { isScrollbar: true, thumbColor });
         self.add(self.__UiScrollbar);
+        return self.__UiScrollbar;
     }
     
     function enableHorizontalScrollbar(thumbColor = undefined) {
         gml_pragma("forceinline");
+        if (self.__UiScrollbarH != undefined) return self.__UiScrollbarH;
+        self.pointerEvents = true; // Ensure wheel events can target the scroll container
+
         self.__UiScrollbarH = new UiScrollbar({
             position: "absolute",
             left: 0,
@@ -695,6 +702,7 @@ function UiNode(style = {}, props = {}) constructor {
             height: 11
         }, { isScrollbar: true, thumbColor, orientation: "horizontal" });
         self.add(self.__UiScrollbarH);
+        return self.__UiScrollbarH;
     }
     
     function disableScrollbar() {

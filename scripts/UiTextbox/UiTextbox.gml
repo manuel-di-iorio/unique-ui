@@ -40,6 +40,12 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
     }, { pointerEvents: true, focusable: true, border: true });
     self.add(self.Input);
     
+    // Fallback focus: if click lands on textbox wrapper, forward focus to inner input.
+    self.pointerEvents = true;
+    self.onMouseDown(function() {
+        self.Input.focus();
+    });
+    
     // Draw label if present
     self.onDraw = function() { };
     
@@ -418,6 +424,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             var ctrl = keyboard_check(vk_control);
             var shift = keyboard_check(vk_shift);
             var alt = keyboard_check(vk_alt);
+            var handledTextInput = false;
             
             // Undo/Redo handling
             if (ctrl && (keyboard_check_pressed(ord("Z")) && !shift || (self.keyRepeat.key == ord("Z") && self.handleKeyRepeat()))) {
@@ -601,15 +608,48 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                     var inputChar = string_char_at(newText, i);
                     if (ord(inputChar) >= 32) { 
                         self.insertText(inputChar);
+                        handledTextInput = true;
                     }
                 }
             } 
             
             // Fallback for single characters or if keyboard_string was consumed
-            if (keyboard_lastchar != "" && ord(keyboard_lastchar) >= 32) {
+            if (!handledTextInput && keyboard_lastchar != "" && ord(keyboard_lastchar) >= 32) {
                 var inputChar = keyboard_lastchar;
                 self.insertText(inputChar);
                 keyboard_lastchar = "";
+                handledTextInput = true;
+            }
+            
+            // Extra fallback: some runtimes don't populate keyboard_string/keyboard_lastchar reliably.
+            // In that case, read printable key presses directly.
+            if (!handledTextInput && keyboard_string == "" && keyboard_lastchar == "") {
+                var shiftPressed = keyboard_check(vk_shift);
+                
+                // Letters A-Z
+                for (var keyCode = ord("A"); keyCode <= ord("Z"); keyCode++) {
+                    if (keyboard_check_pressed(keyCode)) {
+                        var ch = chr(keyCode);
+                        if (!shiftPressed) ch = string_lower(ch);
+                        self.insertText(ch);
+                    }
+                }
+                
+                // Digits 0-9
+                for (var digitCode = ord("0"); digitCode <= ord("9"); digitCode++) {
+                    if (keyboard_check_pressed(digitCode)) {
+                        self.insertText(chr(digitCode));
+                    }
+                }
+                
+                // Common punctuation and space (enough for search/text use-cases)
+                if (keyboard_check_pressed(vk_space)) self.insertText(" ");
+                if (keyboard_check_pressed(vk_subtract)) self.insertText("-");
+                if (keyboard_check_pressed(vk_add)) self.insertText("+");
+                if (keyboard_check_pressed(ord("."))) self.insertText(".");
+                if (keyboard_check_pressed(ord(","))) self.insertText(",");
+                if (keyboard_check_pressed(ord("-"))) self.insertText("-");
+                if (keyboard_check_pressed(ord("_"))) self.insertText("_");
             }
         };
         

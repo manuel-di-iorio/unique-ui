@@ -51,12 +51,21 @@ function ui_demo_create() {
     VersionBadge.add(new UiText(global.UI_VERSION, {}, { color: #818CF8 }));
     LogoRow.add(VersionBadge);
     
+    global.UI_DEMO.SearchQuery = "";
+    
     // Search
-    var SearchInput = new UiTextbox({ width: "100%", height: 36, marginBottom: 32 }, { placeholder: "Cerca..." });
-    SearchInput.onChange = function(val) {
-        global.UI_DEMO.SearchQuery = string_lower(val);
-        __ui_demo_render_sidebar();
-    };
+    var SearchInput = new UiTextbox({ width: "100%", height: 36, marginBottom: 32 }, {
+        placeholder: "Cerca...",
+        value: global.UI_DEMO.SearchQuery,
+        onChange: function(val) {
+            global.UI_DEMO.SearchQuery = string_lower(val);
+            __ui_demo_render_sidebar();
+        }
+    });
+    global.UI_DEMO.SearchInput = SearchInput;
+    SearchInput.onMouseDown(method(SearchInput, function() {
+        self.Input.focus();
+    }));
     Sidebar.add(SearchInput);
     
     // Sidebar List
@@ -64,7 +73,6 @@ function ui_demo_create() {
     SidebarItems.enableScrollbar(global.UI_COL_PRIMARY);
     Sidebar.add(SidebarItems);
     global.UI_DEMO.SidebarItems = SidebarItems;
-    global.UI_DEMO.SearchQuery = "";
     
     __ui_demo_render_sidebar();
     
@@ -212,8 +220,8 @@ function __ui_demo_render_documentazione(area) {
 
 function __ui_demo_doc_row(parent, name, type, desc) {
     var Row = new UiNode({ flexDirection: "row", marginBottom: 12, width: "100%" });
-    Row.add(new UiText(name, { width: 120 }, { color: #6366F1 }));
-    Row.add(new UiText(type, { width: 120 }, { color: #94A3B8 }));
+    Row.add(new UiText(name, { width: 220 }, { color: #6366F1 }));
+    Row.add(new UiText(type, { width: 90 }, { color: #94A3B8 }));
     Row.add(new UiText(desc, { flex: 1 }, { color: #64748B }));
     parent.add(Row);
 }

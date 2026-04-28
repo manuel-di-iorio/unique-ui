@@ -27,27 +27,48 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
         if (self.isVertical) {
             self.parent.onWheelUp(method(self, function(ev) {
                 if (self.parent == undefined) return;
-                self.parent.scrollTop = max(0, self.parent.scrollTop - 60);
+                
+                // Shift + wheel => horizontal scrolling when available
+                if (keyboard_check(vk_shift) && self.parent.__UiScrollbarH != undefined) {
+                    var hScrollbar = self.parent.__UiScrollbarH;
+                    self.parent.scrollLeft = max(0, self.parent.scrollLeft - 60);
+                    if (self.parent.scrollLeft > hScrollbar.__maxScroll) self.parent.scrollLeft = hScrollbar.__maxScroll;
+                } else {
+                    self.parent.scrollTop = max(0, self.parent.scrollTop - 60);
+                }
                 global.UI.requestUpdate();
                 global.UI.requestRedraw();
+                return true;
             }));
             
             self.parent.onWheelDown(method(self, function(ev) {
                 if (self.parent == undefined) return;
-                self.parent.scrollTop = min(self.__maxScroll, self.parent.scrollTop + 60);
+                
+                // Shift + wheel => horizontal scrolling when available
+                if (keyboard_check(vk_shift) && self.parent.__UiScrollbarH != undefined) {
+                    var hScrollbar = self.parent.__UiScrollbarH;
+                    self.parent.scrollLeft = min(hScrollbar.__maxScroll, self.parent.scrollLeft + 60);
+                } else {
+                    self.parent.scrollTop = min(self.__maxScroll, self.parent.scrollTop + 60);
+                }
                 global.UI.requestUpdate();
                 global.UI.requestRedraw();
+                return true;
             }));
         } else {
             // Horizontal wheel
         }
     }
     
+    self.__contentSize = 0;
+    self.__sizeInitialized = false;
+
     self.onStep(function(layoutUpdated) {
         var layoutSize = self.isVertical ? self.layout.height : self.layout.width;
         var parentSize = self.isVertical ? self.parent.layout.height : self.parent.layout.width;
         
-        if (layoutUpdated) {
+        if (layoutUpdated || !self.__sizeInitialized) {
+            self.__sizeInitialized = true;
             // Content size calculation
             var propName = self.isVertical ? "height" : "width";
             var posName = self.isVertical ? "top" : "left";

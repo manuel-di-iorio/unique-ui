@@ -489,6 +489,12 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             }
         }
         
+        // Final layout pass: if event handlers (like onClick) modified the UI structure,
+        // recalculate layout immediately to avoid a blank frame (flash) in the Draw event.
+        if (self.needsUpdate) {
+            self.__processLayout();
+        }
+
         // Run the step handlers
         for (var i = array_length(self.stepHandlers) - 1; i >= 0; i--) {
             self.stepHandlers[i][0](self.layoutUpdated);
@@ -496,12 +502,6 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         
         self.mouseXPrev = self.mouseX;
         self.mouseYPrev = self.mouseY;
-        
-        // Final layout pass: if event handlers (like onClick) modified the UI structure,
-        // recalculate layout immediately to avoid a blank frame (flash) in the Draw event.
-        if (self.needsUpdate) {
-            self.__processLayout();
-        }
 
         // Clear dirty elements list for the next frame
         if (array_length(self.dirtyElements) > 0) {
