@@ -21,26 +21,33 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
     self.negative = props[$ "negative"] ?? false;
     self.iconLeft = props[$ "iconLeft"];
     self.iconRight = props[$ "iconRight"];
+    
+    flexpanel_node_style_set_align_items(self.node, flexpanel_align.center);
+    
+    if (self.label != undefined) {
+        self.LabelNode = new UiText(self.label, { marginRight: 15 }, { color: global.UI_COL_TEXT_MAIN });
+        self.add(self.LabelNode);
+    }
+    
         // Visual container (the box)
     self.Input = new UiNode({
         name: "UiTextbox.Input", 
-        flex: 1,
+        flexGrow: 1,
         height: "100%",
-        marginLeft: marginLeft,
         flexDirection: "row",
         alignItems: "center",
         paddingHorizontal: 12
     }, { focusable: true, border: true });
     self.add(self.Input);
     
+    // Draw label if present
+    function onDraw() { }
+    
     // Label and icons should not block pointer events
     if (self.iconLeft != undefined) {
         self.IconL = new UiSprite(self.iconLeft, { width: 16, height: 16, marginRight: 8 }, { pointerEvents: false });
         self.Input.add(self.IconL);
     }
-    
-    self.Placeholder = new UiText(self.placeholder, {}, { color: global.UI_COL_TEXT_DIM, pointerEvents: false });
-    self.Input.add(self.Placeholder);
 
     with (self.Input) {
         self.pointerEvents = true;
@@ -766,7 +773,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             // Draw text (always visible)
             draw_set_color(global.UI_COL_TEXT_MAIN); draw_set_font(fText);
             
-            if (text == "" && !self.focused && self.parent.placeholder != undefined) {
+            if (text == "" && self.parent.placeholder != undefined) {
                 // Draw placeholder text
                 draw_set_alpha(0.5); // Make placeholder semi-transparent
                 draw_text(textX, textY, self.parent.placeholder);
@@ -936,10 +943,5 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
     });
     
     // Draw label if present
-    function onDraw() {
-        if (self.label != undefined) {
-            draw_set_color(global.UI_COL_TEXT_MAIN); draw_set_halign(fa_left); draw_set_valign(fa_middle);
-            draw_text(self.x1 + 3, ~~mean(self.y1, self.y2), self.label);
-        }
-    }
+    function onDraw() { }
 }

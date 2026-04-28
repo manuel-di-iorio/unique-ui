@@ -6,8 +6,12 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
     self.itemsGetter = props[$ "itemsGetter"];
     self.label = props[$ "label"] ?? undefined;
     self.onChange = props[$ "onChange"] ?? function(input, value) {};
-    draw_set_font(fText);
-    var _marginLeft = self.label == undefined ? 0 : 3 + string_width(self.label) + 20;
+    
+    if (self.label != undefined) {
+        self.LabelNode = new UiText(self.label, { marginRight: 15 }, { color: global.UI_COL_TEXT_MAIN });
+        self.add(self.LabelNode);
+    }
+    
     self.List = undefined;
     self.search = props[$ "search"];
 
@@ -33,18 +37,12 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
     });
 
     // Draw the label if present
-   function onDraw() {
-       if (self.label != undefined) {
-           draw_set_color(global.UI_COL_TEXT_MAIN); draw_set_halign(fa_left); draw_set_valign(fa_middle);
-           draw_text(self.x1 + 3, ~~mean(self.y1, self.y2), self.label);
-       }
-   }
+   function onDraw() { }
     
     // Input
     self.Input = new UiNode({
         name: "UiDropdown.Input", 
         flexGrow: 1,
-        marginLeft: _marginLeft,
         height: "100%",
         flexDirection: "row",
         alignItems: "center",
