@@ -177,13 +177,17 @@ function __ui_demo_refresh() {
     area.add(TabRow);
     __ui_demo_tab_item(TabRow, "Anteprima");
     __ui_demo_tab_item(TabRow, "Documentazione");
+    __ui_demo_tab_item(TabRow, "Performance");
     
     if (global.UI_DEMO.currentTab == "Anteprima") {
         area.disableScrollbar();
         __ui_demo_render_anteprima(area);
-    } else {
+    } else if (global.UI_DEMO.currentTab == "Documentazione") {
         area.enableScrollbar(global.UI_COL_PRIMARY);
         __ui_demo_render_documentazione(area);
+    } else {
+        area.enableScrollbar(global.UI_COL_PRIMARY);
+        __ui_demo_render_performance(area);
     }
     
     global.UI.requestUpdate();
@@ -224,6 +228,97 @@ function __ui_demo_doc_row(parent, name, type, desc) {
     Row.add(new UiText(type, { width: 90 }, { color: #94A3B8 }));
     Row.add(new UiText(desc, { flex: 1 }, { color: #64748B }));
     parent.add(Row);
+}
+
+function __ui_demo_render_performance(area) {
+    var Perf = new UiNode({ width: "100%", flexDirection: "column" });
+    area.add(Perf);
+    
+    Perf.add(new UiText("Performance Live", { marginBottom: 8, height: 28 }, { color: #0F172A }));
+    Perf.add(new UiText("Metriche runtime in tempo reale del componente corrente. Interagisci con la sandbox per stressare input, rendering e layout.", { marginBottom: 20 }, { color: #64748B }));
+    
+    global.UI_DEMO.PerfLive = {
+        lastTime: current_time,
+        frameMs: 0,
+        fps: 0,
+        fpsAvg: 0,
+        fpsLow: 0,
+        sampleCount: 0,
+        redrawFrames: 0,
+        updateFrames: 0,
+        totalNodes: 0,
+        visibleNodes: 0,
+        interactiveNodes: 0,
+        sandboxNodes: 0
+    };
+    
+    var Health = new UiNode({ width: "100%", padding: 16, marginBottom: 20, flexDirection: "column" });
+    Health.onDraw = method(Health, function() {
+        draw_set_color(#F8FAFC);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
+    });
+    Perf.add(Health);
+    Health.add(new UiText("", { marginBottom: 8 }, { color: #0F172A, valueGetter: function() {
+        var p = global.UI_DEMO.PerfLive;
+        return "FPS: " + string_format(p.fps, 1, 1) + "   Avg: " + string_format(p.fpsAvg, 1, 1) + "   1% Low~: " + string_format(p.fpsLow, 1, 1);
+    }}));
+    Health.add(new UiText("", { marginBottom: 8 }, { color: #64748B, valueGetter: function() {
+        var p = global.UI_DEMO.PerfLive;
+        return "Frame: " + string_format(p.frameMs, 1, 2) + " ms   UpdateFrames: " + string(p.updateFrames) + "   RedrawFrames: " + string(p.redrawFrames);
+    }}));
+    Health.add(new UiText("", {}, { color: #64748B, valueGetter: function() {
+        var p = global.UI_DEMO.PerfLive;
+        return "Nodes -> total: " + string(p.totalNodes) + " | visibili: " + string(p.visibleNodes) + " | interattivi: " + string(p.interactiveNodes) + " | sandbox: " + string(p.sandboxNodes);
+    }}));
+    
+    Perf.add(new UiText("Sandbox componente", { marginBottom: 10, height: 28 }, { color: #0F172A }));
+    
+    var Box = new UiNode({ width: "100%", height: 320, padding: 18, marginBottom: 16, flexDirection: "column" });
+    Box.onDraw = method(Box, function() {
+        draw_set_color(c_white);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
+        draw_set_color(global.UI_COL_BORDER);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
+    });
+    Box.enableScrollbar(global.UI_COL_PRIMARY);
+    Box.enableHorizontalScrollbar(global.UI_COL_PRIMARY);
+    Perf.add(Box);
+    __ui_demo_render_component_example(global.UI_DEMO.currentPage, Box);
+    
+    Perf.onStep(method({ boxRef: Box }, function() {
+        var p = global.UI_DEMO.PerfLive;
+        if (p == undefined) return;
+        
+        var now = current_time;
+        var delta = max(1, now - p.lastTime);
+        p.lastTime = now;
+        p.frameMs = delta;
+        p.fps = 1000 / delta;
+        
+        p.sampleCount += 1;
+        if (p.sampleCount == 1) {
+            p.fpsAvg = p.fps;
+            p.fpsLow = p.fps;
+        } else {
+            p.fpsAvg = lerp(p.fpsAvg, p.fps, 0.08);
+            p.fpsLow = min(p.fpsLow * 0.995 + p.fps * 0.005, p.fps);
+        }
+        
+        if (global.UI.needsUpdate) p.updateFrames += 1;
+        if (global.UI.needsRedraw) p.redrawFrames += 1;
+        
+        p.totalNodes = global.UI.countAll();
+        p.sandboxNodes = boxRef.countAll();
+        
+        var counters = { visible: 0, interactive: 0 };
+        global.UI.traverse(method(counters, function(node) {
+            if (node.isVisible()) self.visible += 1;
+            if (node.pointerEvents) self.interactive += 1;
+        }), true);
+        
+        p.visibleNodes = counters.visible;
+        p.interactiveNodes = counters.interactive;
+    }));
 }
 
 function __ui_demo_tab_item(parent, text) {
@@ -269,31 +364,7 @@ function __ui_demo_render_anteprima(area) {
     });
     MainRow.add(PreviewCard);
     
-    var codeLines = [];
-    switch (global.UI_DEMO.currentPage) {
-        case "Colori":      codeLines = ui_demo_example_colori(PreviewCard); break;
-        case "Tipografia":  codeLines = ui_demo_example_tipografia(PreviewCard); break;
-        case "Button":      codeLines = ui_demo_example_button(PreviewCard); break;
-        case "Input":       codeLines = ui_demo_example_input(PreviewCard); break;
-        case "Checkbox":    codeLines = ui_demo_example_checkbox(PreviewCard); break;
-        case "Radio":       codeLines = ui_demo_example_radio(PreviewCard); break;
-        case "Switch":      codeLines = ui_demo_example_switch(PreviewCard); break;
-        case "Select":      codeLines = ui_demo_example_dropdown(PreviewCard); break;
-        case "Badge":       codeLines = ui_demo_example_badge(PreviewCard); break;
-        case "Alert":       codeLines = ui_demo_example_alert(PreviewCard); break;
-        case "Card":        codeLines = ui_demo_example_card(PreviewCard); break;
-        case "Tabs":        codeLines = ui_demo_example_tabs(PreviewCard); break;
-        case "Accordion":   codeLines = ui_demo_example_accordion(PreviewCard); break;
-        case "Slider":      codeLines = ui_demo_example_slider(PreviewCard); break;
-        case "Sprite":      codeLines = ui_demo_example_sprite(PreviewCard); break;
-        case "ContextMenu": codeLines = ui_demo_example_contextmenu(PreviewCard); break;
-        case "Tooltip":     codeLines = ui_demo_example_tooltip(PreviewCard); break;
-        case "Treeview":    codeLines = ui_demo_example_treeview(PreviewCard); break;
-        
-        default:
-            PreviewCard.add(new UiText("Anteprima per " + global.UI_DEMO.currentPage + " in arrivo.", {}, { color: #64748B }));
-            codeLines = ["// Esempio non disponibile"];
-    }
+    var codeLines = __ui_demo_render_component_example(global.UI_DEMO.currentPage, PreviewCard);
     
     // Code Panel
     var CodePanel = new UiNode({ flex: 1, padding: 24, flexDirection: "column" });
@@ -312,6 +383,35 @@ function __ui_demo_render_anteprima(area) {
 
 function __ui_demo_preview_section(parent, title, mt = 0) {
     parent.add(new UiText(title, { marginTop: mt, marginBottom: 16, height: 28 }, { color: #0F172A }));
+}
+
+function __ui_demo_render_component_example(page, parent) {
+    var codeLines = [];
+    switch (page) {
+        case "Colori":      codeLines = ui_demo_example_colori(parent); break;
+        case "Tipografia":  codeLines = ui_demo_example_tipografia(parent); break;
+        case "Button":      codeLines = ui_demo_example_button(parent); break;
+        case "Input":       codeLines = ui_demo_example_input(parent); break;
+        case "Checkbox":    codeLines = ui_demo_example_checkbox(parent); break;
+        case "Radio":       codeLines = ui_demo_example_radio(parent); break;
+        case "Switch":      codeLines = ui_demo_example_switch(parent); break;
+        case "Select":      codeLines = ui_demo_example_dropdown(parent); break;
+        case "Badge":       codeLines = ui_demo_example_badge(parent); break;
+        case "Alert":       codeLines = ui_demo_example_alert(parent); break;
+        case "Card":        codeLines = ui_demo_example_card(parent); break;
+        case "Tabs":        codeLines = ui_demo_example_tabs(parent); break;
+        case "Accordion":   codeLines = ui_demo_example_accordion(parent); break;
+        case "Slider":      codeLines = ui_demo_example_slider(parent); break;
+        case "Sprite":      codeLines = ui_demo_example_sprite(parent); break;
+        case "ContextMenu": codeLines = ui_demo_example_contextmenu(parent); break;
+        case "Tooltip":     codeLines = ui_demo_example_tooltip(parent); break;
+        case "Treeview":    codeLines = ui_demo_example_treeview(parent); break;
+        
+        default:
+            parent.add(new UiText("Anteprima per " + page + " in arrivo.", {}, { color: #64748B }));
+            codeLines = ["// Esempio non disponibile"];
+    }
+    return codeLines;
 }
 
 function __ui_demo_get_component_metadata() {
@@ -451,6 +551,132 @@ function __ui_demo_get_component_metadata() {
                 { name: "onItemSelected", type: "function", desc: "Callback alla selezione di un elemento" },
                 { name: "onAssetDrop", type: "function", desc: "Gestisce il drag & drop tra elementi" },
                 { name: "filter", type: "function", desc: "Filtra gli elementi per nome" }
+            ]
+        }
+    };
+}
+
+function __ui_demo_get_performance_metadata() {
+    var _default = {
+        impact: "Medio",
+        dominantCost: "Draw calls e allocazioni UI dinamiche",
+        bottlenecks: [
+            "Ricostruzione completa dei nodi quando cambia stato frequentemente",
+            "Uso intensivo di onDraw custom con primitive per ogni elemento",
+            "Aggiornamenti layout globali anche per micro-variazioni"
+        ],
+        optimizations: [
+            "Ridurre destroy/create ripetuti con riuso nodi e aggiornamento proprietà",
+            "Minimizzare requestUpdate globali, preferendo update locali quando possibile",
+            "Raggruppare ridisegni e ridurre testo/primitive nei loop"
+        ],
+        measurements: [
+            "Misura FPS medio e 1% low durante interazioni rapide",
+            "Conta nodi totali/renderizzati (countAll + visibili) per scena",
+            "Confronta frame time prima/dopo ottimizzazioni con stesso dataset"
+        ]
+    };
+    
+    return {
+        "__default": _default,
+        "Colori": {
+            impact: "Basso-Medio",
+            dominantCost: "Disegno di molte card statiche con roundrect",
+            bottlenecks: [
+                "Molte draw primitive in sequenza",
+                "Layout wrapping con molte card può aumentare i recalcoli"
+            ],
+            optimizations: [
+                "Cache dei blocchi statici su surface quando non cambiano",
+                "Ridurre redraw non necessari in schermate statiche"
+            ],
+            measurements: [
+                "Confronta frame time con/without cache surface",
+                "Verifica numero redraw durante hover/scroll"
+            ]
+        },
+        "Tipografia": {
+            impact: "Basso",
+            dominantCost: "Rendering testo e metriche font",
+            bottlenecks: [
+                "Molti UiText possono costare su font non cached",
+                "Altezze non coerenti possono aumentare pass layout"
+            ],
+            optimizations: [
+                "Uniformare stili e font per migliorare cache del renderer",
+                "Evitare update layout quando cambia solo contenuto statico"
+            ],
+            measurements: [
+                "Misura draw_text per frame nelle viste lunghe",
+                "Verifica tempo di apertura tab con molti testi"
+            ]
+        },
+        "Input": {
+            impact: "Medio-Alto",
+            dominantCost: "Step per gestione caret, selezione, undo/redo, key repeat",
+            bottlenecks: [
+                "Parsing caratteri ad ogni frame mentre focused",
+                "Calcolo larghezze stringa in operazioni cursor/selection",
+                "RequestRedraw frequenti durante editing"
+            ],
+            optimizations: [
+                "Ridurre chiamate a string_width con caching incrementale",
+                "Separare logica di input da redraw quando il valore non cambia",
+                "Limitare update scissor/selection ai soli frame necessari"
+            ],
+            measurements: [
+                "Profila frame time tenendo premuto un tasto 5s",
+                "Conta redraw per carattere inserito"
+            ]
+        },
+        "Select": {
+            impact: "Medio",
+            dominantCost: "Apertura lista, filtro ricerca e ricreazione item",
+            bottlenecks: [
+                "destroyChildren/createItems su ogni filtro",
+                "Molti item visibili aumentano draw + layout"
+            ],
+            optimizations: [
+                "Virtualizzare lista per dataset grandi",
+                "Debounce della ricerca per ridurre ricostruzioni"
+            ],
+            measurements: [
+                "Misura tempo apertura dropdown con 50/200/1000 items",
+                "Traccia frame drops durante typing nel filtro"
+            ]
+        },
+        "Treeview": {
+            impact: "Alto",
+            dominantCost: "Traversing ricorsivo + drag/drop + filtro gerarchico",
+            bottlenecks: [
+                "Filter ricorsivo su alberi profondi",
+                "Espansione nodi con molti figli",
+                "Aggiornamento visuale durante drag"
+            ],
+            optimizations: [
+                "Indicizzare nomi per filtro veloce",
+                "Lazy render dei rami non visibili",
+                "Batch update durante operazioni di massa"
+            ],
+            measurements: [
+                "Tempo filtro su alberi 1k/5k nodi",
+                "Frame time durante drag continuo"
+            ]
+        },
+        "Slider": {
+            impact: "Basso-Medio",
+            dominantCost: "Redraw continuo durante drag",
+            bottlenecks: [
+                "onDraw animato ad ogni frame",
+                "Aggiornamento valore con alta frequenza"
+            ],
+            optimizations: [
+                "Throttle onChange quando usato per logiche costose",
+                "Ridurre animazione quando differenza valore minima"
+            ],
+            measurements: [
+                "Frame time durante trascinamento rapido 3s",
+                "Numero callback onChange per secondo"
             ]
         }
     };

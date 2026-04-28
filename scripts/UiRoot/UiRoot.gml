@@ -391,6 +391,34 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         // Click event handled only on root
         // Cache target and check if valid (not destroyed) - target might be destroyed during event dispatch
         var _target = self.deepestTarget;
+        
+        if (mouse_check_button_pressed(mb_any)) {
+             // We check for any button press (left, right, middle) to ensure focus is lost when clicking outside
+             if (self.focusedElement != undefined) {
+                 var _shouldBlur = true;
+                 
+                 if (_target != undefined) {
+                     if (_target[$ "focusable"] ?? false) {
+                         _shouldBlur = false;
+                     } else {
+                         // Check if target is a descendant of the focused element
+                         var _curr = _target;
+                         while (_curr != undefined) {
+                             if (_curr == self.focusedElement) {
+                                 _shouldBlur = false;
+                                 break;
+                             }
+                             _curr = _curr.parent;
+                         }
+                     }
+                 }
+                 
+                 if (_shouldBlur) {
+                     self.focusedElement.blur();
+                 }
+             }
+         }
+
         if (_target != undefined && !(_target[$ "destroyed"] ?? false)) {
             // Wheel events
             if (mouse_wheel_up()) {
@@ -407,11 +435,6 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             if (mouse_check_button_pressed(mb_any)) {
                 global.UI_CLICK_START = _target;
                 global.UI.dispatchEvent(UI_EVENT.mousedown, _target);
-
-                // We check for any button press (left, right, middle) to ensure focus is lost when clicking outside
-                if (self.focusedElement != undefined && !(_target[$ "focusable"] ?? false)) {
-                    self.focusedElement.blur();
-                }
 
                 // Check again if target is still valid after mousedown event
                 if (mouse_check_button_pressed(mb_left) && !(_target[$ "destroyed"] ?? false)) {
