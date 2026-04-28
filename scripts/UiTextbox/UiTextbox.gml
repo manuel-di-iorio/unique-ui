@@ -580,22 +580,20 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             // Character input using GameMaker's keyboard_string
             if (keyboard_string != "") {
                 var newText = keyboard_string;
-                keyboard_string = ""; // Clear string immediately after reading
-                
-                // Process each character
+                keyboard_string = ""; 
                 for (var i = 1; i <= string_length(newText); i++) {
                     var inputChar = string_char_at(newText, i);
-                    if (ord(inputChar) >= 32) { // Allow space and all printable characters
+                    if (ord(inputChar) >= 32) { 
                         self.insertText(inputChar);
                     }
                 }
-            } else if (keyboard_check_pressed(vk_anykey)) {
-                // Robust fallback for single character presses if keyboard_string is eaten by something else
+            } 
+            
+            // Fallback for single characters or if keyboard_string was consumed
+            if (keyboard_lastchar != "" && ord(keyboard_lastchar) >= 32) {
                 var inputChar = keyboard_lastchar;
-                if (inputChar != "" && ord(inputChar) >= 32 && ord(inputChar) <= 126) {
-                    self.insertText(inputChar);
-                    keyboard_lastchar = "";
-                }
+                self.insertText(inputChar);
+                keyboard_lastchar = "";
             }
         };
         

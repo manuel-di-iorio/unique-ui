@@ -255,16 +255,17 @@ function UiNode(style = {}, props = {}) constructor {
     }
     
     // Delete the node's children from memory but not the node itself
-    function destroyChildren() {
+    function destroyChildren(preserveOwnScrollbars = false) {
         gml_pragma("forceinline");
         
         for (var i = self.childrenLength - 1; i >= 0; i--) {
             var elem = self.children[i];
+            if (preserveOwnScrollbars && elem.isScrollbar) continue;
             
             // Remove from spatial tree first (recursively for all descendants)
             __removeFromSpatialTree(elem);
             
-            elem.destroyChildren();
+            elem.destroyChildren(false); // Descendants' scrollbars are always destroyed
             
             var elemOnDestroy = elem[$ "onDestroy"];
             if (elemOnDestroy != undefined) elemOnDestroy(); 
@@ -273,16 +274,22 @@ function UiNode(style = {}, props = {}) constructor {
             elem.childrenLength = 0;
             elem.__removeStepHandler();
             elem.destroyed = true;
-            flexpanel_delete_node(elem.node, false);
+            
+            if (self.node != -1 && elem.node != -1) {
+                flexpanel_node_remove_child(self.node, elem.node);
+                flexpanel_delete_node(elem.node, false);
+            }
+            
+            array_delete(self.children, i, 1);
+            self.childrenLength--;
         }
         
-        flexpanel_node_remove_all_children(self.node);
-        self.__UiScrollbar = undefined;
-        self.__UiScrollbarH = undefined;
-         
+        if (!preserveOwnScrollbars) {
+            self.__UiScrollbar = undefined;
+            self.__UiScrollbarH = undefined;
+        }
+        
         self.requestUpdate();
-        self.children = [];
-        self.childrenLength = 0;
         return self; 
     }
     

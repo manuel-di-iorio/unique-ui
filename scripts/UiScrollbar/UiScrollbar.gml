@@ -46,17 +46,17 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
         
         if (layoutUpdated) {
             // Content size calculation
-            var propName = self.isVertical ? "y2" : "x2";
+            var propName = self.isVertical ? "height" : "width";
+            var posName = self.isVertical ? "top" : "left";
             var scrollName = self.isVertical ? "scrollTop" : "scrollLeft";
-            var parentPos = self.isVertical ? "y1" : "x1";
             var marginName = self.isVertical ? "getMarginBottom" : "getMarginRight";
             var paddingName = self.isVertical ? "getPaddingBottom" : "getPaddingRight";
 
-            self.__contentSize = self.parent.reduceChildren(method({ self, propName, scrollName, parentPos, marginName }, function(maxS, child) {
+            self.__contentSize = self.parent.reduceChildren(method({ scrollableParent: self.parent, propName, posName, marginName }, function(maxS, child) {
                 if (child.isScrollbar) return maxS;
                 var m = child[$ marginName]();
                 if (is_undefined(m) || is_nan(m)) m = 0;
-                var childEdge = child[$ propName] + child.parent[$ scrollName] - child.parent[$ parentPos] + m;
+                var childEdge = (child.layout[$ posName] + child.layout[$ propName]) - scrollableParent.layout[$ posName] + m;
                 return max(maxS, childEdge);
             }), 0, false);
             
@@ -151,10 +151,9 @@ function UiScrollbarThumb(style = {}, props = {}): UiNode(style, props) construc
     });
     
     function onDraw() {
-        var size = self.parent.isVertical ? getHeight() : getWidth();
-        var parentSize = self.parent.isVertical ? self.parent.layout.height : self.parent.layout.width;
-        if (size == parentSize) return;
-
+        if (self.parent.__maxScroll <= 0) return;
+        
+        var layoutSize = self.parent.isVertical ? self.parent.layout.height : self.parent.layout.width;
         draw_set_color(self.thumbColor);
         draw_set_alpha(0.4);
         if (self.parent.isVertical) {

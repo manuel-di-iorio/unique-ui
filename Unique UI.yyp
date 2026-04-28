@@ -65,6 +65,7 @@
     {"id":{"name":"UiTextbox","path":"scripts/UiTextbox/UiTextbox.yy",},},
     {"id":{"name":"UiTooltip","path":"scripts/UiTooltip/UiTooltip.yy",},},
     {"id":{"name":"UiTreeview","path":"scripts/UiTreeview/UiTreeview.yy",},},
+    {"id":{"name":"sprDemo","path":"sprites/sprDemo/sprDemo.yy",},},
   ],
   "resourceType":"GMProject",
   "resourceVersion":"2.0",

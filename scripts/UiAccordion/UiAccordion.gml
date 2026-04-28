@@ -20,7 +20,7 @@ function UiAccordion(text, style = {}, data = {}) : UiNode(style, data) construc
   
   with (self.Header) {
       self.onDraw = function() {
-          var col = self.hovered ? global.UI_COL_SELECTION : global.UI_COL_BTN_HOVER;
+          var col = self.hovered ? global.UI_COL_SELECTED : global.UI_COL_BTN_HOVER;
           draw_set_color(col);
           draw_roundrect(self.x1, self.y1, self.x2, self.y2, false);
       }
@@ -31,7 +31,7 @@ function UiAccordion(text, style = {}, data = {}) : UiNode(style, data) construc
   self.Arrow = new UiSprite(arrowSprite, { width: 12, height: 12, marginRight: 10 });
   
   // Label
-  self.Label = new UiText(self.text, {}, { color: c_white });
+  self.Label = new UiText(self.text, {}, { color: global.UI_COL_TEXT_MAIN });
   
   self.Header.add(self.Arrow, self.Label);
   

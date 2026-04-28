@@ -15,19 +15,19 @@ function ui_demo_create() {
     global.UI.setSize(W, H);
     
     // Overlay node
-    global.UI.Overlay = new UiNode({ name: "Overlay", position: "absolute", left: 0, top: 0, width: W, height: H });
+    global.UI.Overlay = new UiNode({ name: "Overlay", position: "absolute", left: 0, top: 0, width: "100%", height: "100%" });
     global.UI.Tooltip = new UiTooltip();
     global.UI.Overlay.add(global.UI.Tooltip);
     
     // ============================================================
     // MAIN LAYOUT
     // ============================================================
-    var Main = new UiNode({ name: "Main", width: W, height: H, flexDirection: "row" });
+    var Main = new UiNode({ name: "Main", width: "100%", height: "100%", flexDirection: "row" });
     global.UI.add(Main);
     
     // === SIDEBAR ===
     var Sidebar = new UiNode({
-        name: "Sidebar", width: 260, height: H, flexDirection: "column",
+        name: "Sidebar", width: 260, height: "100%", flexDirection: "column",
         paddingTop: 32, paddingLeft: 8, paddingRight: 8, paddingBottom: 32,
     });
     Sidebar.onDraw = method(Sidebar, function() {
@@ -51,7 +51,7 @@ function ui_demo_create() {
     LogoRow.add(VersionBadge);
     
     // Search
-    var SearchInput = new UiTextbox({ width: "100%", height: 36, marginBottom: 32 }, { placeholder: "Cerca...", pointerEvents: true });
+    var SearchInput = new UiTextbox({ width: "100%", height: 36, marginBottom: 32 }, { placeholder: "Cerca..." });
     SearchInput.onChange = function(val) {
         global.UI_DEMO.SearchQuery = string_lower(val);
         __ui_demo_render_sidebar();
@@ -68,7 +68,7 @@ function ui_demo_create() {
     __ui_demo_render_sidebar();
     
     // === CONTENT AREA ===
-    var Content = new UiNode({ name: "Content", flex: 1, height: H, flexDirection: "column" });
+    var Content = new UiNode({ name: "Content", flex: 1, height: "100%", flexDirection: "column" });
     Content.onDraw = method(Content, function() {
         draw_set_color(global.UI_COL_BG_MAIN);
         draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
@@ -101,6 +101,7 @@ function ui_demo_create() {
     // Scroll Area (Main Content)
     var ScrollArea = new UiNode({ flex: 1, width: "100%", flexDirection: "column", padding: 40 });
     ScrollArea.enableScrollbar(global.UI_COL_PRIMARY);
+    ScrollArea.enableHorizontalScrollbar(global.UI_COL_PRIMARY);
     Content.add(ScrollArea);
     global.UI_DEMO.ScrollArea = ScrollArea;
     
@@ -111,7 +112,7 @@ function ui_demo_create() {
 
 function __ui_demo_render_sidebar() {
     var parent = global.UI_DEMO.SidebarItems;
-    parent.destroyChildren();
+    parent.destroyChildren(true);
     
     __ui_demo_sidebar_label(parent, "FONDAMENTI");
     __ui_demo_sidebar_item(parent, "Colori");
@@ -146,7 +147,7 @@ function __ui_demo_sidebar_label(parent, text, mt = 0) {
 
 function __ui_demo_refresh() {
     var area = global.UI_DEMO.ScrollArea;
-    area.destroyChildren();
+    area.destroyChildren(true);
     area.scrollTop = 0;
     global.UI_DEMO.BreadcrumbPage.text = global.UI_DEMO.currentPage;
     
@@ -229,6 +230,7 @@ function __ui_demo_render_anteprima(area) {
     area.add(MainRow);
     
     var PreviewCard = new UiNode({ flex: 1, marginRight: 24, padding: 32, flexDirection: "column" });
+    PreviewCard.enableHorizontalScrollbar(global.UI_COL_PRIMARY);
     PreviewCard.onDraw = method(PreviewCard, function() {
         draw_set_color(c_white);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 12, 12, false);

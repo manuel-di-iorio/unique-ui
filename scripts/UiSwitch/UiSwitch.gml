@@ -11,19 +11,20 @@ function UiSwitch(style = {}, props = {}) : UiNode(style, props) constructor {
     self.pointerEvents = true;
     self.handpoint = true;
     
-    // Label node
-    if (self.label != undefined) {
-        self.Label = new UiText(self.label, { marginRight: 12 }, { color: global.UI_COL_TEXT_MAIN });
-        self.add(self.Label);
-    }
-    
-    // Input node (the visual track)
+    // Input node first (the visual track)
     self.Input = new UiNode({
         name: "UiSwitch.Input", 
         width: 36,
-        height: 20
+        height: 20,
+        marginRight: 12
     });
     self.add(self.Input);
+    
+    // Label node second
+    if (self.label != undefined) {
+        self.Label = new UiText(self.label, {}, { color: global.UI_COL_TEXT_MAIN });
+        self.add(self.Label);
+    }
     
     // Animation state
     self.animThumbPos = self.value ? 1 : 0;

@@ -5,6 +5,7 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
     self.onChange = props[$ "onChange"] ?? function(value, input) {};
     self.valueGetter = props[$ "valueGetter"] ?? undefined;
     self.variant = props[$ "variant"] ?? "checkbox";
+    self.group = props[$ "group"];
     
     // Setup container
     self.flexDirection = "row";
@@ -12,19 +13,20 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
     self.pointerEvents = true;
     self.handpoint = true;
     
-    // Label node
-    if (self.label != undefined) {
-        self.Label = new UiText(self.label, { marginRight: 8 }, { color: global.UI_COL_TEXT_MAIN });
-        self.add(self.Label);
-    }
-    
-    // Input node (the visual box)
+    // Input node first (the visual box/circle)
     self.Input = new UiNode({
         name: "UiCheckbox.Input", 
         width: 18,
-        height: 18
+        height: 18,
+        marginRight: 10
     });
     self.add(self.Input);
+    
+    // Label node second
+    if (self.label != undefined) {
+        self.Label = new UiText(self.label, {}, { color: global.UI_COL_TEXT_MAIN });
+        self.add(self.Label);
+    }
     
     with (self.Input) {
         self.onDraw = function() {
@@ -75,18 +77,18 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
     });
     
     self.onClick(function() {
-        if (self.variant == "radio" && self.value) return true; // Radio cannot be unchecked by clicking itself
+        if (self.variant == "radio" && self.value) return true; 
         
         self.value = !self.value;
         
         // Radio group logic
         if (self.variant == "radio" && self.value && self.parent != undefined) {
-            var group = props[$ "group"];
-            if (group != undefined) {
+            var myGroup = self.group;
+            if (myGroup != undefined) {
                 var siblings = self.parent.children;
                 for (var i = 0; i < array_length(siblings); i++) {
                     var s = siblings[i];
-                    if (s != self && s[$ "variant"] == "radio" && s[$ "group"] == group) {
+                    if (s != self && s[$ "variant"] == "radio" && s[$ "group"] == myGroup) {
                         s.value = false;
                         if (s[$ "onChange"] != undefined) s.onChange(false, s);
                     }
