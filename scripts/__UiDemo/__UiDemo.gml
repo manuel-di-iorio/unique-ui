@@ -118,7 +118,7 @@ function __ui_demo_render_sidebar() {
     __ui_demo_sidebar_item(parent, "Tipografia");
     
     __ui_demo_sidebar_label(parent, "COMPONENTI", 20);
-    var comps = ["Button", "Input", "Select", "Checkbox", "Radio", "Switch", "Badge", "Alert", "Card", "Tabs", "Tooltip", "Slider", "Accordion", "Sprite", "ContextMenu"];
+    var comps = ["Button", "Input", "Select", "Checkbox", "Radio", "Switch", "Badge", "Alert", "Card", "Tabs", "Tooltip", "Slider", "Accordion", "Sprite", "ContextMenu", "Treeview"];
     for (var i = 0; i < array_length(comps); i++) {
         var name = comps[i];
         if (global.UI_DEMO.SearchQuery != "" && string_pos(global.UI_DEMO.SearchQuery, string_lower(name)) == 0) continue;
@@ -545,6 +545,38 @@ function __ui_demo_render_anteprima(area) {
                 "new UiButton(\"Hover me\", { width: 150 }, { tooltip: \"Il mio tooltip!\" });"
             ];
             break;
+
+        case "Treeview":
+            __ui_demo_preview_section(PreviewCard, "Esempio Gerarchia");
+            var tree = new UiTreeview({ flex: 1, width: "100%" });
+            PreviewCard.add(tree);
+            
+            var root = new UiTreeviewItem({ name: "Progetto" }, { treeview: tree, assetType: "Folder", collapsed: false });
+            tree.Items.add(root);
+            
+            var folder1 = new UiTreeviewItem({ name: "Sprites" }, { treeview: tree, assetType: "Folder" });
+            root.addChild(folder1);
+            folder1.addChild(new UiTreeviewItem({ name: "sprPlayer" }, { treeview: tree, assetType: "Asset", icon: sprDemo }));
+            folder1.addChild(new UiTreeviewItem({ name: "sprEnemy" }, { treeview: tree, assetType: "Asset", icon: sprDemo }));
+            
+            var folder2 = new UiTreeviewItem({ name: "Scripts" }, { treeview: tree, assetType: "Folder" });
+            root.addChild(folder2);
+            folder2.addChild(new UiTreeviewItem({ name: "scrMovement" }, { treeview: tree, assetType: "Asset", icon: sprDemo }));
+            
+            codeLines = [
+                "var tree = new UiTreeview({ flex: 1, width: \"100%\" });",
+                "PreviewCard.add(tree);",
+                "",
+                "var root = new UiTreeviewItem({ name: \"Root\" }, { ",
+                "    treeview: tree, assetType: \"Folder\", collapsed: false ",
+                "});",
+                "tree.Items.add(root);",
+                "",
+                "var folder = new UiTreeviewItem({ name: \"Folder\" }, { ... });",
+                "root.addChild(folder);",
+                "folder.addChild(new UiTreeviewItem({ name: \"Asset\" }, { ... }));"
+            ];
+            break;
             
         default:
             PreviewCard.add(new UiText("Anteprima per " + global.UI_DEMO.currentPage + " in arrivo.", {}, { color: #64748B }));
@@ -699,6 +731,14 @@ function __ui_demo_get_component_metadata() {
                 { name: "x", type: "number", desc: "Posizione X iniziale" },
                 { name: "y", type: "number", desc: "Posizione Y iniziale" },
                 { name: "addItem", type: "function", desc: "Metodo per aggiungere voci al menu" }
+            ]
+        },
+        "Treeview": {
+            desc: "Visualizza una struttura gerarchica di elementi espandibili.",
+            props: [
+                { name: "onItemSelected", type: "function", desc: "Callback alla selezione di un elemento" },
+                { name: "onAssetDrop", type: "function", desc: "Gestisce il drag & drop tra elementi" },
+                { name: "filter", type: "function", desc: "Filtra gli elementi per nome" }
             ]
         }
     };

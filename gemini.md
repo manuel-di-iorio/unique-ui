@@ -1,0 +1,1 @@
+ - In GameMaker, quando passi una struct come primo argomento a method(), quella struct diventa il nuovo self della funzione, sovrascrivendo l'accesso alle variabili.

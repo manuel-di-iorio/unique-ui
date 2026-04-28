@@ -771,8 +771,8 @@
   "maintainGms1Font":false,
   "name":"fTextSmall",
   "parent":{
-    "name":"Demo",
-    "path":"folders/Demo.yy",
+    "name":"Fonts",
+    "path":"folders/Demo/Fonts.yy",
   },
   "pointRounding":0,
   "ranges":[
