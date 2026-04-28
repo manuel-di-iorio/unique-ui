@@ -100,8 +100,6 @@ function ui_demo_create() {
     
     // Scroll Area (Main Content)
     var ScrollArea = new UiNode({ flex: 1, width: "100%", flexDirection: "column", padding: 40 });
-    ScrollArea.enableScrollbar(global.UI_COL_PRIMARY);
-    ScrollArea.enableHorizontalScrollbar(global.UI_COL_PRIMARY);
     Content.add(ScrollArea);
     global.UI_DEMO.ScrollArea = ScrollArea;
     
@@ -156,8 +154,9 @@ function __ui_demo_refresh() {
     area.add(Hero);
     Hero.add(new UiText(global.UI_DEMO.currentPage, { marginBottom: 8, height: 40 }, { color: #0F172A, font: fText })); 
     
-    var desc = "Esplora le potenzialità del componente " + global.UI_DEMO.currentPage;
-    if (global.UI_DEMO.currentPage == "Button") desc = "Permette agli utenti di compiere un'azione con un singolo clic.";
+    var metadata = __ui_demo_get_component_metadata();
+    var componentData = metadata[$ global.UI_DEMO.currentPage];
+    var desc = componentData != undefined ? componentData.desc : "Esplora le potenzialità del componente " + global.UI_DEMO.currentPage;
     Hero.add(new UiText(desc, {}, { color: #64748B }));
     
     // Tabs
@@ -171,8 +170,10 @@ function __ui_demo_refresh() {
     __ui_demo_tab_item(TabRow, "Documentazione");
     
     if (global.UI_DEMO.currentTab == "Anteprima") {
+        area.disableScrollbar();
         __ui_demo_render_anteprima(area);
     } else {
+        area.enableScrollbar(global.UI_COL_PRIMARY);
         __ui_demo_render_documentazione(area);
     }
     
@@ -180,22 +181,32 @@ function __ui_demo_refresh() {
 }
 
 function __ui_demo_render_documentazione(area) {
+    var metadata = __ui_demo_get_component_metadata();
+    var componentData = metadata[$ global.UI_DEMO.currentPage];
+    
     var Doc = new UiNode({ width: "100%", flexDirection: "column" });
     area.add(Doc);
     
     Doc.add(new UiText("Uso", { marginBottom: 16, height: 28 }, { color: #0F172A }));
     Doc.add(new UiText("Il componente " + global.UI_DEMO.currentPage + " è progettato per essere altamente personalizzabile.", { marginBottom: 32 }, { color: #64748B }));
     
-    Doc.add(new UiText("Proprietà", { marginBottom: 16, height: 28 }, { color: #0F172A }));
-    var Table = new UiNode({ width: "100%", flexDirection: "column", padding: 16 });
-    Table.onDraw = method(Table, function() {
-        draw_set_color(#F8FAFC);
-        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-    });
-    Doc.add(Table);
-    
-    __ui_demo_doc_row(Table, "variant", "string", "Aspetto visivo");
-    __ui_demo_doc_row(Table, "onClick", "function", "Callback al clic");
+    if (componentData != undefined && variable_struct_exists(componentData, "props")) {
+        Doc.add(new UiText("Proprietà", { marginBottom: 16, height: 28 }, { color: #0F172A }));
+        var Table = new UiNode({ width: "100%", flexDirection: "column", padding: 16 });
+        Table.onDraw = method(Table, function() {
+            draw_set_color(#F8FAFC);
+            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
+        });
+        Doc.add(Table);
+        
+        var props = componentData.props;
+        for (var i = 0; i < array_length(props); i++) {
+            var p = props[i];
+            __ui_demo_doc_row(Table, p.name, p.type, p.desc);
+        }
+    } else {
+        Doc.add(new UiText("Nessuna proprietà specifica documentata per questo componente.", { marginBottom: 32 }, { color: #64748B }));
+    }
 }
 
 function __ui_demo_doc_row(parent, name, type, desc) {
@@ -228,13 +239,15 @@ function __ui_demo_tab_item(parent, text) {
 function __ui_demo_render_anteprima(area) {
     var MainRow = new UiNode({ 
         flexDirection: "row", 
-        width: "100%"
+        width: "100%",
+        flex: 1
     });
     area.add(MainRow);
     
     var PreviewCard = new UiNode({
         width: "60%", 
         padding: 30,
+        marginRight: 20,
         flexDirection: "column"
     });
     PreviewCard.enableScrollbar(global.UI_COL_PRIMARY);
@@ -283,7 +296,13 @@ function __ui_demo_render_anteprima(area) {
             __ui_demo_doc_row(semGrid, "global.UI_COL_BG_MAIN", "color", "Sfondo dell'area di lavoro");
             __ui_demo_doc_row(semGrid, "global.UI_COL_TEXT_MAIN", "color", "Colore del testo principale");
             
-            codeLines = ["global.UI_COL_PRIMARY = #6366F1;", "global.UI_COL_SUCCESS = #22C55E;", "global.UI_COL_DANGER = #EF4444;"];
+            codeLines = [
+                "global.UI_COL_PRIMARY = #6366F1;",
+                "global.UI_COL_SUCCESS = #22C55E;",
+                "global.UI_COL_WARNING = #F59E0B;",
+                "global.UI_COL_DANGER  = #EF4444;",
+                "global.UI_COL_BG_MAIN = #F8FAFC;"
+            ];
             break;
 
         case "Tipografia":
@@ -303,7 +322,12 @@ function __ui_demo_render_anteprima(area) {
             __ui_demo_doc_row(fontGrid, "fTextSmall", "font", "Font piccolo (10pt)");
             __ui_demo_doc_row(fontGrid, "fTextItalic", "font", "Font corsivo");
             
-            codeLines = ["new UiText(\"Heading\", { height: 42 });", "new UiText(\"Body\", { color: #64748B });"];
+            codeLines = [
+                "new UiText(\"Heading 1\", { height: 42 }, { font: fText });",
+                "new UiText(\"Heading 2\", { height: 32 }, { font: fText });",
+                "new UiText(\"Body Text\", { width: \"100%\" }, { color: #64748B });",
+                "new UiText(\"Small\", { height: 20 }, { font: fTextSmall });"
+            ];
             break;
 
         case "Button":
@@ -322,34 +346,52 @@ function __ui_demo_render_anteprima(area) {
             row2.add(new UiButton("Medium", { height: 36, marginRight: 12 }, { variant: "primary" }));
             row2.add(new UiButton("Large", { height: 44 }, { variant: "outline" }));
             
-            codeLines = ["new UiButton(\"Primary\", { variant: \"primary\" });", "new UiButton(\"Small\", { height: 28 });"];
+            codeLines = [
+                "new UiButton(\"Primary\", { marginRight: 12 }, { variant: \"primary\" });",
+                "new UiButton(\"Secondary\", { marginRight: 12 }, { variant: \"secondary\" });",
+                "new UiButton(\"Outline\", { marginRight: 12 }, { variant: \"outline\" });",
+                "new UiButton(\"Small\", { height: 28 }, { variant: \"outline\" });",
+                "new UiButton(\"Large\", { height: 44 }, { variant: \"outline\" });"
+            ];
             break;
             
         case "Input":
             __ui_demo_preview_section(PreviewCard, "Standard");
             PreviewCard.add(new UiTextbox({ width: "100%", height: 36, marginBottom: 24 }, { placeholder: "Scrivi qualcosa..." }));
             PreviewCard.add(new UiTextbox({ width: "100%", height: 36 }, { label: "Email", placeholder: "mario@rossi.it" }));
-            codeLines = ["new UiTextbox({ height: 36 }, { placeholder: \"...\" });"];
+            codeLines = [
+                "new UiTextbox({ width: \"100%\", height: 36 }, { placeholder: \"Scrivi...\" });",
+                "new UiTextbox({ width: \"100%\", height: 36 }, { label: \"Email\", placeholder: \"...\" });"
+            ];
             break;
 
             
         case "Checkbox":
             PreviewCard.add(new UiCheckbox({ marginBottom: 12 }, { label: "Accetto i termini" }));
             PreviewCard.add(new UiCheckbox({}, { label: "Newsletter", value: true }));
-            codeLines = ["new UiCheckbox({}, { label: \"Accetto i termini\" });"];
+            codeLines = [
+                "new UiCheckbox({ marginBottom: 12 }, { label: \"Accetto i termini\" });",
+                "new UiCheckbox({}, { label: \"Newsletter\", value: true });"
+            ];
             break;
 
         case "Radio":
             PreviewCard.add(new UiText("Scegli un'opzione:", { marginBottom: 12, height: 20 }, { color: #0F172A }));
             PreviewCard.add(new UiCheckbox({ marginBottom: 12 }, { label: "Opzione A", variant: "radio", group: "demo_group" }));
             PreviewCard.add(new UiCheckbox({}, { label: "Opzione B", variant: "radio", value: true, group: "demo_group" }));
-            codeLines = ["new UiCheckbox({}, { label: \"Opzione A\", variant: \"radio\", group: \"myGroup\" });"];
+            codeLines = [
+                "new UiCheckbox({ marginBottom: 12 }, { label: \"Opzione A\", variant: \"radio\", group: \"demo\" });",
+                "new UiCheckbox({}, { label: \"Opzione B\", variant: \"radio\", group: \"demo\", value: true });"
+            ];
             break;
             
         case "Switch":
             PreviewCard.add(new UiSwitch({ marginBottom: 12 }, { label: "Notifiche Push" }));
             PreviewCard.add(new UiSwitch({}, { label: "Modalità Scura", value: true }));
-            codeLines = ["new UiSwitch({}, { label: \"Notifiche Push\" });"];
+            codeLines = [
+                "new UiSwitch({ marginBottom: 12 }, { label: \"Notifiche Push\" });",
+                "new UiSwitch({}, { label: \"Modalità Scura\", value: true });"
+            ];
             break;
 
         case "Select":
@@ -357,7 +399,12 @@ function __ui_demo_render_anteprima(area) {
                 label: "Frutto", 
                 items: [{label: "Mela", value: "mela"}, {label: "Pera", value: "pera"}] 
             }));
-            codeLines = ["new UiDropdown({ height: 36 }, { label: \"Frutto\", ... });"];
+            codeLines = [
+                "new UiDropdown({ height: 36 }, { ",
+                "  label: \"Frutto\", ",
+                "  items: [{label: \"Mela\", value: \"mela\"}, {label: \"Pera\", value: \"pera\"}] ",
+                "});"
+            ];
             break;
 
         case "Badge":
@@ -367,7 +414,10 @@ function __ui_demo_render_anteprima(area) {
             brow.add(new UiButton("Beta", { marginRight: 8, height: 24, paddingLeft: 8, paddingRight: 8 }, { variant: "outline" }));
             brow.add(new UiButton("Success", { marginRight: 8, height: 24, paddingLeft: 8, paddingRight: 8 }, { variant: "primary" }));
             brow.add(new UiButton("Error", { height: 24, paddingLeft: 8, paddingRight: 8 }, { variant: "danger" }));
-            codeLines = ["// Badge mocked with small outline buttons", "new UiBadge(\"Beta\");"];
+            codeLines = [
+                "new UiButton(\"Beta\", { height: 24, paddingHorizontal: 8 }, { variant: \"outline\" });",
+                "new UiButton(\"Success\", { height: 24, paddingHorizontal: 8 }, { variant: \"primary\" });"
+            ];
             break;
 
         case "Alert":
@@ -378,7 +428,11 @@ function __ui_demo_render_anteprima(area) {
             });
             alert.add(new UiText("Errore: La connessione al server è fallita.", {}, { color: #991B1B }));
             PreviewCard.add(alert);
-            codeLines = ["new UiAlert(\"Messaggio\", { variant: \"error\" });"];
+            codeLines = [
+                "var alert = new UiNode({ padding: 16 });",
+                "alert.onDraw = function() { /* Disegna sfondo rosso */ };",
+                "alert.add(new UiText(\"Errore connection\", {}, { color: #991B1B }));"
+            ];
             break;
 
         case "Card":
@@ -390,7 +444,11 @@ function __ui_demo_render_anteprima(area) {
             PreviewCard.add(card);
             card.add(new UiText("Titolo Card", { marginBottom: 8, height: 24 }, { color: #0F172A }));
             card.add(new UiText("Questo è un contenuto all'interno di una card moderna.", { height: 40 }, { color: #64748B }));
-            codeLines = ["new UiCard({ padding: 24 }, [ ... ]);"];
+            codeLines = [
+                "var card = new UiNode({ padding: 24, flexDirection: \"column\" });",
+                "card.onDraw = function() { /* Disegna stile card */ };",
+                "card.add(new UiText(\"Titolo Card\", { height: 24 }));"
+            ];
             break;
 
 
@@ -409,20 +467,29 @@ function __ui_demo_render_anteprima(area) {
             
             var tabContent = (global.UI_DEMO.tabSelected == 0) ? "Contenuto della Tab A." : "Contenuto della Tab B.";
             PreviewCard.add(new UiText(tabContent, {}, { color: #64748B }));
-            codeLines = ["new UiTabs([\"Tab A\", \"Tab B\"]);"];
+            codeLines = [
+                "var btn = new UiButton(\"Tab A\", { height: 32 });",
+                "btn.onClick(function() { global.tabSelected = 0; refresh(); });",
+                "PreviewCard.add(new UiText(tabContent, {}, { color: #64748B }));"
+            ];
             break;
 
         case "Accordion":
             var acc = new UiAccordion("Dettagli Tecnici", { width: "100%" });
             acc.add(new UiText("Questi sono i dettagli espandibili del componente accordion.", { height: 40 }, { color: #64748B }));
             PreviewCard.add(acc);
-            codeLines = ["var acc = new UiAccordion(\"Titolo\");", "acc.add(new UiText(\"...\"));"];
+            codeLines = [
+                "var acc = new UiAccordion(\"Dettagli Tecnici\", { width: \"100%\" });",
+                "acc.add(new UiText(\"Contenuto espandibile...\", { height: 40 }));"
+            ];
             break;
 
         case "Slider":
             __ui_demo_preview_section(PreviewCard, "Volume");
             PreviewCard.add(new UiSlider({ width: "100%", height: 30 }, { min: 0, max: 100, value: 75 }));
-            codeLines = ["new UiSlider({ height: 30 }, { min: 0, max: 100 });"];
+            codeLines = [
+                "new UiSlider({ width: \"100%\", height: 30 }, { min: 0, max: 100, value: 75 });"
+            ];
             break;
 
         case "Sprite":
@@ -445,12 +512,20 @@ function __ui_demo_render_anteprima(area) {
                 menu.show();
             });
             
-            codeLines = ["node.onContextMenu(function() { ... });"];
+            codeLines = [
+                "zone.onContextMenu(function() {",
+                "  var menu = new UiContextMenu(global.UI.mouseX, global.UI.mouseY);",
+                "  menu.addItem(\"Azione 1\", function() { ... });",
+                "  menu.show();",
+                "});"
+            ];
             break;
 
         case "Tooltip":
             PreviewCard.add(new UiButton("Passa il mouse", { width: 150 }, { tooltip: "Il mio fantastico tooltip!" }));
-            codeLines = ["new UiButton(\"Text\", {}, { tooltip: \"...\" });"];
+            codeLines = [
+                "new UiButton(\"Hover me\", { width: 150 }, { tooltip: \"Il mio tooltip!\" });"
+            ];
             break;
             
         default:
@@ -475,4 +550,138 @@ function __ui_demo_render_anteprima(area) {
 
 function __ui_demo_preview_section(parent, title, mt = 0) {
     parent.add(new UiText(title, { marginTop: mt, marginBottom: 16, height: 28 }, { color: #0F172A }));
+}
+
+function __ui_demo_get_component_metadata() {
+    return {
+        "Button": {
+            desc: "Permette agli utenti di compiere un'azione con un singolo clic.",
+            props: [
+                { name: "variant", type: "string", desc: "Aspetto visivo: 'primary', 'secondary', 'outline', 'ghost', 'danger'" },
+                { name: "halign", type: "constant", desc: "Allineamento orizzontale: fa_left, fa_center, fa_right" },
+                { name: "outline", type: "boolean", desc: "Mostra un bordo sottile" },
+                { name: "enableRipple", type: "boolean", desc: "Abilita l'effetto ripple al clic" },
+                { name: "label", type: "string", desc: "Testo da mostrare accanto allo sprite" },
+                { name: "autoResize", type: "boolean", desc: "Ridimensiona automaticamente in base al contenuto" }
+            ]
+        },
+        "Input": {
+            desc: "Campo di testo per l'inserimento di dati da parte dell'utente.",
+            props: [
+                { name: "label", type: "string", desc: "Etichetta descrittiva sopra il campo" },
+                { name: "value", type: "string", desc: "Valore corrente del campo" },
+                { name: "placeholder", type: "string", desc: "Testo segnaposto quando il campo è vuoto" },
+                { name: "maxLength", type: "number", desc: "Numero massimo di caratteri consentiti" },
+                { name: "format", type: "string", desc: "Tipo di dato: 'string', 'float', 'integer'" },
+                { name: "onChange", type: "function", desc: "Callback chiamata quando il valore cambia" },
+                { name: "iconLeft", type: "sprite", desc: "Sprite da mostrare a sinistra" },
+                { name: "iconRight", type: "sprite", desc: "Sprite da mostrare a destra" }
+            ]
+        },
+        "Checkbox": {
+            desc: "Permette di selezionare una o più opzioni da un set.",
+            props: [
+                { name: "value", type: "boolean", desc: "Stato di selezione (true/false)" },
+                { name: "label", type: "string", desc: "Testo descrittivo accanto al checkbox" },
+                { name: "onChange", type: "function", desc: "Callback chiamata al cambio di stato" },
+                { name: "variant", type: "string", desc: "Tipo di input: 'checkbox' o 'radio'" }
+            ]
+        },
+        "Radio": {
+            desc: "Permette di selezionare una singola opzione da un gruppo.",
+            props: [
+                { name: "value", type: "boolean", desc: "Stato di selezione" },
+                { name: "label", type: "string", desc: "Testo descrittivo" },
+                { name: "group", type: "string", desc: "Nome del gruppo per la selezione mutua" },
+                { name: "onChange", type: "function", desc: "Callback chiamata al cambio di stato" }
+            ]
+        },
+        "Switch": {
+            desc: "Interruttore binario per attivare o disattivare un'impostazione.",
+            props: [
+                { name: "value", type: "boolean", desc: "Stato dell'interruttore" },
+                { name: "label", type: "string", desc: "Testo descrittivo" },
+                { name: "onChange", type: "function", desc: "Callback chiamata al cambio di stato" }
+            ]
+        },
+        "Select": {
+            desc: "Menu a discesa per selezionare un'opzione da una lista.",
+            props: [
+                { name: "value", type: "any", desc: "Valore selezionato" },
+                { name: "items", type: "array", desc: "Array di struct {label, value}" },
+                { name: "label", type: "string", desc: "Etichetta del selettore" },
+                { name: "search", type: "string", desc: "Placeholder per la barra di ricerca interna" },
+                { name: "onChange", type: "function", desc: "Callback chiamata alla selezione" }
+            ]
+        },
+        "Badge": {
+            desc: "Piccoli indicatori di stato o contatori.",
+            props: [
+                { name: "variant", type: "string", desc: "Stile del badge (usa UiButton con varianti)" }
+            ]
+        },
+        "Alert": {
+            desc: "Messaggi di feedback contestuali per l'utente.",
+            props: [
+                { name: "type", type: "string", desc: "Tipo di alert: 'info', 'success', 'warning', 'error'" },
+                { name: "title", type: "string", desc: "Titolo del messaggio" }
+            ]
+        },
+        "Card": {
+            desc: "Contenitore flessibile per raggruppare contenuti correlati.",
+            props: [
+                { name: "padding", type: "number", desc: "Spaziatura interna" },
+                { name: "border", type: "boolean", desc: "Mostra il bordo esterno" }
+            ]
+        },
+        "Tabs": {
+            desc: "Organizza i contenuti in diverse viste navigabili.",
+            props: [
+                { name: "items", type: "array", desc: "Lista dei tab" },
+                { name: "onChange", type: "function", desc: "Callback al cambio di tab" }
+            ]
+        },
+        "Tooltip": {
+            desc: "Informazioni aggiuntive che appaiono al passaggio del mouse.",
+            props: [
+                { name: "tooltip", type: "string", desc: "Testo del tooltip (prop di UiNode)" },
+                { name: "tooltipDelay", type: "number", desc: "Ritardo in ms prima della comparsa" }
+            ]
+        },
+        "Slider": {
+            desc: "Permette di selezionare un valore da un intervallo numerico.",
+            props: [
+                { name: "value", type: "number", desc: "Valore corrente" },
+                { name: "min", type: "number", desc: "Valore minimo" },
+                { name: "max", type: "number", desc: "Valore massimo" },
+                { name: "step", type: "number", desc: "Incremento minimo" },
+                { name: "onChange", type: "function", desc: "Callback al cambio di valore" }
+            ]
+        },
+        "Accordion": {
+            desc: "Sezioni di contenuto che possono essere espanse o compresse.",
+            props: [
+                { name: "text", type: "string", desc: "Testo dell'intestazione" },
+                { name: "collapsed", type: "boolean", desc: "Stato iniziale (compresso/espanso)" },
+                { name: "spriteCollapsed", type: "sprite", desc: "Icona quando è compresso" },
+                { name: "spriteExpanded", type: "sprite", desc: "Icona quando è espanso" }
+            ]
+        },
+        "Sprite": {
+            desc: "Visualizza una risorsa sprite di GameMaker.",
+            props: [
+                { name: "sprite", type: "sprite", desc: "Indice dello sprite da visualizzare" },
+                { name: "width", type: "number/string", desc: "Larghezza desiderata" },
+                { name: "height", type: "number/string", desc: "Altezza desiderata" }
+            ]
+        },
+        "ContextMenu": {
+            desc: "Menu a comparsa attivato dal tasto destro del mouse.",
+            props: [
+                { name: "x", type: "number", desc: "Posizione X iniziale" },
+                { name: "y", type: "number", desc: "Posizione Y iniziale" },
+                { name: "addItem", type: "function", desc: "Metodo per aggiungere voci al menu" }
+            ]
+        }
+    };
 }

@@ -27,11 +27,13 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
         if (self.isVertical) {
             self.parent.onWheelUp(function(ev) {
                 self.parent.scrollTop = max(0, self.parent.scrollTop - 60);
+                global.UI.requestUpdate();
                 global.UI.requestRedraw();
             });
             
             self.parent.onWheelDown(function(ev) {
                 self.parent.scrollTop = min(self.__maxScroll, self.parent.scrollTop + 60);
+                global.UI.requestUpdate();
                 global.UI.requestRedraw();
             });
         } else {
@@ -94,6 +96,7 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
                 if (self.__maxThumbPosition > 0) {
                     var scrollDelta = (delta / self.__maxThumbPosition) * self.__maxScroll;
                     self.parent[$ scrollName] = clamp(self.dragStartScroll + scrollDelta, 0, self.__maxScroll);
+                    global.UI.requestUpdate();
                     global.UI.requestRedraw();
                 }
             }
