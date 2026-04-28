@@ -21,8 +21,6 @@ global.UI_COL_CHECKBOX_HOVER   = #F1F5F9;
 draw_set_circle_precision(64);
 
 // Missing Asset Mocks (required for components to function without crashes)
-#macro fText -1
-#macro fTextSmall -1
 #macro sprUiTreeviewArrowRight -1
 #macro sprUiTreeviewArrowDown -1
 #macro sprUiFolderCollapsed -1
@@ -30,5 +28,4 @@ draw_set_circle_precision(64);
 #macro sprUiCheckboxChecked -1
 #macro sprUiCheckboxUnchecked -1
 #macro sprUiDropdownArrow -1
-#macro fTextItalic -1
 #macro sprUiCheckTick -1

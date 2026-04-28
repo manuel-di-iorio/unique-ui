@@ -23,6 +23,9 @@
   },
   "name":"Unique UI",
   "resources":[
+    {"id":{"name":"fText","path":"fonts/fText/fText.yy",},},
+    {"id":{"name":"fTextItalic","path":"fonts/fTextItalic/fTextItalic.yy",},},
+    {"id":{"name":"fTextSmall","path":"fonts/fTextSmall/fTextSmall.yy",},},
     {"id":{"name":"oTest","path":"objects/oTest/oTest.yy",},},
     {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
     {"id":{"name":"__TestDynamicAABBTree2D","path":"scripts/__TestDynamicAABBTree2D/__TestDynamicAABBTree2D.yy",},},

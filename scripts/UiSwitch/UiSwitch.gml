@@ -5,11 +5,21 @@ function UiSwitch(style = {}, props = {}) : UiNode(style, props) constructor {
     self.onChange = props[$ "onChange"] ?? function(value, input) {};
     self.valueGetter = props[$ "valueGetter"] ?? undefined;
     
-    var _marginLeft = self.label == undefined ? 0 : 6 + string_width(self.label);
+    // Setup container
+    self.flexDirection = "row";
+    self.alignItems = "center";
+    self.pointerEvents = true;
+    self.handpoint = true;
     
+    // Label node
+    if (self.label != undefined) {
+        self.Label = new UiText(self.label, { marginRight: 12 }, { color: global.UI_COL_TEXT_MAIN });
+        self.add(self.Label);
+    }
+    
+    // Input node (the visual track)
     self.Input = new UiNode({
         name: "UiSwitch.Input", 
-        marginLeft: _marginLeft,
         width: 36,
         height: 20
     });
@@ -19,17 +29,6 @@ function UiSwitch(style = {}, props = {}) : UiNode(style, props) constructor {
     self.animThumbPos = self.value ? 1 : 0;
     
     with (self.Input) {
-        self.pointerEvents = true;
-        self.handpoint = true;
-        
-        self.onMouseEnter(function() {
-            global.UI.requestRedraw();
-        });
-        
-        self.onMouseLeave(function() {
-            global.UI.requestRedraw();
-        });
-        
         self.onDraw = function() {
             var p = self.parent;
             var targetPos = p.value ? 1 : 0;
@@ -41,7 +40,7 @@ function UiSwitch(style = {}, props = {}) : UiNode(style, props) constructor {
             
             // Track
             var trackColor = merge_color(#E2E8F0, global.UI_COL_PRIMARY, p.animThumbPos);
-            if (self.hovered && !p.value) trackColor = #CBD5E1;
+            if (p.hovered && !p.value) trackColor = #CBD5E1;
             
             draw_set_color(trackColor);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, r, r, false);
@@ -66,12 +65,5 @@ function UiSwitch(style = {}, props = {}) : UiNode(style, props) constructor {
         global.UI.requestRedraw();
         return true;
     });
-    
-    function onDraw() {
-        if (self.label != undefined) {
-            draw_set_color(global.UI_COL_TEXT_MAIN); draw_set_halign(fa_left); draw_set_valign(fa_middle);
-            draw_text(self.x1, ~~mean(self.y1, self.y2), self.label);
-        }
-    }
 }
 

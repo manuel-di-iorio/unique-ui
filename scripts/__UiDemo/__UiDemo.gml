@@ -51,13 +51,19 @@ function ui_demo_create() {
     LogoRow.add(VersionBadge);
     
     // Search
-    Sidebar.add(new UiTextbox({ width: "100%", height: 36, marginBottom: 32 }, { placeholder: "Cerca...", pointerEvents: true }));
+    var SearchInput = new UiTextbox({ width: "100%", height: 36, marginBottom: 32 }, { placeholder: "Cerca...", pointerEvents: true });
+    SearchInput.onChange = function(val) {
+        global.UI_DEMO.SearchQuery = string_lower(val);
+        __ui_demo_render_sidebar();
+    };
+    Sidebar.add(SearchInput);
     
     // Sidebar List
     var SidebarItems = new UiNode({ flex: 1, width: "100%", flexDirection: "column" });
     SidebarItems.enableScrollbar(global.UI_COL_PRIMARY);
     Sidebar.add(SidebarItems);
     global.UI_DEMO.SidebarItems = SidebarItems;
+    global.UI_DEMO.SearchQuery = "";
     
     __ui_demo_render_sidebar();
     
@@ -86,8 +92,11 @@ function ui_demo_create() {
     Breadcrumbs.add(global.UI_DEMO.BreadcrumbPage);
     TopBar.add(Breadcrumbs);
     
-    TopBar.add(new UiText("Documentazione", { marginRight: 24 }, { color: #64748B }));
-    TopBar.add(new UiButton("GitHub", { width: 100, height: 32 }, { variant: "primary" }));
+    var DocLink = new UiText("Documentazione", { marginRight: 24 }, { color: #64748B, pointerEvents: true, handpoint: true });
+    DocLink.onClick(function() {
+        url_open("https://manuel-di-iorio.github.io/unique-ui");
+    });
+    TopBar.add(DocLink);
     
     // Scroll Area (Main Content)
     var ScrollArea = new UiNode({ flex: 1, width: "100%", flexDirection: "column", padding: 40 });
@@ -109,9 +118,11 @@ function __ui_demo_render_sidebar() {
     __ui_demo_sidebar_item(parent, "Tipografia");
     
     __ui_demo_sidebar_label(parent, "COMPONENTI", 20);
-    var comps = ["Button", "Input", "Textarea", "Select", "Checkbox", "Radio", "Switch", "Badge", "Alert", "Card", "Modal", "Tabs", "Tooltip"];
+    var comps = ["Button", "Input", "Select", "Checkbox", "Radio", "Switch", "Badge", "Alert", "Card", "Tabs", "Tooltip", "Slider", "Accordion", "Sprite", "ContextMenu"];
     for (var i = 0; i < array_length(comps); i++) {
-        __ui_demo_sidebar_item(parent, comps[i]);
+        var name = comps[i];
+        if (global.UI_DEMO.SearchQuery != "" && string_pos(global.UI_DEMO.SearchQuery, string_lower(name)) == 0) continue;
+        __ui_demo_sidebar_item(parent, name);
     }
 }
 
@@ -233,33 +244,56 @@ function __ui_demo_render_anteprima(area) {
             var grid = new UiNode({ flexDirection: "row", flexWrap: "wrap", width: "100%" });
             PreviewCard.add(grid);
             var colors = [
-                {name: "Primary", col: global.UI_COL_PRIMARY},
-                {name: "Success", col: #22C55E},
-                {name: "Warning", col: #F59E0B},
-                {name: "Danger", col: #EF4444},
-                {name: "Slate 900", col: #0F172A},
-                {name: "Slate 500", col: #64748B}
+                {name: "Primary", col: global.UI_COL_PRIMARY, hex: "#6366F1"},
+                {name: "Success", col: #22C55E, hex: "#22C55E"},
+                {name: "Warning", col: #F59E0B, hex: "#F59E0B"},
+                {name: "Danger", col: #EF4444, hex: "#EF4444"},
+                {name: "Slate 900", col: #0F172A, hex: "#0F172A"},
+                {name: "Slate 500", col: #64748B, hex: "#64748B"},
+                {name: "Slate 300", col: #CBD5E1, hex: "#CBD5E1"},
+                {name: "Slate 100", col: #F1F5F9, hex: "#F1F5F9"}
             ];
             for (var i = 0; i < array_length(colors); i++) {
                 var c = colors[i];
-                var box = new UiNode({ width: 100, height: 100, marginRight: 16, marginBottom: 16, flexDirection: "column", alignItems: "center" });
+                var box = new UiNode({ width: 120, height: 140, marginRight: 16, marginBottom: 16, flexDirection: "column" });
                 box.__demoCol = c.col;
                 box.onDraw = method(box, function() {
                     draw_set_color(self.__demoCol); 
-                    draw_roundrect_ext(self.x1, self.y1, self.x2, self.y1 + 70, 8, 8, false);
+                    draw_roundrect_ext(self.x1, self.y1, self.x2, self.y1 + 80, 8, 8, false);
                 });
-                box.add(new UiText(c.name, { marginTop: 75, height: 20 }, { color: #0F172A }));
+                box.add(new UiText(c.name, { marginTop: 85, height: 20 }, { color: #0F172A, font: fTextSmall }));
+                box.add(new UiText(c.hex, { height: 20 }, { color: #64748B, font: fTextSmall }));
                 grid.add(box);
             }
-            codeLines = ["global.UI_COL_PRIMARY = #6366F1;", "global.UI_COL_SUCCESS = #22C55E;"];
+            
+            __ui_demo_preview_section(PreviewCard, "Tokens Semantici", 40);
+            var semGrid = new UiNode({ flexDirection: "column", width: "100%" });
+            PreviewCard.add(semGrid);
+            __ui_demo_doc_row(semGrid, "global.UI_COL_PRIMARY", "color", "Colore principale del brand");
+            __ui_demo_doc_row(semGrid, "global.UI_COL_BG_MAIN", "color", "Sfondo dell'area di lavoro");
+            __ui_demo_doc_row(semGrid, "global.UI_COL_TEXT_MAIN", "color", "Colore del testo principale");
+            
+            codeLines = ["global.UI_COL_PRIMARY = #6366F1;", "global.UI_COL_SUCCESS = #22C55E;", "global.UI_COL_DANGER = #EF4444;"];
             break;
 
         case "Tipografia":
-            __ui_demo_preview_section(PreviewCard, "Heading");
-            PreviewCard.add(new UiText("The quick brown fox jumps over the lazy dog", { marginBottom: 24, height: 32 }, { color: #0F172A }));
-            __ui_demo_preview_section(PreviewCard, "Body");
-            PreviewCard.add(new UiText("Design is not just what it looks like and feels like. Design is how it works. - Steve Jobs", { width: "100%", height: 60 }, { color: #64748B }));
-            codeLines = ["new UiText(\"Heading\", { height: 32 });", "new UiText(\"Body\", { color: #64748B });"];
+            __ui_demo_preview_section(PreviewCard, "Headings");
+            PreviewCard.add(new UiText("Heading 1", { marginBottom: 4, height: 42 }, { color: #0F172A, font: fText }));
+            PreviewCard.add(new UiText("Heading 2", { marginBottom: 4, height: 32 }, { color: #1E293B, font: fText }));
+            PreviewCard.add(new UiText("Heading 3", { marginBottom: 24, height: 24 }, { color: #334155, font: fTextSmall }));
+            
+            __ui_demo_preview_section(PreviewCard, "Body Text");
+            PreviewCard.add(new UiText("Design is not just what it looks like and feels like. Design is how it works. - Steve Jobs", { width: "100%", height: 60, marginBottom: 12 }, { color: #64748B }));
+            PreviewCard.add(new UiText("The quick brown fox jumps over the lazy dog.", { width: "100%", height: 20 }, { color: #94A3B8, font: fTextSmall }));
+            
+            __ui_demo_preview_section(PreviewCard, "Font Disponibili", 40);
+            var fontGrid = new UiNode({ flexDirection: "column", width: "100%" });
+            PreviewCard.add(fontGrid);
+            __ui_demo_doc_row(fontGrid, "fText", "font", "Font standard (12pt)");
+            __ui_demo_doc_row(fontGrid, "fTextSmall", "font", "Font piccolo (10pt)");
+            __ui_demo_doc_row(fontGrid, "fTextItalic", "font", "Font corsivo");
+            
+            codeLines = ["new UiText(\"Heading\", { height: 42 });", "new UiText(\"Body\", { color: #64748B });"];
             break;
 
         case "Button":
@@ -288,28 +322,24 @@ function __ui_demo_render_anteprima(area) {
             codeLines = ["new UiTextbox({ height: 36 }, { placeholder: \"...\" });"];
             break;
 
-        case "Textarea":
-            __ui_demo_preview_section(PreviewCard, "Multiline Input");
-            PreviewCard.add(new UiTextbox({ width: "100%", height: 120 }, { placeholder: "Inserisci un testo lungo qui...", multiline: true }));
-            codeLines = ["new UiTextbox({ height: 120 }, { multiline: true });"];
-            break;
             
         case "Checkbox":
             PreviewCard.add(new UiCheckbox({ marginBottom: 12 }, { label: "Accetto i termini" }));
             PreviewCard.add(new UiCheckbox({}, { label: "Newsletter", value: true }));
-            codeLines = ["new UiCheckbox({}, { label: \"Accetto...\" });"];
+            codeLines = ["new UiCheckbox({}, { label: \"Accetto i termini\" });"];
             break;
 
         case "Radio":
-            PreviewCard.add(new UiCheckbox({ marginBottom: 12 }, { label: "Opzione A", variant: "radio" }));
-            PreviewCard.add(new UiCheckbox({}, { label: "Opzione B", variant: "radio", value: true }));
-            codeLines = ["new UiCheckbox({}, { variant: \"radio\" });"];
+            PreviewCard.add(new UiText("Scegli un'opzione:", { marginBottom: 12, height: 20 }, { color: #0F172A }));
+            PreviewCard.add(new UiCheckbox({ marginBottom: 12 }, { label: "Opzione A", variant: "radio", group: "demo_group" }));
+            PreviewCard.add(new UiCheckbox({}, { label: "Opzione B", variant: "radio", value: true, group: "demo_group" }));
+            codeLines = ["new UiCheckbox({}, { label: \"Opzione A\", variant: \"radio\", group: \"myGroup\" });"];
             break;
             
         case "Switch":
             PreviewCard.add(new UiSwitch({ marginBottom: 12 }, { label: "Notifiche Push" }));
             PreviewCard.add(new UiSwitch({}, { label: "Modalità Scura", value: true }));
-            codeLines = ["new UiSwitch({}, { label: \"Notifiche...\" });"];
+            codeLines = ["new UiSwitch({}, { label: \"Notifiche Push\" });"];
             break;
 
         case "Select":
@@ -353,19 +383,23 @@ function __ui_demo_render_anteprima(area) {
             codeLines = ["new UiCard({ padding: 24 }, [ ... ]);"];
             break;
 
-        case "Modal":
-            PreviewCard.add(new UiButton("Apri Dialog", { width: 150 }, { variant: "primary" }));
-            PreviewCard.add(new UiText("Clicca per simulare l'apertura di un modal.", { marginTop: 12 }, { color: #64748B }));
-            codeLines = ["var modal = new UiModal(\"Titolo\");", "modal.show();"];
-            break;
 
         case "Tabs":
+            if (!variable_struct_exists(global.UI_DEMO, "tabSelected")) global.UI_DEMO.tabSelected = 0;
             var tabRow = new UiNode({ flexDirection: "row", marginBottom: 20 });
             PreviewCard.add(tabRow);
-            tabRow.add(new UiButton("Tab A", { height: 32, marginRight: 4 }, { variant: "primary" }));
-            tabRow.add(new UiButton("Tab B", { height: 32, marginRight: 4 }, { variant: "ghost" }));
-            PreviewCard.add(new UiText("Contenuto della Tab selezionata.", {}, { color: #64748B }));
-            codeLines = ["new UiTabs([\"Profilo\", \"Sicurezza\"]);"];
+            
+            var btnA = new UiButton("Tab A", { height: 32, marginRight: 4 }, { variant: global.UI_DEMO.tabSelected == 0 ? "primary" : "ghost" });
+            btnA.onClick(function() { global.UI_DEMO.tabSelected = 0; __ui_demo_refresh(); });
+            tabRow.add(btnA);
+            
+            var btnB = new UiButton("Tab B", { height: 32, marginRight: 4 }, { variant: global.UI_DEMO.tabSelected == 1 ? "primary" : "ghost" });
+            btnB.onClick(function() { global.UI_DEMO.tabSelected = 1; __ui_demo_refresh(); });
+            tabRow.add(btnB);
+            
+            var tabContent = (global.UI_DEMO.tabSelected == 0) ? "Contenuto della Tab A." : "Contenuto della Tab B.";
+            PreviewCard.add(new UiText(tabContent, {}, { color: #64748B }));
+            codeLines = ["new UiTabs([\"Tab A\", \"Tab B\"]);"];
             break;
 
         case "Accordion":
@@ -407,18 +441,20 @@ function __ui_demo_render_anteprima(area) {
     }
     
     // Code Panel
-    var CodePanel = new UiNode({ width: 450, padding: 24, flexDirection: "column" });
+    var CodePanel = new UiNode({ width: 450, height: 300, padding: 24, flexDirection: "column" });
     CodePanel.onDraw = method(CodePanel, function() {
         draw_set_color(#1E293B);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 12, 12, false);
     });
+    CodePanel.enableScrollbar(#818CF8);
+    CodePanel.enableHorizontalScrollbar(#818CF8);
     MainRow.add(CodePanel);
     
     for (var i = 0; i < array_length(codeLines); i++) {
-        CodePanel.add(new UiText(codeLines[i], { marginBottom: 20, width: "100%", height: 32 }, { color: #818CF8 }));
+        CodePanel.add(new UiText(codeLines[i], { marginBottom: 12, width: 800, height: 24 }, { color: #818CF8, font: fTextSmall }));
     }
 }
 
-function __ui_demo_preview_section(parent, title) {
-    parent.add(new UiText(title, { marginBottom: 16, height: 28 }, { color: #0F172A }));
+function __ui_demo_preview_section(parent, title, mt = 0) {
+    parent.add(new UiText(title, { marginTop: mt, marginBottom: 16, height: 28 }, { color: #0F172A }));
 }

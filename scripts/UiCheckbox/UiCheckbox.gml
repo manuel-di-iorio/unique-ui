@@ -4,74 +4,98 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
     self.label = props[$ "label"] ?? undefined;
     self.onChange = props[$ "onChange"] ?? function(value, input) {};
     self.valueGetter = props[$ "valueGetter"] ?? undefined;
+    self.variant = props[$ "variant"] ?? "checkbox";
     
-    var _marginLeft = self.label == undefined ? 0 : 3 + string_width(self.label) + 20;
+    // Setup container
+    self.flexDirection = "row";
+    self.alignItems = "center";
+    self.pointerEvents = true;
+    self.handpoint = true;
     
+    // Label node
+    if (self.label != undefined) {
+        self.Label = new UiText(self.label, { marginRight: 8 }, { color: global.UI_COL_TEXT_MAIN });
+        self.add(self.Label);
+    }
+    
+    // Input node (the visual box)
     self.Input = new UiNode({
         name: "UiCheckbox.Input", 
-        marginLeft: _marginLeft,
         width: 18,
         height: 18
     });
     self.add(self.Input);
     
     with (self.Input) {
-        self.pointerEvents = true;
-        self.handpoint = true;
-        
-        self.onMouseEnter(function() {
-            global.UI.requestRedraw();
-        });
-        
-        self.onMouseLeave(function() {
-            global.UI.requestRedraw();
-        });
-        
         self.onDraw = function() {
-            var radius = 4;
-            // Checkbox background
-            draw_set_color(self.parent.value ? global.UI_COL_PRIMARY : global.UI_COL_INPUT_BG);
-            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
+            var radius = (self.parent.variant == "radio") ? 9 : 4;
+            var isChecked = self.parent.value;
             
-            // Checkbox border
-            draw_set_color(self.parent.value ? global.UI_COL_PRIMARY : global.UI_COL_BORDER);
-            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, true);
-            
-            if (self.hovered && !self.parent.value) {
-                draw_set_color(global.UI_COL_BTN_HOVER);
+            // Background
+            draw_set_color(isChecked ? global.UI_COL_PRIMARY : global.UI_COL_INPUT_BG);
+            if (self.parent.variant == "radio") {
+                draw_circle(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), 9, false);
+            } else {
                 draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
-                draw_set_color(global.UI_COL_PRIMARY);
+            }
+            
+            // Border
+            draw_set_color(isChecked ? global.UI_COL_PRIMARY : global.UI_COL_BORDER);
+            if (self.parent.variant == "radio") {
+                draw_circle(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), 9, true);
+            } else {
                 draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, true);
             }
             
-            if (self.parent.value) {
-                // Fallback checkmark (cleaner)
+            if (self.parent.hovered && !isChecked) {
+                draw_set_color(global.UI_COL_BTN_HOVER);
+                if (self.parent.variant == "radio") {
+                    draw_circle(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), 9, false);
+                } else {
+                    draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
+                }
+            }
+            
+            if (isChecked) {
                 draw_set_color(c_white);
                 var cx = ~~mean(self.x1, self.x2);
                 var cy = ~~mean(self.y1, self.y2);
-                draw_line_width(cx - 4, cy, cx - 1, cy + 3, 2);
-                draw_line_width(cx - 1, cy + 3, cx + 5, cy - 4, 2);
+                if (self.parent.variant == "radio") {
+                    draw_circle(cx, cy, 4, false);
+                } else {
+                    draw_line_width(cx - 4, cy, cx - 1, cy + 3, 2);
+                    draw_line_width(cx - 1, cy + 3, cx + 5, cy - 4, 2);
+                }
             }
         };
     }
     
-    // Update value from external source
     self.onStep(function() {
         if (self.valueGetter != undefined) self.value = self.valueGetter();
     });
     
     self.onClick(function() {
+        if (self.variant == "radio" && self.value) return true; // Radio cannot be unchecked by clicking itself
+        
         self.value = !self.value;
+        
+        // Radio group logic
+        if (self.variant == "radio" && self.value && self.parent != undefined) {
+            var group = props[$ "group"];
+            if (group != undefined) {
+                var siblings = self.parent.children;
+                for (var i = 0; i < array_length(siblings); i++) {
+                    var s = siblings[i];
+                    if (s != self && s[$ "variant"] == "radio" && s[$ "group"] == group) {
+                        s.value = false;
+                        if (s[$ "onChange"] != undefined) s.onChange(false, s);
+                    }
+                }
+            }
+        }
+        
         self.onChange(self.value, self);
         global.UI.requestRedraw();
         return true;
     });
-    
-    // Draw label if present
-    function onDraw() {
-        if (self.label != undefined) {
-            draw_set_color(global.UI_COL_TEXT_MAIN); draw_set_halign(fa_left); draw_set_valign(fa_middle);
-            draw_text(self.x1 + 3, ~~mean(self.y1, self.y2), self.label);
-        }
-    }
 }

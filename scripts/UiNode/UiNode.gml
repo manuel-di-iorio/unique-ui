@@ -58,6 +58,7 @@ function UiNode(style = {}, props = {}) constructor {
     self.hovered = false;
     self.eventListeners = {};
     self.scrollTop = 0;
+    self.scrollLeft = 0;
     self.isScrollbar = props[$ "isScrollbar"] ?? false;
     self.mounted = false;
     self.scrollableParent = undefined;
@@ -65,6 +66,7 @@ function UiNode(style = {}, props = {}) constructor {
     self.handpoint = props[$ "handpoint"] ?? false;
     self.hasStepEvent = false;
     self.__UiScrollbar = undefined;
+    self.__UiScrollbarH = undefined;
     self.__scrollBoundsCachedScrollTop = undefined;
     self.__scrollBoundsCachedResult = undefined;
     self.borderColor = #191A21;
@@ -180,6 +182,9 @@ function UiNode(style = {}, props = {}) constructor {
         if (variable_struct_exists(elem, "__UiScrollbar") && elem.__UiScrollbar != undefined) {
             __removeFromSpatialTree(elem.__UiScrollbar);
         }
+        if (variable_struct_exists(elem, "__UiScrollbarH") && elem.__UiScrollbarH != undefined) {
+            __removeFromSpatialTree(elem.__UiScrollbarH);
+        }
     };
     
     // Remove all children from the node tree (not from the memory, use destroy() for that)
@@ -273,6 +278,7 @@ function UiNode(style = {}, props = {}) constructor {
         
         flexpanel_node_remove_all_children(self.node);
         self.__UiScrollbar = undefined;
+        self.__UiScrollbarH = undefined;
          
         self.requestUpdate();
         self.children = [];
@@ -406,25 +412,33 @@ function UiNode(style = {}, props = {}) constructor {
         
         // Use parent's scrollTop for cache check (not self.scrollTop which is always 0 for non-scrollable elements)
         var _parentScrollTop = _scrollableParent.scrollTop;
+        var _parentScrollLeft = _scrollableParent.scrollLeft;
         if (self.__scrollBoundsCachedScrollTop == _parentScrollTop && 
+            self.__scrollBoundsCachedScrollLeft == _parentScrollLeft &&
             self.__scrollBoundsCachedValue != undefined && 
             !global.UI.layoutUpdated) {
             return self.__scrollBoundsCachedValue;
         }
         
         self.__scrollBoundsCachedScrollTop = _parentScrollTop;
+        self.__scrollBoundsCachedScrollLeft = _parentScrollLeft;
     
         // Use absolute coordinates (y1/y2) which are already calculated
         // These account for scroll offset and absolute positioning
         var elemTop = self.y1;
         var elemBottom = self.y2;
+        var elemLeft = self.x1;
+        var elemRight = self.x2;
     
         // Parent's visible area in absolute coordinates
         var visibleTop = _scrollableParent.y1;
         var visibleBottom = _scrollableParent.y2;
+        var visibleLeft = _scrollableParent.x1;
+        var visibleRight = _scrollableParent.x2;
 
         // If fully outside then it is invisible
-        if (elemBottom < visibleTop || elemTop > visibleBottom) {
+        if (elemBottom < visibleTop || elemTop > visibleBottom || 
+            elemRight < visibleLeft || elemLeft > visibleRight) {
             self.__scrollBoundsCachedValue = false;
             return false;
         }
@@ -618,12 +632,24 @@ function UiNode(style = {}, props = {}) constructor {
         self.add(self.__UiScrollbar);
     }
     
+    function enableHorizontalScrollbar(thumbColor = undefined) {
+        gml_pragma("forceinline");
+        self.__UiScrollbarH = new UiScrollbar({
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 11
+        }, { isScrollbar: true, thumbColor, orientation: "horizontal" });
+        self.add(self.__UiScrollbarH);
+    }
+    
     function disableScrollbar() {
         gml_pragma("forceinline");
-        if (self.__UiScrollbar != undefined) {
-            self.__UiScrollbar.destroy();
-        }
+        if (self.__UiScrollbar != undefined) self.__UiScrollbar.destroy();
+        if (self.__UiScrollbarH != undefined) self.__UiScrollbarH.destroy();
         self.__UiScrollbar = undefined;
+        self.__UiScrollbarH = undefined;
     }
     
     // Events
@@ -786,10 +812,12 @@ function UiNode(style = {}, props = {}) constructor {
                     var bubbleListeners = current.eventListeners[$ event].bubble;
                     for (var j = 0, jl = array_length(bubbleListeners); j < jl; j++) {
                         if (bubbleListeners[j](current)) {
+                            _stopped = true;
                             break;
                         }
                     }
                 }
+                if (_stopped) break;
             }
         }
         

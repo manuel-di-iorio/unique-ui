@@ -182,9 +182,9 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         elem.layout = flexpanel_node_layout_get_position(elem.node, false);
         elem.width = elem.layout.width;
         elem.height = elem.layout.height;
-        elem.x1 = elem.layout.left; 
+        elem.x1 = elem.layout.left - (elem.scrollableParent ? elem.scrollableParent.scrollLeft : 0); 
         elem.y1 = elem.layout.top - (elem.scrollableParent ? elem.scrollableParent.scrollTop : 0);
-        elem.x2 = elem.layout.left + elem.width; 
+        elem.x2 = elem.x1 + elem.width; 
         elem.y2 = elem.y1 + elem.height;
         elem.xp1 = elem.x1 + elem.layout.paddingLeft;
         elem.yp1 = elem.y1 + elem.layout.paddingTop;
@@ -233,7 +233,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         
         // Determine next scrollable parent to pass to children
         var _nextScrollableParent = _scrollableParent;
-        if (elem.__UiScrollbar != undefined) {
+        if (elem.__UiScrollbar != undefined || elem.__UiScrollbarH != undefined) {
             _nextScrollableParent = elem;
         }
         
@@ -248,7 +248,10 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         if (elem.__UiScrollbar != undefined) {
             self.__updateElemLayout(elem.__UiScrollbar, _nextScrollableParent, _isVisible);
             elem.__UiScrollbar.Thumb.__drawIndex = self.__layoutDrawIndex++;
-            // Thumb doesn't need to be in the spatial tree as it's part of the scrollbar interaction
+        }
+        if (elem.__UiScrollbarH != undefined) {
+            self.__updateElemLayout(elem.__UiScrollbarH, _nextScrollableParent, _isVisible);
+            elem.__UiScrollbarH.Thumb.__drawIndex = self.__layoutDrawIndex++;
         }
     }
     
@@ -509,7 +512,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         }
         
         // Set up scissor for scrollable elements
-        if (elem.__UiScrollbar != undefined) {
+        if (elem.__UiScrollbar != undefined || elem.__UiScrollbarH != undefined) {
             _ownScissor = true;
             var _prevScissor = gpu_get_scissor();
             
@@ -553,9 +556,16 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             } else {
                 gpu_set_scissor(0, 0, self.width, self.height);
             }
-            self.__renderChild(elem.__UiScrollbar, debug, inheritedScissor);
-            elem.__UiScrollbar.Thumb.__drawIndex = self.rootDrawIndex++;
-            elem.__UiScrollbar.Thumb.onDraw();
+            if (elem.__UiScrollbar != undefined) {
+                self.__renderChild(elem.__UiScrollbar, debug, inheritedScissor);
+                elem.__UiScrollbar.Thumb.__drawIndex = self.rootDrawIndex++;
+                elem.__UiScrollbar.Thumb.onDraw();
+            }
+            if (elem.__UiScrollbarH != undefined) {
+                self.__renderChild(elem.__UiScrollbarH, debug, inheritedScissor);
+                elem.__UiScrollbarH.Thumb.__drawIndex = self.rootDrawIndex++;
+                elem.__UiScrollbarH.Thumb.onDraw();
+            }
         }
         
         // Draw the debug element bounds
