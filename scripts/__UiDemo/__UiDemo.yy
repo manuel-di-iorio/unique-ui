@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"__UiDemo",
   "parent":{
-    "name":"Unique UI",
-    "path":"Unique UI.yyp",
+    "name":"Demo",
+    "path":"folders/Demo.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

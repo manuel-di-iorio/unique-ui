@@ -10,8 +10,8 @@
   "name":"oTest",
   "overriddenProperties":[],
   "parent":{
-    "name":"Unique UI",
-    "path":"Unique UI.yyp",
+    "name":"Demo",
+    "path":"folders/Demo.yy",
   },
   "parentObjectId":null,
   "persistent":false,

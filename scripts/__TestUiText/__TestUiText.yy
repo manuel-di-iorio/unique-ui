@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"__TestUiText",
   "parent":{
-    "name":"Tests",
-    "path":"folders/Tests.yy",
+    "name":"UniqueUI__Tests",
+    "path":"folders/UniqueUI__Tests.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -10,7 +10,8 @@
   },
   "defaultScriptType":1,
   "Folders":[
-    {"$GMFolder":"","%Name":"Tests","folderPath":"folders/Tests.yy","name":"Tests","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Demo","folderPath":"folders/Demo.yy","name":"Demo","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"UniqueUI__Tests","folderPath":"folders/UniqueUI__Tests.yy","name":"UniqueUI__Tests","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Unique Math","folderPath":"folders/Unique Math.yy","name":"Unique Math","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"UniqueUI","folderPath":"folders/UniqueUI.yy","name":"UniqueUI","resourceType":"GMFolder","resourceVersion":"2.0",},
   ],
@@ -27,7 +28,7 @@
     {"id":{"name":"fTextItalic","path":"fonts/fTextItalic/fTextItalic.yy",},},
     {"id":{"name":"fTextSmall","path":"fonts/fTextSmall/fTextSmall.yy",},},
     {"id":{"name":"oTest","path":"objects/oTest/oTest.yy",},},
-    {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
+    {"id":{"name":"rmDemo","path":"rooms/rmDemo/rmDemo.yy",},},
     {"id":{"name":"__TestDynamicAABBTree2D","path":"scripts/__TestDynamicAABBTree2D/__TestDynamicAABBTree2D.yy",},},
     {"id":{"name":"__TestEventSystem","path":"scripts/__TestEventSystem/__TestEventSystem.yy",},},
     {"id":{"name":"__TestFocusSystem","path":"scripts/__TestFocusSystem/__TestFocusSystem.yy",},},
@@ -70,7 +71,7 @@
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
-    {"roomId":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
+    {"roomId":{"name":"rmDemo","path":"rooms/rmDemo/rmDemo.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[

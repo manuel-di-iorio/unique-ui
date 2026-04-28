@@ -25,8 +25,8 @@
   "nineSlice":null,
   "origin":0,
   "parent":{
-    "name":"Unique UI",
-    "path":"Unique UI.yyp",
+    "name":"Demo",
+    "path":"folders/Demo.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

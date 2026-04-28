@@ -281,20 +281,25 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         }
     }
     
+    function __processLayout() {
+        gml_pragma("forceinline");
+        self.needsUpdate = false;
+        self.layoutUpdated = true;
+        flexpanel_calculate_layout(self.node, undefined, undefined, flexpanel_direction.LTR);
+        
+        self.__layoutDrawIndex = 0;
+        
+        // Update the elements position when the layout changes
+        self.__updateElemLayout(self);
+    }
+
     // Calculate the layout of this node and its children
     function update() {
         gml_pragma("forceinline"); 
         self.layoutUpdated = false;
         
         if (self.needsUpdate) {
-            self.needsUpdate = false;
-            self.layoutUpdated = true;
-            flexpanel_calculate_layout(self.node, undefined, undefined, flexpanel_direction.LTR);
-            
-            self.__layoutDrawIndex = 0;
-            
-            // Update the elements position when the layout changes
-            self.__updateElemLayout(self);
+            self.__processLayout();
         }
         
         // Cache mouse vars
@@ -492,6 +497,12 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         self.mouseXPrev = self.mouseX;
         self.mouseYPrev = self.mouseY;
         
+        // Final layout pass: if event handlers (like onClick) modified the UI structure,
+        // recalculate layout immediately to avoid a blank frame (flash) in the Draw event.
+        if (self.needsUpdate) {
+            self.__processLayout();
+        }
+
         // Clear dirty elements list for the next frame
         if (array_length(self.dirtyElements) > 0) {
             self.dirtyElements = [];
@@ -590,6 +601,11 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         
         self.rootDrawIndex = 0; 
         
+        // Ensure layout is up to date before rendering to prevent flashes
+        if (self.needsUpdate) {
+            self.__processLayout();
+        }
+
         if (self.layoutUpdated || self.needsRedraw) {
             self.needsRedraw = false;
             var currentBlendMode = gpu_get_blendmode_ext_sepalpha();
