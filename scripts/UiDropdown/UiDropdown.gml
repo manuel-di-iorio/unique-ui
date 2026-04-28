@@ -76,9 +76,23 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             draw_set_color(global.UI_COL_BORDER);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, true);
 
-            // Button arrow
-            draw_set_color(global.UI_COL_TEXT_DIM);
-            draw_triangle(self.x2 - 17, self.y1 + 10, self.x2 - 7, self.y1 + 10, self.x2 - 12, self.y2 - 10, false);
+            // Button arrow (Modern Chevron)
+            var arrowCol = self.hovered ? #0F172A : #64748B;
+            var cx = self.x2 - 16;
+            var cy = floor(self.y1 + self.height/2);
+            var size = 3;
+            var isOpen = self.parent.List != undefined;
+            
+            draw_set_color(arrowCol);
+            if (isOpen) {
+                // Up Chevron
+                draw_line_width(cx - size, cy + size/2, cx, cy - size/2, 1.5);
+                draw_line_width(cx, cy - size/2, cx + size, cy + size/2, 1.5);
+            } else {
+                // Down Chevron
+                draw_line_width(cx - size, cy - size/2, cx, cy + size/2, 1.5);
+                draw_line_width(cx, cy + size/2, cx + size, cy - size/2, 1.5);
+            }
             
             // Selected value
             draw_set_halign(fa_left); draw_set_valign(fa_middle); draw_set_color(global.UI_COL_TEXT_MAIN);

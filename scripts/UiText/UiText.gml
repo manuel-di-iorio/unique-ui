@@ -7,7 +7,7 @@ function UiText(text = "", style = {}, props = {}): UiNode(style, props) constru
     self.valign = fa_top;
     self.valueGetter = props[$ "valueGetter"];
     self.icon = props[$ "icon"];
-    self.color = props[$ "color"] ?? global.UI_COL_TEXT_MAIN;
+    self.color = props[$ "color"] ?? c_white;
     self.font = props[$ "font"] ?? fText;
     
     function computeSize() {

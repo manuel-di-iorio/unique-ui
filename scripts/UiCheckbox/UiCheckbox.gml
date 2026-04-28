@@ -20,7 +20,7 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
         width: 18,
         height: 18,
         marginRight: 10
-    });
+    }, { pointerEvents: true, handpoint: true });
     self.add(self.Input);
     
     // Label node second

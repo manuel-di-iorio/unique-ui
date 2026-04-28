@@ -47,7 +47,7 @@ function ui_demo_create() {
         draw_set_color(#312E81);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 4, 4, false);
     });
-    VersionBadge.add(new UiText("v1.0.0", {}, { color: #818CF8 }));
+    VersionBadge.add(new UiText(global.UI_VERSION, {}, { color: #818CF8 }));
     LogoRow.add(VersionBadge);
     
     // Search

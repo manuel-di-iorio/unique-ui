@@ -5,9 +5,9 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
     self.dragStartScroll = undefined; 
     self.maxScroll = 0;
     self.pointerEvents = true;
-    self.__contentHeight = undefined;
-    self.__maxThumbPosition = undefined;
-    self.__maxScroll = undefined;
+    self.__contentHeight = 0;
+    self.__maxThumbPosition = 0;
+    self.__maxScroll = 0;
     self.thumbColor = props[$ "thumbColor"] ?? global.UI_COL_BOX;
     self.orientation = props[$ "orientation"] ?? "vertical";
     self.isVertical = self.orientation == "vertical";
@@ -25,20 +25,21 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
     
     function onMount() {
         if (self.isVertical) {
-            self.parent.onWheelUp(function(ev) {
+            self.parent.onWheelUp(method(self, function(ev) {
+                if (self.parent == undefined) return;
                 self.parent.scrollTop = max(0, self.parent.scrollTop - 60);
                 global.UI.requestUpdate();
                 global.UI.requestRedraw();
-            });
+            }));
             
-            self.parent.onWheelDown(function(ev) {
+            self.parent.onWheelDown(method(self, function(ev) {
+                if (self.parent == undefined) return;
                 self.parent.scrollTop = min(self.__maxScroll, self.parent.scrollTop + 60);
                 global.UI.requestUpdate();
                 global.UI.requestRedraw();
-            });
+            }));
         } else {
-            // Horizontal wheel (Shift+Wheel is common but GM doesn't distinguish natively easily, 
-            // so we might just use wheel if it's a dedicated horizontal area or just drag)
+            // Horizontal wheel
         }
     }
     
@@ -121,7 +122,7 @@ function UiScrollbarThumb(style = {}, props = {}): UiNode(style, props) construc
     setName(style[$ "name"] ?? "__UiScrollbar.Thumb");
     self.thumbColor = props[$ "thumbColor"];
     
-    self.onMouseDown(function(ev) {
+    self.onMouseDown(method(self, function(ev) {
         self.parent.dragged = true;
         self.parent.dragStartMouse = self.parent.isVertical ? global.UI.mouseY : global.UI.mouseX;
         self.parent.dragStartScroll = self.parent.isVertical ? self.parent.parent.scrollTop : self.parent.parent.scrollLeft;
@@ -135,9 +136,9 @@ function UiScrollbarThumb(style = {}, props = {}): UiNode(style, props) construc
             self.setTop(-3);
         }
         return true;
-    });
+    }));
     
-    self.onStep(function() {
+    self.onStep(method(self, function() {
         if (global.UI.mouseReleased) {
             if (self.parent.dragged) {
                 self.parent.dragged = false;
@@ -151,7 +152,7 @@ function UiScrollbarThumb(style = {}, props = {}): UiNode(style, props) construc
                 }
             }
         }
-    });
+    }));
     
     function onDraw() {
         if (self.parent.__maxScroll <= 0) return;
