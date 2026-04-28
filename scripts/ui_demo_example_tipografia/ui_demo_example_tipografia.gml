@@ -1,0 +1,24 @@
+function ui_demo_example_tipografia(PreviewCard) {
+    __ui_demo_preview_section(PreviewCard, "Headings");
+    PreviewCard.add(new UiText("Heading 1", { marginBottom: 4, height: 42 }, { color: #0F172A, font: fText }));
+    PreviewCard.add(new UiText("Heading 2", { marginBottom: 4, height: 32 }, { color: #1E293B, font: fText }));
+    PreviewCard.add(new UiText("Heading 3", { marginBottom: 24, height: 24 }, { color: #334155, font: fTextSmall }));
+    
+    __ui_demo_preview_section(PreviewCard, "Body Text");
+    PreviewCard.add(new UiText("Design is not just what it looks like and feels like. Design is how it works. - Steve Jobs", { width: "100%", height: 60, marginBottom: 12 }, { color: #64748B }));
+    PreviewCard.add(new UiText("The quick brown fox jumps over the lazy dog.", { width: "100%", height: 20 }, { color: #94A3B8, font: fTextSmall }));
+    
+    __ui_demo_preview_section(PreviewCard, "Font Disponibili", 40);
+    var fontGrid = new UiNode({ flexDirection: "column", width: "100%" });
+    PreviewCard.add(fontGrid);
+    __ui_demo_doc_row(fontGrid, "fText", "font", "Font standard (12pt)");
+    __ui_demo_doc_row(fontGrid, "fTextSmall", "font", "Font piccolo (10pt)");
+    __ui_demo_doc_row(fontGrid, "fTextItalic", "font", "Font corsivo");
+    
+    return [
+        "new UiText(\"Heading 1\", { height: 42 }, { font: fText });",
+        "new UiText(\"Heading 2\", { height: 32 }, { font: fText });",
+        "new UiText(\"Body Text\", { width: \"100%\" }, { color: #64748B });",
+        "new UiText(\"Small\", { height: 20 }, { font: fTextSmall });"
+    ];
+}

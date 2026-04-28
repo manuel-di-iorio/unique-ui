@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ui_demo_example_checkbox",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ui_demo_example_checkbox",
+  "parent":{
+    "name":"Examples",
+    "path":"folders/Demo/Examples.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
