@@ -1,5 +1,8 @@
 function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
     var _this = self;
+    
+    flexpanel_node_style_set_flex_direction(self.node, flexpanel_flex_direction.row);
+    flexpanel_node_style_set_align_items(self.node, flexpanel_align.center);
     setName(props[$ "name"] ?? "UiDropdown");
     self.value = props[$ "value"];
     self.items = props[$ "items"] ?? [];
@@ -37,7 +40,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
     });
 
     // Draw the label if present
-   function onDraw() { }
+   self.onDraw = function() { };
     
     // Input
     self.Input = new UiNode({

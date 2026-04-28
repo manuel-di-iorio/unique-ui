@@ -28,7 +28,7 @@ function ui_demo_create() {
     // === SIDEBAR ===
     var Sidebar = new UiNode({
         name: "Sidebar", width: 260, height: "100%", flexDirection: "column",
-        paddingTop: 32, paddingLeft: 8, paddingRight: 8, paddingBottom: 32,
+        paddingTop: 16, paddingLeft: 8, paddingRight: 8, paddingBottom: 16,
     });
     Sidebar.onDraw = method(Sidebar, function() {
         draw_set_color(global.UI_COL_BG_SIDEBAR);
@@ -226,10 +226,18 @@ function __ui_demo_tab_item(parent, text) {
 }
 
 function __ui_demo_render_anteprima(area) {
-    var MainRow = new UiNode({ flexDirection: "row", width: "100%", alignItems: "flex-start" });
+    var MainRow = new UiNode({ 
+        flexDirection: "row", 
+        width: "100%"
+    });
     area.add(MainRow);
     
-    var PreviewCard = new UiNode({ flex: 1, marginRight: 24, padding: 32, flexDirection: "column" });
+    var PreviewCard = new UiNode({
+        width: "60%", 
+        padding: 30,
+        flexDirection: "column"
+    });
+    PreviewCard.enableScrollbar(global.UI_COL_PRIMARY);
     PreviewCard.enableHorizontalScrollbar(global.UI_COL_PRIMARY);
     PreviewCard.onDraw = method(PreviewCard, function() {
         draw_set_color(c_white);
@@ -451,7 +459,7 @@ function __ui_demo_render_anteprima(area) {
     }
     
     // Code Panel
-    var CodePanel = new UiNode({ width: 450, height: 300, padding: 24, flexDirection: "column" });
+    var CodePanel = new UiNode({ flex: 1, padding: 24, flexDirection: "column" });
     CodePanel.onDraw = method(CodePanel, function() {
         draw_set_color(#1E293B);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 12, 12, false);

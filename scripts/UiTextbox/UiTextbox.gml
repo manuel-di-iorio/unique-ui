@@ -1,4 +1,3 @@
-// @todo doc: report fix on drag selection
 #macro TEXTBOX_INITIAL_DELAY 400    /* ms before starting key repeat */
 #macro TEXTBOX_REPEAT_DELAY 50      /* ms between each repeat */
 #macro TEXTBOX_CURSOR_BLINK 500     /* ms for cursor blinking */
@@ -22,6 +21,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
     self.iconLeft = props[$ "iconLeft"];
     self.iconRight = props[$ "iconRight"];
     
+    flexpanel_node_style_set_flex_direction(self.node, flexpanel_flex_direction.row);
     flexpanel_node_style_set_align_items(self.node, flexpanel_align.center);
     
     if (self.label != undefined) {
@@ -37,11 +37,11 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
         flexDirection: "row",
         alignItems: "center",
         paddingHorizontal: 12
-    }, { focusable: true, border: true });
+    }, { pointerEvents: true, focusable: true, border: true });
     self.add(self.Input);
     
     // Draw label if present
-    function onDraw() { }
+    self.onDraw = function() { };
     
     // Label and icons should not block pointer events
     if (self.iconLeft != undefined) {
@@ -942,6 +942,4 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
         if (self.valueGetter != undefined && !self.Input.focused) self.value = self.valueGetter();
     });
     
-    // Draw label if present
-    function onDraw() { }
 }
