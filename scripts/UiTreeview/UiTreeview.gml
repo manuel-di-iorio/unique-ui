@@ -83,6 +83,27 @@ function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
             _filterItem(rootItems[i]);
         }
     }
+
+    /**
+     * Validate if an item can be dropped onto another
+     */
+    function validateDrop(dragged, target) {
+        if (dragged == target) return false;
+        if (dragged.assetType == "Texture" || dragged.assetType == "Material") return false;
+        if (target.assetType != "Folder") return false;
+        return true;
+    }
+
+    /**
+     * Collapse all items in the tree
+     */
+    function collapseAll() {
+        self.Items.traverseChildren(function(child) {
+            if (child[$ "isTreeviewItem"]) {
+                child.collapseItem();
+            }
+        });
+    }
 }
 
 /**
@@ -208,6 +229,17 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     
     function addChild(childItem) {
         self.Items.add(childItem);
+        self.__updateArrowVisibility();
         return self;
     }
+
+    /**
+     * Update arrow visibility based on children
+     */
+    function __updateArrowVisibility() {
+        self.Arrow.visible = (self.Items.childrenLength > 0);
+        return self;
+    }
+
+    self.__updateArrowVisibility();
 }
