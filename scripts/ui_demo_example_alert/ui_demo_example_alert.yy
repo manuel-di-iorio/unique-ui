@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ui_demo_example_alert",
   "parent":{
-    "name":"Examples",
-    "path":"folders/Demo/Examples.yy",
+    "name":"Alert",
+    "path":"folders/Demo/Examples/Alert.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

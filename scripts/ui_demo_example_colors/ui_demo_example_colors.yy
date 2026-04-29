@@ -1,12 +1,12 @@
 {
   "$GMScript":"v1",
-  "%Name":"ui_demo_example_colori",
+  "%Name":"ui_demo_example_colors",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"ui_demo_example_colori",
+  "name":"ui_demo_example_colors",
   "parent":{
-    "name":"Examples",
-    "path":"folders/Demo/Examples.yy",
+    "name":"Colors",
+    "path":"folders/Demo/Examples/Colors.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

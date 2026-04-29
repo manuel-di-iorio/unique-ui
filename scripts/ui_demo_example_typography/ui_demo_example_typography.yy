@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ui_demo_example_typography",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ui_demo_example_typography",
+  "parent":{
+    "name":"Typography",
+    "path":"folders/Demo/Examples/Typography.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

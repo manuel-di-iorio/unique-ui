@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ui_demo_example_treeview",
   "parent":{
-    "name":"Examples",
-    "path":"folders/Demo/Examples.yy",
+    "name":"Treeview",
+    "path":"folders/Demo/Examples/Treeview.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

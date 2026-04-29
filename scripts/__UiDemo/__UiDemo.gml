@@ -388,8 +388,8 @@ function __ui_demo_preview_section(parent, title, mt = 0) {
 function __ui_demo_render_component_example(page, parent) {
     var codeLines = [];
     switch (page) {
-        case "Colori":      codeLines = ui_demo_example_colori(parent); break;
-        case "Tipografia":  codeLines = ui_demo_example_tipografia(parent); break;
+        case "Colori":      codeLines = ui_demo_example_colors(parent); break;
+        case "Tipografia":  codeLines = ui_demo_example_typography(parent); break;
         case "Button":      codeLines = ui_demo_example_button(parent); break;
         case "Input":       codeLines = ui_demo_example_input(parent); break;
         case "Checkbox":    codeLines = ui_demo_example_checkbox(parent); break;

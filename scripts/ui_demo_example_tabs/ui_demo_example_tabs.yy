@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ui_demo_example_tabs",
   "parent":{
-    "name":"Examples",
-    "path":"folders/Demo/Examples.yy",
+    "name":"Tabs",
+    "path":"folders/Demo/Examples/Tabs.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

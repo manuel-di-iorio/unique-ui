@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ui_demo_example_sprite",
   "parent":{
-    "name":"Examples",
-    "path":"folders/Demo/Examples.yy",
+    "name":"Sprite",
+    "path":"folders/Demo/Examples/Sprite.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

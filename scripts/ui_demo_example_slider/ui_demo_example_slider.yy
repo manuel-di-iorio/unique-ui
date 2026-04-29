@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ui_demo_example_slider",
   "parent":{
-    "name":"Examples",
-    "path":"folders/Demo/Examples.yy",
+    "name":"Slider",
+    "path":"folders/Demo/Examples/Slider.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ui_demo_example_dropdown",
   "parent":{
-    "name":"Examples",
-    "path":"folders/Demo/Examples.yy",
+    "name":"Dropdown",
+    "path":"folders/Demo/Examples/Dropdown.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

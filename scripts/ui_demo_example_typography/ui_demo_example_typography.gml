@@ -1,4 +1,4 @@
-function ui_demo_example_tipografia(PreviewCard) {
+function ui_demo_example_typography(PreviewCard) {
     __ui_demo_preview_section(PreviewCard, "Headings");
     PreviewCard.add(new UiText("Heading 1", { marginBottom: 4, height: 42 }, { color: #0F172A, font: fText }));
     PreviewCard.add(new UiText("Heading 2", { marginBottom: 4, height: 32 }, { color: #1E293B, font: fText }));

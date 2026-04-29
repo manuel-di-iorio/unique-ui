@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ui_demo_example_card",
   "parent":{
-    "name":"Examples",
-    "path":"folders/Demo/Examples.yy",
+    "name":"Card",
+    "path":"folders/Demo/Examples/Card.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

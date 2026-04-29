@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ui_demo_example_accordion",
   "parent":{
-    "name":"Examples",
-    "path":"folders/Demo/Examples.yy",
+    "name":"Accordion",
+    "path":"folders/Demo/Examples/Accordion.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

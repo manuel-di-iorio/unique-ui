@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ui_demo_example_input",
   "parent":{
-    "name":"Examples",
-    "path":"folders/Demo/Examples.yy",
+    "name":"Input",
+    "path":"folders/Demo/Examples/Input.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

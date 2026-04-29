@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ui_demo_example_contextmenu",
   "parent":{
-    "name":"Examples",
-    "path":"folders/Demo/Examples.yy",
+    "name":"ContextMenu",
+    "path":"folders/Demo/Examples/ContextMenu.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

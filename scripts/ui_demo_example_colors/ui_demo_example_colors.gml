@@ -1,4 +1,4 @@
-function ui_demo_example_colori(PreviewCard) {
+function ui_demo_example_colors(PreviewCard) {
     __ui_demo_preview_section(PreviewCard, "Palette");
     var grid = new UiNode({ flexDirection: "row", flexWrap: "wrap", width: "100%" });
     PreviewCard.add(grid);

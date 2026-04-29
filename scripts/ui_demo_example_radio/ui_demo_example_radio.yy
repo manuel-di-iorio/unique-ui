@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ui_demo_example_radio",
   "parent":{
-    "name":"Examples",
-    "path":"folders/Demo/Examples.yy",
+    "name":"Radio",
+    "path":"folders/Demo/Examples/Radio.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

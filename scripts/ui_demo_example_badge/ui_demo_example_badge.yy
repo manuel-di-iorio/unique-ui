@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ui_demo_example_badge",
   "parent":{
-    "name":"Examples",
-    "path":"folders/Demo/Examples.yy",
+    "name":"Badge",
+    "path":"folders/Demo/Examples/Badge.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

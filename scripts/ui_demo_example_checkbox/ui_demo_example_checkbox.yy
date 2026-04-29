@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ui_demo_example_checkbox",
   "parent":{
-    "name":"Examples",
-    "path":"folders/Demo/Examples.yy",
+    "name":"Checkbox",
+    "path":"folders/Demo/Examples/Checkbox.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",
