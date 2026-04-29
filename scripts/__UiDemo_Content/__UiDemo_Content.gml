@@ -248,7 +248,7 @@ function __ui_demo_get_examples_map() {
         "Colors":      ui_demo_example_colors,
         "Typography":  ui_demo_example_typography,
         "Button":      ui_demo_example_button,
-        "Input":       ui_demo_example_input,
+        "Textbox":     ui_demo_example_textbox,
         "Checkbox":    ui_demo_example_checkbox,
         "Radio":       ui_demo_example_radio,
         "Switch":      ui_demo_example_switch,

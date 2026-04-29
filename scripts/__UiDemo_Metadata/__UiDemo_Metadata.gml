@@ -11,7 +11,7 @@ function __ui_demo_get_component_metadata() {
                 { name: "autoResize", type: "boolean", desc: "Automatically resizes based on content" }
             ]
         },
-        "Input": {
+        "Textbox": {
             desc: "Text field for user data entry.",
             props: [
                 { name: "label", type: "string", desc: "Descriptive label above the field" },

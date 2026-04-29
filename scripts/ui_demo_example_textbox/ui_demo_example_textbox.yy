@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ui_demo_example_textbox",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ui_demo_example_textbox",
+  "parent":{
+    "name":"Textbox",
+    "path":"folders/Demo/Examples/Textbox.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
