@@ -26,7 +26,7 @@ function __ui_demo_refresh() {
     __ui_demo_tab_item(TabRow, "Performance");
     
     if (global.UI_DEMO.currentTab == "Preview") {
-        area.disableScrollbar();
+        area.enableScrollbar(global.UI_COL_PRIMARY);
         __ui_demo_render_anteprima(area);
     } else if (global.UI_DEMO.currentTab == "Documentation") {
         area.enableScrollbar(global.UI_COL_PRIMARY);
@@ -70,9 +70,9 @@ function __ui_demo_render_documentazione(area) {
 
 function __ui_demo_doc_row(parent, name, type, desc) {
     var Row = new UiNode({ flexDirection: "row", marginBottom: 12, width: "100%" });
-    Row.add(new UiText(name, { width: 220 }, { color: #6366F1 }));
+    Row.add(new UiText(name, { width: 220 }, { color: global.UI_COL_PRIMARY }));
     Row.add(new UiText(type, { width: 90 }, { color: #94A3B8 }));
-    Row.add(new UiText(desc, { flex: 1 }, { color: #64748B }));
+    Row.add(new UiText(desc, { flex: 1 }, { color: #64748B, wrap: true }));
     parent.add(Row);
 }
 
