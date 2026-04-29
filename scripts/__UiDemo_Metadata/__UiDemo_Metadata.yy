@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"__UiDemo_Metadata",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"__UiDemo_Metadata",
+  "parent":{
+    "name":"Demo",
+    "path":"folders/Demo.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

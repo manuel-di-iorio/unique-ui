@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"__UiDemo_Sidebar",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"__UiDemo_Sidebar",
+  "parent":{
+    "name":"Demo",
+    "path":"folders/Demo.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
