@@ -1,5 +1,5 @@
 function ui_demo_example_colori(PreviewCard) {
-    __ui_demo_preview_section(PreviewCard, "Tavolozza");
+    __ui_demo_preview_section(PreviewCard, "Palette");
     var grid = new UiNode({ flexDirection: "row", flexWrap: "wrap", width: "100%" });
     PreviewCard.add(grid);
     var colors = [
@@ -25,12 +25,12 @@ function ui_demo_example_colori(PreviewCard) {
         grid.add(box);
     }
     
-    __ui_demo_preview_section(PreviewCard, "Tokens Semantici", 40);
+    __ui_demo_preview_section(PreviewCard, "Semantic Tokens", 40);
     var semGrid = new UiNode({ flexDirection: "column", width: "100%" });
     PreviewCard.add(semGrid);
-    __ui_demo_doc_row(semGrid, "global.UI_COL_PRIMARY", "color", "Colore principale del brand");
-    __ui_demo_doc_row(semGrid, "global.UI_COL_BG_MAIN", "color", "Sfondo dell'area di lavoro");
-    __ui_demo_doc_row(semGrid, "global.UI_COL_TEXT_MAIN", "color", "Colore del testo principale");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_PRIMARY", "color", "Main brand color");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_BG_MAIN", "color", "Workspace background color");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_TEXT_MAIN", "color", "Main text color");
     
     return [
         "global.UI_COL_PRIMARY = #6366F1;",

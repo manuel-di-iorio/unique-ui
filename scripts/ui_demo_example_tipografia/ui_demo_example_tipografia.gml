@@ -8,12 +8,12 @@ function ui_demo_example_tipografia(PreviewCard) {
     PreviewCard.add(new UiText("Design is not just what it looks like and feels like. Design is how it works. - Steve Jobs", { width: "100%", marginBottom: 12 }, { color: #64748B }));
     PreviewCard.add(new UiText("The quick brown fox jumps over the lazy dog.", { width: "100%" }, { color: #94A3B8, font: fTextSmall }));
     
-    __ui_demo_preview_section(PreviewCard, "Font Disponibili", 40);
+    __ui_demo_preview_section(PreviewCard, "Available Fonts", 40);
     var fontGrid = new UiNode({ flexDirection: "column", width: "100%" });
     PreviewCard.add(fontGrid);
-    __ui_demo_doc_row(fontGrid, "fText", "font", "Font standard (12pt)");
-    __ui_demo_doc_row(fontGrid, "fTextSmall", "font", "Font piccolo (11pt)");
-    __ui_demo_doc_row(fontGrid, "fTextItalic", "font", "Font corsivo");
+    __ui_demo_doc_row(fontGrid, "fText", "font", "Standard font (12pt)");
+    __ui_demo_doc_row(fontGrid, "fTextSmall", "font", "Small font (11pt)");
+    __ui_demo_doc_row(fontGrid, "fTextItalic", "font", "Italic font");
     
     return [
         "new UiText(\"Heading 1\", { height: 42 }, { font: fText });",

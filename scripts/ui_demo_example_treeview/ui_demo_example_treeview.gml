@@ -1,9 +1,9 @@
 function ui_demo_example_treeview(PreviewCard) {
-    __ui_demo_preview_section(PreviewCard, "Esempio Gerarchia");
+    __ui_demo_preview_section(PreviewCard, "Hierarchy Example");
     var tree = new UiTreeview({ flex: 1, width: "100%" });
     PreviewCard.add(tree);
     
-    var root = new UiTreeviewItem({ name: "Progetto" }, { treeview: tree, assetType: "Folder", collapsed: false });
+    var root = new UiTreeviewItem({ name: "Project" }, { treeview: tree, assetType: "Folder", collapsed: false });
     tree.Items.add(root);
     
     var folder1 = new UiTreeviewItem({ name: "Sprites" }, { treeview: tree, assetType: "Folder" });

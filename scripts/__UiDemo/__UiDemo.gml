@@ -6,7 +6,7 @@ function ui_demo_create() {
     
     global.UI_DEMO = {
         currentPage: "Button",
-        currentTab: "Anteprima",
+        currentTab: "Preview",
         ScrollArea: undefined,
         BreadcrumbPage: undefined,
         SidebarItems: undefined
@@ -55,7 +55,7 @@ function ui_demo_create() {
     
     // Search
     var SearchInput = new UiTextbox({ width: "100%", height: 36, marginBottom: 32 }, {
-        placeholder: "Cerca...",
+        placeholder: "Search...",
         value: global.UI_DEMO.SearchQuery,
         onChange: function(val) {
             global.UI_DEMO.SearchQuery = string_lower(val);
@@ -95,13 +95,13 @@ function ui_demo_create() {
     Content.add(TopBar);
     
     var Breadcrumbs = new UiNode({ flexDirection: "row", flex: 1 });
-    Breadcrumbs.add(new UiText("Componenti", { marginRight: 8 }, { color: #64748B }));
+    Breadcrumbs.add(new UiText("Components", { marginRight: 8 }, { color: #64748B }));
     Breadcrumbs.add(new UiText(">", { marginRight: 8 }, { color: #CBD5E1 }));
     global.UI_DEMO.BreadcrumbPage = new UiText("Button", {}, { color: #0F172A });
     Breadcrumbs.add(global.UI_DEMO.BreadcrumbPage);
     TopBar.add(Breadcrumbs);
     
-    var DocLink = new UiText("Documentazione", { marginRight: 24 }, { color: #64748B, pointerEvents: true, handpoint: true });
+    var DocLink = new UiText("Documentation", { marginRight: 24 }, { color: #64748B, pointerEvents: true, handpoint: true });
     DocLink.onClick(function() {
         url_open("https://manuel-di-iorio.github.io/unique-ui");
     });
@@ -121,11 +121,11 @@ function __ui_demo_render_sidebar() {
     var parent = global.UI_DEMO.SidebarItems;
     parent.destroyChildren(true);
     
-    __ui_demo_sidebar_label(parent, "FONDAMENTI");
-    __ui_demo_sidebar_item(parent, "Colori");
-    __ui_demo_sidebar_item(parent, "Tipografia");
+    __ui_demo_sidebar_label(parent, "FOUNDATIONS");
+    __ui_demo_sidebar_item(parent, "Colors");
+    __ui_demo_sidebar_item(parent, "Typography");
     
-    __ui_demo_sidebar_label(parent, "COMPONENTI", 20);
+    __ui_demo_sidebar_label(parent, "COMPONENTS", 20);
     var comps = ["Button", "Input", "Select", "Checkbox", "Radio", "Switch", "Badge", "Alert", "Card", "Tabs", "Tooltip", "Slider", "Accordion", "Sprite", "ContextMenu", "Treeview"];
     for (var i = 0; i < array_length(comps); i++) {
         var name = comps[i];
@@ -141,7 +141,7 @@ function __ui_demo_sidebar_item(parent, text) {
     });
     btn.onClick(method({ text }, function() {
         global.UI_DEMO.currentPage = text;
-        global.UI_DEMO.currentTab = "Anteprima";
+        global.UI_DEMO.currentTab = "Preview";
         __ui_demo_render_sidebar();
         __ui_demo_refresh();
     }));
@@ -165,7 +165,7 @@ function __ui_demo_refresh() {
     
     var metadata = __ui_demo_get_component_metadata();
     var componentData = metadata[$ global.UI_DEMO.currentPage];
-    var desc = componentData != undefined ? componentData.desc : "Esplora le potenzialità del componente " + global.UI_DEMO.currentPage;
+    var desc = componentData != undefined ? componentData.desc : "Explore the capabilities of the component " + global.UI_DEMO.currentPage;
     Hero.add(new UiText(desc, {}, { color: #64748B }));
     
     // Tabs
@@ -175,14 +175,14 @@ function __ui_demo_refresh() {
         draw_line(self.x1, self.y2, self.x2, self.y2);
     });
     area.add(TabRow);
-    __ui_demo_tab_item(TabRow, "Anteprima");
-    __ui_demo_tab_item(TabRow, "Documentazione");
+    __ui_demo_tab_item(TabRow, "Preview");
+    __ui_demo_tab_item(TabRow, "Documentation");
     __ui_demo_tab_item(TabRow, "Performance");
     
-    if (global.UI_DEMO.currentTab == "Anteprima") {
+    if (global.UI_DEMO.currentTab == "Preview") {
         area.disableScrollbar();
         __ui_demo_render_anteprima(area);
-    } else if (global.UI_DEMO.currentTab == "Documentazione") {
+    } else if (global.UI_DEMO.currentTab == "Documentation") {
         area.enableScrollbar(global.UI_COL_PRIMARY);
         __ui_demo_render_documentazione(area);
     } else {
@@ -200,11 +200,11 @@ function __ui_demo_render_documentazione(area) {
     var Doc = new UiNode({ width: "100%", flexDirection: "column" });
     area.add(Doc);
     
-    Doc.add(new UiText("Uso", { marginBottom: 16, height: 28 }, { color: #0F172A }));
-    Doc.add(new UiText("Il componente " + global.UI_DEMO.currentPage + " è progettato per essere altamente personalizzabile.", { marginBottom: 32 }, { color: #64748B }));
+    Doc.add(new UiText("Usage", { marginBottom: 16, height: 28 }, { color: #0F172A }));
+    Doc.add(new UiText("The " + global.UI_DEMO.currentPage + " component is designed to be highly customizable.", { marginBottom: 32 }, { color: #64748B }));
     
     if (componentData != undefined && variable_struct_exists(componentData, "props")) {
-        Doc.add(new UiText("Proprietà", { marginBottom: 16, height: 28 }, { color: #0F172A }));
+        Doc.add(new UiText("Properties", { marginBottom: 16, height: 28 }, { color: #0F172A }));
         var Table = new UiNode({ width: "100%", flexDirection: "column", padding: 16 });
         Table.onDraw = method(Table, function() {
             draw_set_color(#F8FAFC);
@@ -218,7 +218,7 @@ function __ui_demo_render_documentazione(area) {
             __ui_demo_doc_row(Table, p.name, p.type, p.desc);
         }
     } else {
-        Doc.add(new UiText("Nessuna proprietà specifica documentata per questo componente.", { marginBottom: 32 }, { color: #64748B }));
+        Doc.add(new UiText("No specific properties documented for this component.", { marginBottom: 32 }, { color: #64748B }));
     }
 }
 
@@ -234,8 +234,8 @@ function __ui_demo_render_performance(area) {
     var Perf = new UiNode({ width: "100%", flexDirection: "column" });
     area.add(Perf);
     
-    Perf.add(new UiText("Performance Live", { marginBottom: 8, height: 28 }, { color: #0F172A }));
-    Perf.add(new UiText("Metriche runtime in tempo reale del componente corrente. Interagisci con la sandbox per stressare input, rendering e layout.", { marginBottom: 20 }, { color: #64748B }));
+    Perf.add(new UiText("Live Performance", { marginBottom: 8, height: 28 }, { color: #0F172A }));
+    Perf.add(new UiText("Real-time runtime metrics of the current component. Interact with the sandbox to stress input, rendering, and layout.", { marginBottom: 20 }, { color: #64748B }));
     
     global.UI_DEMO.PerfLive = {
         lastTime: current_time,
@@ -268,10 +268,10 @@ function __ui_demo_render_performance(area) {
     }}));
     Health.add(new UiText("", {}, { color: #64748B, valueGetter: function() {
         var p = global.UI_DEMO.PerfLive;
-        return "Nodes -> total: " + string(p.totalNodes) + " | visibili: " + string(p.visibleNodes) + " | interattivi: " + string(p.interactiveNodes) + " | sandbox: " + string(p.sandboxNodes);
+        return "Nodes -> total: " + string(p.totalNodes) + " | visible: " + string(p.visibleNodes) + " | interactive: " + string(p.interactiveNodes) + " | sandbox: " + string(p.sandboxNodes);
     }}));
     
-    Perf.add(new UiText("Sandbox componente", { marginBottom: 10, height: 28 }, { color: #0F172A }));
+    Perf.add(new UiText("Component Sandbox", { marginBottom: 10, height: 28 }, { color: #0F172A }));
     
     var Box = new UiNode({ width: "100%", height: 320, padding: 18, marginBottom: 16, flexDirection: "column" });
     Box.onDraw = method(Box, function() {
@@ -408,8 +408,8 @@ function __ui_demo_render_component_example(page, parent) {
         case "Treeview":    codeLines = ui_demo_example_treeview(parent); break;
         
         default:
-            parent.add(new UiText("Anteprima per " + page + " in arrivo.", {}, { color: #64748B }));
-            codeLines = ["// Esempio non disponibile"];
+            parent.add(new UiText("Preview for " + page + " coming soon.", {}, { color: #64748B }));
+            codeLines = ["// Example not available"];
     }
     return codeLines;
 }
@@ -417,140 +417,140 @@ function __ui_demo_render_component_example(page, parent) {
 function __ui_demo_get_component_metadata() {
     return {
         "Button": {
-            desc: "Permette agli utenti di compiere un'azione con un singolo clic.",
+            desc: "Allows users to perform an action with a single click.",
             props: [
-                { name: "variant", type: "string", desc: "Aspetto visivo: 'primary', 'secondary', 'outline', 'ghost', 'danger'" },
-                { name: "halign", type: "constant", desc: "Allineamento orizzontale: fa_left, fa_center, fa_right" },
-                { name: "outline", type: "boolean", desc: "Mostra un bordo sottile" },
-                { name: "enableRipple", type: "boolean", desc: "Abilita l'effetto ripple al clic" },
-                { name: "label", type: "string", desc: "Testo da mostrare accanto allo sprite" },
-                { name: "autoResize", type: "boolean", desc: "Ridimensiona automaticamente in base al contenuto" }
+                { name: "variant", type: "string", desc: "Visual appearance: 'primary', 'secondary', 'outline', 'ghost', 'danger'" },
+                { name: "halign", type: "constant", desc: "Horizontal alignment: fa_left, fa_center, fa_right" },
+                { name: "outline", type: "boolean", desc: "Shows a thin border" },
+                { name: "enableRipple", type: "boolean", desc: "Enables ripple effect on click" },
+                { name: "label", type: "string", desc: "Text to show next to the sprite" },
+                { name: "autoResize", type: "boolean", desc: "Automatically resizes based on content" }
             ]
         },
         "Input": {
-            desc: "Campo di testo per l'inserimento di dati da parte dell'utente.",
+            desc: "Text field for user data entry.",
             props: [
-                { name: "label", type: "string", desc: "Etichetta descrittiva sopra il campo" },
-                { name: "value", type: "string", desc: "Valore corrente del campo" },
-                { name: "placeholder", type: "string", desc: "Testo segnaposto quando il campo è vuoto" },
-                { name: "maxLength", type: "number", desc: "Numero massimo di caratteri consentiti" },
-                { name: "format", type: "string", desc: "Tipo di dato: 'string', 'float', 'integer'" },
-                { name: "onChange", type: "function", desc: "Callback chiamata quando il valore cambia" },
-                { name: "iconLeft", type: "sprite", desc: "Sprite da mostrare a sinistra" },
-                { name: "iconRight", type: "sprite", desc: "Sprite da mostrare a destra" }
+                { name: "label", type: "string", desc: "Descriptive label above the field" },
+                { name: "value", type: "string", desc: "Current value of the field" },
+                { name: "placeholder", type: "string", desc: "Placeholder text when the field is empty" },
+                { name: "maxLength", type: "number", desc: "Maximum number of characters allowed" },
+                { name: "format", type: "string", desc: "Data type: 'string', 'float', 'integer'" },
+                { name: "onChange", type: "function", desc: "Callback called when the value changes" },
+                { name: "iconLeft", type: "sprite", desc: "Sprite to show on the left" },
+                { name: "iconRight", type: "sprite", desc: "Sprite to show on the right" }
             ]
         },
         "Checkbox": {
-            desc: "Permette di selezionare una o più opzioni da un set.",
+            desc: "Allows selecting one or more options from a set.",
             props: [
-                { name: "value", type: "boolean", desc: "Stato di selezione (true/false)" },
-                { name: "label", type: "string", desc: "Testo descrittivo accanto al checkbox" },
-                { name: "onChange", type: "function", desc: "Callback chiamata al cambio di stato" },
-                { name: "variant", type: "string", desc: "Tipo di input: 'checkbox' o 'radio'" }
+                { name: "value", type: "boolean", desc: "Selection state (true/false)" },
+                { name: "label", type: "string", desc: "Descriptive text next to the checkbox" },
+                { name: "onChange", type: "function", desc: "Callback called on state change" },
+                { name: "variant", type: "string", desc: "Input type: 'checkbox' or 'radio'" }
             ]
         },
         "Radio": {
-            desc: "Permette di selezionare una singola opzione da un gruppo.",
+            desc: "Allows selecting a single option from a group.",
             props: [
-                { name: "value", type: "boolean", desc: "Stato di selezione" },
-                { name: "label", type: "string", desc: "Testo descrittivo" },
-                { name: "group", type: "string", desc: "Nome del gruppo per la selezione mutua" },
-                { name: "onChange", type: "function", desc: "Callback chiamata al cambio di stato" }
+                { name: "value", type: "boolean", desc: "Selection state" },
+                { name: "label", type: "string", desc: "Descriptive text" },
+                { name: "group", type: "string", desc: "Group name for mutual selection" },
+                { name: "onChange", type: "function", desc: "Callback called on state change" }
             ]
         },
         "Switch": {
-            desc: "Interruttore binario per attivare o disattivare un'impostazione.",
+            desc: "Binary toggle to enable or disable a setting.",
             props: [
-                { name: "value", type: "boolean", desc: "Stato dell'interruttore" },
-                { name: "label", type: "string", desc: "Testo descrittivo" },
-                { name: "onChange", type: "function", desc: "Callback chiamata al cambio di stato" }
+                { name: "value", type: "boolean", desc: "Switch state" },
+                { name: "label", type: "string", desc: "Descriptive text" },
+                { name: "onChange", type: "function", desc: "Callback called on state change" }
             ]
         },
         "Select": {
-            desc: "Menu a discesa per selezionare un'opzione da una lista.",
+            desc: "Dropdown menu to select an option from a list.",
             props: [
-                { name: "value", type: "any", desc: "Valore selezionato" },
-                { name: "items", type: "array", desc: "Array di struct {label, value}" },
-                { name: "label", type: "string", desc: "Etichetta del selettore" },
-                { name: "search", type: "string", desc: "Placeholder per la barra di ricerca interna" },
-                { name: "onChange", type: "function", desc: "Callback chiamata alla selezione" }
+                { name: "value", type: "any", desc: "Selected value" },
+                { name: "items", type: "array", desc: "Array of structs {label, value}" },
+                { name: "label", type: "string", desc: "Selector label" },
+                { name: "search", type: "string", desc: "Placeholder for the internal search bar" },
+                { name: "onChange", type: "function", desc: "Callback called on selection" }
             ]
         },
         "Badge": {
-            desc: "Piccoli indicatori di stato o contatori.",
+            desc: "Small status indicators or counters.",
             props: [
-                { name: "variant", type: "string", desc: "Stile del badge (usa UiButton con varianti)" }
+                { name: "variant", type: "string", desc: "Badge style (uses UiButton with variants)" }
             ]
         },
         "Alert": {
-            desc: "Messaggi di feedback contestuali per l'utente.",
+            desc: "Contextual feedback messages for the user.",
             props: [
-                { name: "type", type: "string", desc: "Tipo di alert: 'info', 'success', 'warning', 'error'" },
-                { name: "title", type: "string", desc: "Titolo del messaggio" }
+                { name: "type", type: "string", desc: "Alert type: 'info', 'success', 'warning', 'error'" },
+                { name: "title", type: "string", desc: "Message title" }
             ]
         },
         "Card": {
-            desc: "Contenitore flessibile per raggruppare contenuti correlati.",
+            desc: "Flexible container to group related content.",
             props: [
-                { name: "padding", type: "number", desc: "Spaziatura interna" },
-                { name: "border", type: "boolean", desc: "Mostra il bordo esterno" }
+                { name: "padding", type: "number", desc: "Internal spacing" },
+                { name: "border", type: "boolean", desc: "Shows the outer border" }
             ]
         },
         "Tabs": {
-            desc: "Organizza i contenuti in diverse viste navigabili.",
+            desc: "Organizes content into different navigable views.",
             props: [
-                { name: "items", type: "array", desc: "Lista dei tab" },
-                { name: "onChange", type: "function", desc: "Callback al cambio di tab" }
+                { name: "items", type: "array", desc: "List of tabs" },
+                { name: "onChange", type: "function", desc: "Callback on tab change" }
             ]
         },
         "Tooltip": {
-            desc: "Informazioni aggiuntive che appaiono al passaggio del mouse.",
+            desc: "Additional information that appears on hover.",
             props: [
-                { name: "tooltip", type: "string", desc: "Testo del tooltip (prop di UiNode)" },
-                { name: "tooltipDelay", type: "number", desc: "Ritardo in ms prima della comparsa" }
+                { name: "tooltip", type: "string", desc: "Tooltip text (UiNode property)" },
+                { name: "tooltipDelay", type: "number", desc: "Delay in ms before appearing" }
             ]
         },
         "Slider": {
-            desc: "Permette di selezionare un valore da un intervallo numerico.",
+            desc: "Allows selecting a value from a numeric range.",
             props: [
-                { name: "value", type: "number", desc: "Valore corrente" },
-                { name: "min", type: "number", desc: "Valore minimo" },
-                { name: "max", type: "number", desc: "Valore massimo" },
-                { name: "step", type: "number", desc: "Incremento minimo" },
-                { name: "onChange", type: "function", desc: "Callback al cambio di valore" }
+                { name: "value", type: "number", desc: "Current value" },
+                { name: "min", type: "number", desc: "Minimum value" },
+                { name: "max", type: "number", desc: "Maximum value" },
+                { name: "step", type: "number", desc: "Minimum increment" },
+                { name: "onChange", type: "function", desc: "Callback on value change" }
             ]
         },
         "Accordion": {
-            desc: "Sezioni di contenuto che possono essere espanse o compresse.",
+            desc: "Content sections that can be expanded or collapsed.",
             props: [
-                { name: "text", type: "string", desc: "Testo dell'intestazione" },
-                { name: "collapsed", type: "boolean", desc: "Stato iniziale (compresso/espanso)" },
-                { name: "spriteCollapsed", type: "sprite", desc: "Icona quando è compresso" },
-                { name: "spriteExpanded", type: "sprite", desc: "Icona quando è espanso" }
+                { name: "text", type: "string", desc: "Header text" },
+                { name: "collapsed", type: "boolean", desc: "Initial state (collapsed/expanded)" },
+                { name: "spriteCollapsed", type: "sprite", desc: "Icon when collapsed" },
+                { name: "spriteExpanded", type: "sprite", desc: "Icon when expanded" }
             ]
         },
         "Sprite": {
-            desc: "Visualizza una risorsa sprite di GameMaker.",
+            desc: "Displays a GameMaker sprite resource.",
             props: [
-                { name: "sprite", type: "sprite", desc: "Indice dello sprite da visualizzare" },
-                { name: "width", type: "number/string", desc: "Larghezza desiderata" },
-                { name: "height", type: "number/string", desc: "Altezza desiderata" }
+                { name: "sprite", type: "sprite", desc: "Index of the sprite to display" },
+                { name: "width", type: "number/string", desc: "Desired width" },
+                { name: "height", type: "number/string", desc: "Desired height" }
             ]
         },
         "ContextMenu": {
-            desc: "Menu a comparsa attivato dal tasto destro del mouse.",
+            desc: "Popup menu activated by right-click.",
             props: [
-                { name: "x", type: "number", desc: "Posizione X iniziale" },
-                { name: "y", type: "number", desc: "Posizione Y iniziale" },
-                { name: "addItem", type: "function", desc: "Metodo per aggiungere voci al menu" }
+                { name: "x", type: "number", desc: "Initial X position" },
+                { name: "y", type: "number", desc: "Initial Y position" },
+                { name: "addItem", type: "function", desc: "Method to add menu items" }
             ]
         },
         "Treeview": {
-            desc: "Visualizza una struttura gerarchica di elementi espandibili.",
+            desc: "Displays a hierarchical structure of expandable items.",
             props: [
-                { name: "onItemSelected", type: "function", desc: "Callback alla selezione di un elemento" },
-                { name: "onAssetDrop", type: "function", desc: "Gestisce il drag & drop tra elementi" },
-                { name: "filter", type: "function", desc: "Filtra gli elementi per nome" }
+                { name: "onItemSelected", type: "function", desc: "Callback on item selection" },
+                { name: "onAssetDrop", type: "function", desc: "Handles drag & drop between items" },
+                { name: "filter", type: "function", desc: "Filters items by name" }
             ]
         }
     };
@@ -558,125 +558,125 @@ function __ui_demo_get_component_metadata() {
 
 function __ui_demo_get_performance_metadata() {
     var _default = {
-        impact: "Medio",
-        dominantCost: "Draw calls e allocazioni UI dinamiche",
+        impact: "Medium",
+        dominantCost: "Draw calls and dynamic UI allocations",
         bottlenecks: [
-            "Ricostruzione completa dei nodi quando cambia stato frequentemente",
-            "Uso intensivo di onDraw custom con primitive per ogni elemento",
-            "Aggiornamenti layout globali anche per micro-variazioni"
+            "Complete node reconstruction when state changes frequently",
+            "Intensive use of custom onDraw with primitives for each element",
+            "Global layout updates even for micro-variations"
         ],
         optimizations: [
-            "Ridurre destroy/create ripetuti con riuso nodi e aggiornamento proprietà",
-            "Minimizzare requestUpdate globali, preferendo update locali quando possibile",
-            "Raggruppare ridisegni e ridurre testo/primitive nei loop"
+            "Reduce repeated destroy/create with node reuse and property updates",
+            "Minimize global requestUpdate, preferring local updates when possible",
+            "Group redraws and reduce text/primitives in loops"
         ],
         measurements: [
-            "Misura FPS medio e 1% low durante interazioni rapide",
-            "Conta nodi totali/renderizzati (countAll + visibili) per scena",
-            "Confronta frame time prima/dopo ottimizzazioni con stesso dataset"
+            "Measure average FPS and 1% low during rapid interactions",
+            "Count total/rendered nodes (countAll + visible) per scene",
+            "Compare frame time before/after optimizations with same dataset"
         ]
     };
     
     return {
         "__default": _default,
-        "Colori": {
-            impact: "Basso-Medio",
-            dominantCost: "Disegno di molte card statiche con roundrect",
+        "Colors": {
+            impact: "Low-Medium",
+            dominantCost: "Drawing many static cards with roundrect",
             bottlenecks: [
-                "Molte draw primitive in sequenza",
-                "Layout wrapping con molte card può aumentare i recalcoli"
+                "Many draw primitives in sequence",
+                "Layout wrapping with many cards can increase recalculations"
             ],
             optimizations: [
-                "Cache dei blocchi statici su surface quando non cambiano",
-                "Ridurre redraw non necessari in schermate statiche"
+                "Cache static blocks on surfaces when they don't change",
+                "Reduce unnecessary redraws in static screens"
             ],
             measurements: [
-                "Confronta frame time con/without cache surface",
-                "Verifica numero redraw durante hover/scroll"
+                "Compare frame time with/without surface cache",
+                "Verify number of redraws during hover/scroll"
             ]
         },
-        "Tipografia": {
-            impact: "Basso",
-            dominantCost: "Rendering testo e metriche font",
+        "Typography": {
+            impact: "Low",
+            dominantCost: "Text rendering and font metrics",
             bottlenecks: [
-                "Molti UiText possono costare su font non cached",
-                "Altezze non coerenti possono aumentare pass layout"
+                "Many UiText can cost on non-cached fonts",
+                "Inconsistent heights can increase layout passes"
             ],
             optimizations: [
-                "Uniformare stili e font per migliorare cache del renderer",
-                "Evitare update layout quando cambia solo contenuto statico"
+                "Standardize styles and fonts to improve renderer cache",
+                "Avoid layout updates when only static content changes"
             ],
             measurements: [
-                "Misura draw_text per frame nelle viste lunghe",
-                "Verifica tempo di apertura tab con molti testi"
+                "Measure draw_text per frame in long views",
+                "Verify tab opening time with many texts"
             ]
         },
         "Input": {
-            impact: "Medio-Alto",
-            dominantCost: "Step per gestione caret, selezione, undo/redo, key repeat",
+            impact: "Medium-High",
+            dominantCost: "Step for caret management, selection, undo/redo, key repeat",
             bottlenecks: [
-                "Parsing caratteri ad ogni frame mentre focused",
-                "Calcolo larghezze stringa in operazioni cursor/selection",
-                "RequestRedraw frequenti durante editing"
+                "Character parsing every frame while focused",
+                "String width calculation in cursor/selection operations",
+                "Frequent RequestRedraw during editing"
             ],
             optimizations: [
-                "Ridurre chiamate a string_width con caching incrementale",
-                "Separare logica di input da redraw quando il valore non cambia",
-                "Limitare update scissor/selection ai soli frame necessari"
+                "Reduce string_width calls with incremental caching",
+                "Separate input logic from redraw when value doesn't change",
+                "Limit scissor/selection updates to necessary frames only"
             ],
             measurements: [
-                "Profila frame time tenendo premuto un tasto 5s",
-                "Conta redraw per carattere inserito"
+                "Profile frame time holding a key for 5s",
+                "Count redraws per character inserted"
             ]
         },
         "Select": {
-            impact: "Medio",
-            dominantCost: "Apertura lista, filtro ricerca e ricreazione item",
+            impact: "Medium",
+            dominantCost: "List opening, search filtering, and item recreation",
             bottlenecks: [
-                "destroyChildren/createItems su ogni filtro",
-                "Molti item visibili aumentano draw + layout"
+                "destroyChildren/createItems on every filter",
+                "Many visible items increase draw + layout"
             ],
             optimizations: [
-                "Virtualizzare lista per dataset grandi",
-                "Debounce della ricerca per ridurre ricostruzioni"
+                "Virtualize list for large datasets",
+                "Debounce search to reduce reconstructions"
             ],
             measurements: [
-                "Misura tempo apertura dropdown con 50/200/1000 items",
-                "Traccia frame drops durante typing nel filtro"
+                "Measure dropdown opening time with 50/200/1000 items",
+                "Track frame drops while typing in the filter"
             ]
         },
         "Treeview": {
-            impact: "Alto",
-            dominantCost: "Traversing ricorsivo + drag/drop + filtro gerarchico",
+            impact: "High",
+            dominantCost: "Recursive traversing + drag/drop + hierarchical filtering",
             bottlenecks: [
-                "Filter ricorsivo su alberi profondi",
-                "Espansione nodi con molti figli",
-                "Aggiornamento visuale durante drag"
+                "Recursive filter on deep trees",
+                "Node expansion with many children",
+                "Visual update during drag"
             ],
             optimizations: [
-                "Indicizzare nomi per filtro veloce",
-                "Lazy render dei rami non visibili",
-                "Batch update durante operazioni di massa"
+                "Index names for fast filtering",
+                "Lazy render of non-visible branches",
+                "Batch update during mass operations"
             ],
             measurements: [
-                "Tempo filtro su alberi 1k/5k nodi",
-                "Frame time durante drag continuo"
+                "Filter time on 1k/5k node trees",
+                "Frame time during continuous drag"
             ]
         },
         "Slider": {
-            impact: "Basso-Medio",
-            dominantCost: "Redraw continuo durante drag",
+            impact: "Low-Medium",
+            dominantCost: "Continuous redraw during drag",
             bottlenecks: [
-                "onDraw animato ad ogni frame",
-                "Aggiornamento valore con alta frequenza"
+                "Animated onDraw every frame",
+                "High-frequency value update"
             ],
             optimizations: [
-                "Throttle onChange quando usato per logiche costose",
-                "Ridurre animazione quando differenza valore minima"
+                "Throttle onChange when used for expensive logic",
+                "Reduce animation when value difference is minimal"
             ],
             measurements: [
-                "Frame time durante trascinamento rapido 3s",
-                "Numero callback onChange per secondo"
+                "Frame time during rapid 3s drag",
+                "Number of onChange callbacks per second"
             ]
         }
     };

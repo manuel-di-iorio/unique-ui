@@ -11,7 +11,7 @@ function ui_demo_example_tabs(PreviewCard) {
     btnB.onClick(function() { global.UI_DEMO.tabSelected = 1; __ui_demo_refresh(); });
     tabRow.add(btnB);
     
-    var tabContent = (global.UI_DEMO.tabSelected == 0) ? "Contenuto della Tab A." : "Contenuto della Tab B.";
+    var tabContent = (global.UI_DEMO.tabSelected == 0) ? "Content for Tab A." : "Content for Tab B.";
     PreviewCard.add(new UiText(tabContent, {}, { color: #64748B }));
     
     return [
