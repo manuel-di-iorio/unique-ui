@@ -139,9 +139,28 @@ ui_test_suite("UiTreeview", function() {
         var tv     = __make_treeview();
         var parent = __make_item(tv);
         var child  = __make_item(tv);
-        parent.Items.add(child);
+        parent.addChild(child);
         parent.__updateArrowVisibility();
         assert_equal(parent.Items.childrenLength, 1, "1 child in Items");
+    });
+    
+    ui_test("addChild sets correct depth", function() {
+        var tv     = __make_treeview();
+        var parent = __make_item(tv);
+        var child  = __make_item(tv);
+        parent.addChild(child);
+        assert_equal(parent.depth, 0, "parent depth = 0");
+        assert_equal(child.depth, 1, "child depth = 1");
+    });
+    
+    ui_test("depth update is recursive", function() {
+        var tv     = __make_treeview();
+        var parent = __make_item(tv);
+        var child  = __make_item(tv);
+        var grand  = __make_item(tv);
+        parent.addChild(child);
+        child.addChild(grand);
+        assert_equal(grand.depth, 2, "grandchild depth = 2");
     });
     
     ui_test("expandItem sets collapsed = false and shows Items", function() {
@@ -172,7 +191,7 @@ ui_test_suite("UiTreeview", function() {
         var tv     = __make_treeview();
         var parent = __make_item(tv);
         var child  = __make_item(tv);
-        parent.Items.add(child);
+        parent.addChild(child);
         parent.__updateArrowVisibility();
         assert_true(parent.Arrow.visible, "Arrow visible with children");
     });
@@ -182,7 +201,7 @@ ui_test_suite("UiTreeview", function() {
         var root  = __make_item(tv);
         var child = __make_item(tv);
         tv.Items.add(root);
-        root.Items.add(child);
+        root.addChild(child);
         root.expandItem();
         child.expandItem();
         tv.collapseAll();

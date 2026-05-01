@@ -110,6 +110,7 @@ function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
  * Treeview Item - Represents an item in the tree hierarchy
  */
 function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructor {
+    if (style[$ "width"] == undefined) style.width = "100%";
     var _this = self;
     self.isTreeviewItem = true;
     self.treeview = props[$ "treeview"];
@@ -118,14 +119,16 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     self.name = props[$ "name"] ?? style[$ "name"] ?? "Item";
     self.selected = false;
     self.collapsed = props[$ "collapsed"] ?? true;
+    self.depth = props[$ "depth"] ?? 0;
     
     // Row Content
     self.Content = new UiNode({ 
         name: "UiTreeview.Item.Content", 
+        width: "100%",
         height: 32, 
         flexDirection: "row",
         alignItems: "center",
-        paddingLeft: 4,
+        paddingLeft: 4 + self.depth * 16,
         paddingRight: 4
     }, {
         pointerEvents: true,
@@ -211,7 +214,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     }));
 
     // Children Container
-    self.Items = new UiNode({ marginLeft: 16 });
+    self.Items = new UiNode({});
     if (self.collapsed) self.Items.hide();
     self.add(self.Items);
     
@@ -226,8 +229,29 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
         self.Items.hide();
         global.UI.requestUpdate();
     }
+
+    /**
+     * Set the depth of this item and its children
+     */
+    function __setDepth(depth) {
+        self.depth = depth;
+        var _pLeft = 4 + self.depth * 16;
+        flexpanel_node_style_set_padding(self.Content.node, flexpanel_edge.left, _pLeft);
+        self.Content.layout.paddingLeft = _pLeft;
+        
+        var _children = self.Items.children;
+        for (var i = 0; i < array_length(_children); i++) {
+            var _child = _children[i];
+            if (_child[$ "isTreeviewItem"]) {
+                _child.__setDepth(depth + 1);
+            }
+        }
+    }
     
     function addChild(childItem) {
+        if (childItem[$ "__setDepth"] != undefined) {
+            childItem.__setDepth(self.depth + 1);
+        }
         self.Items.add(childItem);
         self.__updateArrowVisibility();
         return self;
