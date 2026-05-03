@@ -48,12 +48,12 @@ ui_test_suite("UiBadge", function() {
     
     ui_test("height defaults to 22", function() {
         var b = new UiBadge("Hi", {}, {});
-        assert_equal(b.height, 22, "height = 22");
+        assert_equal(b.getHeight(), 22, "height = 22");
     });
     
     ui_test("style height override works", function() {
         var b = new UiBadge("Hi", { height: 28 }, {});
-        assert_equal(b.height, 28, "height = 28 from style");
+        assert_equal(b.getHeight(), 28, "height = 28 from style");
     });
     
     ui_test("all variants are accepted without error", function() {

@@ -22,17 +22,18 @@ function ui_demo_example_button(PreviewCard) {
     row3.add(new UiButton("Center Aligned", { width: "100%", height: 36, marginBottom: 8 }, { variant: "outline", halign: fa_center }));
     row3.add(new UiButton("Right Aligned",  { width: "100%", height: 36 },                  { variant: "outline", halign: fa_right  }));
     
-    __ui_demo_preview_section(PreviewCard, "Interactive — Toggle");
+    __ui_demo_preview_section(PreviewCard, "Interactive - Toggle");
     if (!variable_struct_exists(global.UI_DEMO, "btnToggle")) global.UI_DEMO.btnToggle = false;
     var toggleBtn = new UiButton(
-        global.UI_DEMO.btnToggle ? "Enabled ✓" : "Disabled",
-        { width: 160, height: 36 },
+        global.UI_DEMO.btnToggle ? "Enabled" : "Disabled",
+        { width: 160, height: 36, marginBottom: 16 },
         { variant: global.UI_DEMO.btnToggle ? "primary" : "secondary" }
     );
-    toggleBtn.onClick(function() {
+    toggleBtn.onClick(method({ toggleBtn }, function() {
         global.UI_DEMO.btnToggle = !global.UI_DEMO.btnToggle;
-        __ui_demo_refresh();
-    });
+        toggleBtn.setText(global.UI_DEMO.btnToggle ? "Enabled" : "Disabled");
+        toggleBtn.variant = global.UI_DEMO.btnToggle ? "primary" : "secondary";
+    }));
     PreviewCard.add(toggleBtn);
     
     return [

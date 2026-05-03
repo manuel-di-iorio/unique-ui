@@ -1,8 +1,49 @@
 function ui_demo_example_treeview(PreviewCard) {
-    __ui_demo_preview_section(PreviewCard, "Hierarchy Example");
-    var tree = new UiTreeview({ flex: 1, width: "100%" });
+    __ui_demo_preview_section(PreviewCard, "Interactive Hierarchy");
+    
+    // Top bar for actions
+    var TopBar = new UiNode({ flexDirection: "row", width: "100%", marginBottom: 12, gap: 8 });
+    PreviewCard.add(TopBar);
+    
+    var tree = new UiTreeview({ flex: 1, width: "100%", height: 300 });
+    
+    var addBtn = new UiButton("Add Root Item", { height: 32 }, { variant: "outline" });
+    addBtn.onClick(method({ tree }, function() {
+        var newItem = new UiTreeviewItem({ name: "New Folder" }, { treeview: tree, assetType: "Folder" });
+        tree.Items.add(newItem);
+        global.UI.requestUpdate();
+    }));
+    TopBar.add(addBtn);
+    
     PreviewCard.add(tree);
     
+    // Handle Drop (Move item)
+    tree.onAssetDrop = function(draggedItem, targetFolder) {
+        if (draggedItem == targetFolder) return;
+        targetFolder.addChild(draggedItem);
+        targetFolder.expandItem();
+        global.UI.requestUpdate();
+    };
+    
+    // Handle Context Menu
+    tree.onContextMenu = function(item) {
+        var menu = new UiContextMenu(global.UI.mouseX, global.UI.mouseY);
+        menu.addItem("Add Child", method({ item }, function() {
+            item.addChild(new UiTreeviewItem({ name: "New Item" }, { treeview: item.treeview, assetType: "Asset", icon: sprDemo }));
+            item.expandItem();
+        }));
+        menu.addItem("Rename", method({ item }, function() {
+            item.name = "Renamed Item";
+            item.Label.text = item.name;
+        }));
+        menu.addSeparator();
+        menu.addItem("Delete", method({ item }, function() {
+            item.destroy();
+        }));
+        menu.show();
+    };
+
+    // Initial items
     var root = new UiTreeviewItem({ name: "Project" }, { treeview: tree, assetType: "Folder", collapsed: false });
     tree.Items.add(root);
     
@@ -17,15 +58,17 @@ function ui_demo_example_treeview(PreviewCard) {
     
     return [
         "var tree = new UiTreeview({ flex: 1, width: \"100%\" });",
-        "PreviewCard.add(tree);",
         "",
-        "var root = new UiTreeviewItem({ name: \"Root\" }, { ",
-        "    treeview: tree, assetType: \"Folder\", collapsed: false ",
-        "});",
-        "tree.Items.add(root);",
+        "// Drag and Drop support",
+        "tree.onAssetDrop = function(draggedItem, targetFolder) {",
+        "    targetFolder.addChild(draggedItem);",
+        "};",
         "",
-        "var folder = new UiTreeviewItem({ name: \"Folder\" }, { ... });",
-        "root.addChild(folder);",
-        "folder.addChild(new UiTreeviewItem({ name: \"Asset\" }, { ... }));"
+        "// Context Menu support",
+        "tree.onContextMenu = function(item) {",
+        "    var menu = new UiContextMenu(mouseX, mouseY);",
+        "    menu.addItem(\"Delete\", function() { item.destroy(); });",
+        "    menu.show();",
+        "};"
     ];
 }

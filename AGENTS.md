@@ -1,3 +1,4 @@
  - In GameMaker, quando passi una struct come primo argomento a method(), quella struct diventa il nuovo self della funzione, sovrascrivendo l'accesso alle variabili.
  - `flexpanel_node_style_set_padding()` richiede sempre 3 argomenti: `(node, edge, value)`. Non passare solo 2 argomenti.
  - Quando usi `destroyChildren(true)`, i nodi flexpanel dei figli vengono distrutti. Non chiamarlo su contenitori che ospitano nodi "esterni" (come i pannelli di contenuto dei Tabs) che devono sopravvivere o essere riutilizzati.
+- Aggiorna i file AGENTS.md e GEMINI.md con indicazioni quando ritieni che possa aiutare ad evitare errori in futuro.

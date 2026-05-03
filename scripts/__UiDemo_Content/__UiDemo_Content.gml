@@ -1,7 +1,7 @@
-function __ui_demo_refresh() {
+function __ui_demo_refresh(preserveScroll = false) {
     var area = global.UI_DEMO.ScrollArea;
+    var _oldScroll = area.scrollTop;
     area.destroyChildren(true);
-    area.scrollTop = 0;
     global.UI_DEMO.BreadcrumbPage.text = global.UI_DEMO.currentPage;
     
     // Title Section
@@ -41,6 +41,9 @@ function __ui_demo_refresh() {
         area.enableScrollbar(global.UI_COL_PRIMARY);
         __ui_demo_render_performance(area);
     }
+    
+    global.UI.update();
+    if (preserveScroll) area.scrollTop = _oldScroll; else area.scrollTop = 0;
     
     global.UI.requestUpdate();
 }

@@ -133,6 +133,8 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     }, {
         pointerEvents: true,
         handpoint: true,
+        draggable: props[$ "draggable"] ?? true,
+        dropzone: props[$ "dropzone"] ?? true
     });
     self.add(self.Content);
     
@@ -212,6 +214,36 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
             if (self.collapsed) self.expandItem(); else self.collapseItem();
         }
     }));
+
+    // Context Menu
+    self.Content.onContextMenu(method(self, function() {
+        if (self.treeview.onContextMenu != undefined) {
+            self.treeview.onContextMenu(self);
+        }
+    }));
+
+    // Drag & Drop Callbacks
+    self.canDrag = props[$ "canDrag"] ?? function() { return true; };
+    self.canDrop = props[$ "canDrop"] ?? function(draggedItem) { 
+        return self.assetType == "Folder" && draggedItem != self; 
+    };
+
+    self.Content.onDragStart = method(self, function() {
+        if (!self.canDrag()) return false;
+        self.dragging = true;
+        return true;
+    });
+
+    self.Content.onDrop = method(self, function(draggedNode) {
+        var draggedItem = draggedNode.parent; // Content's parent is the TreeviewItem
+        if (self.canDrop(draggedItem)) {
+            if (self.treeview.onAssetDrop != undefined) {
+                self.treeview.onAssetDrop(draggedItem, self);
+            }
+            return true;
+        }
+        return false;
+    });
 
     // Children Container
     self.Items = new UiNode({});

@@ -6,6 +6,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
     setName(props[$ "name"] ?? "UiDropdown");
     self.value = props[$ "value"];
     self.items = props[$ "items"] ?? [];
+    self.itemsFull = self.items;
     self.itemsGetter = props[$ "itemsGetter"];
     self.label = props[$ "label"] ?? undefined;
     self.onChange = props[$ "onChange"] ?? function(input, value) {};
@@ -173,7 +174,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
                 var _items = _Dropdown.items;
         
                 if (!array_length(_items)) {
-                    self.Items.add(new UiText("No assets found", { marginLeft: 5 }, { color: c_ltgray, font: fTextItalic }));
+                    self.Items.add(new UiText("No items found", { marginLeft: 5 }, { color: c_ltgray, font: fTextItalic }));
                 }
         
                 // Add the items
@@ -237,9 +238,22 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
                     placeholder: _Dropdown.search ?? "Search..",
                     onChange: method({ _Dropdown }, function(searchValue) {
                         _Dropdown.List.Items.destroyChildren();
-                        _Dropdown.items = [];
                         
-                        if (_Dropdown.itemsGetter != undefined) _Dropdown.items = _Dropdown.itemsGetter(searchValue);
+                        if (_Dropdown.itemsGetter != undefined) {
+                             _Dropdown.items = _Dropdown.itemsGetter(searchValue);
+                        } else {
+                             // Local filtering
+                             var filtered = [];
+                             var _lowerSearch = string_lower(searchValue);
+                             for (var i = 0; i < array_length(_Dropdown.itemsFull); i++) {
+                                 var _item = _Dropdown.itemsFull[i];
+                                 if (_lowerSearch == "" || string_pos(_lowerSearch, string_lower(_item.label)) > 0) {
+                                     array_push(filtered, _item);
+                                 }
+                             }
+                             _Dropdown.items = filtered;
+                        }
+                        
                         _Dropdown.List.createItems();
                     })
                 });
@@ -252,7 +266,11 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             
             // Create the initial items
             var initialSearch = self[$ "Search"] != undefined ? self.Search.value : "";
-            if (_Dropdown.itemsGetter != undefined) _Dropdown.items = _Dropdown.itemsGetter(initialSearch);
+            if (_Dropdown.itemsGetter != undefined) {
+                _Dropdown.items = _Dropdown.itemsGetter(initialSearch);
+            } else if (initialSearch == "") {
+                _Dropdown.items = _Dropdown.itemsFull;
+            }
             self.createItems(); 
         }
         
