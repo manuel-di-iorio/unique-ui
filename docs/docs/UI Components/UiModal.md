@@ -1,4 +1,4 @@
-# Modal
+# UiModal
 
 Overlay dialog box that interrupts user workflow to ask for a decision or display information.
 

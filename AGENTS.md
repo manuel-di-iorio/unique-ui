@@ -1,6 +1,5 @@
- - In GameMaker, quando passi una struct come primo argomento a method(), quella struct diventa il nuovo self della funzione, sovrascrivendo l'accesso alle variabili.
- - `flexpanel_node_style_set_padding()` richiede sempre 3 argomenti: `(node, edge, value)`. Non passare solo 2 argomenti.
- - Quando usi `destroyChildren(true)`, i nodi flexpanel dei figli vengono distrutti. Non chiamarlo su contenitori che ospitano nodi "esterni" (come i pannelli di contenuto dei Tabs) che devono sopravvivere o essere riutilizzati.
-- Aggiorna i file AGENTS.md e GEMINI.md con indicazioni quando ritieni che possa aiutare ad evitare errori in futuro.
-- Non usare proprietà come `borderBottomWidth` o altri bordi direzionali nell'oggetto style di `UiNode`, poichè l'implementazione base di flexpanel non li supporta e causerà un crash. Disegna i bordi direzionali a mano nel metodo `onDraw` se necessario.
-- Assicurati di non utilizzare font non esistenti (es. `fTextBold`). I font attualmente disponibili nel progetto sono `fText`, `fTextItalic` e `fTextSmall`.
+- In GameMaker, passing a struct as the first argument to method() sets it as the new self, overriding variable access.
+- `flexpanel_node_style_set_padding()` always requires 3 arguments: `(node, edge, value)` — never pass only 2.
+- `destroyChildren(true)` also destroys child flexpanel nodes. Avoid using it on containers with external nodes (e.g. tab content panels) that must persist or be reused.
+- Update AGENTS.md and GEMINI.md whenever useful to prevent future errors.
+- Do not use directional border properties (e.g. borderBottomWidth) in UiNode styles — not supported and will crash. Draw them manually in onDraw if needed.
