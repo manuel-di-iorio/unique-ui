@@ -1,28 +1,55 @@
 function ui_demo_example_tabs(PreviewCard) {
-    if (!variable_struct_exists(global.UI_DEMO, "tabSelected")) global.UI_DEMO.tabSelected = 0;
-    var tabRow = new UiNode({ flexDirection: "row", marginBottom: 20 });
-    PreviewCard.add(tabRow);
+    __ui_demo_preview_section(PreviewCard, "Underline Variant");
     
-    var btnA = new UiButton("Tab A", { height: 32, marginRight: 4 }, { variant: global.UI_DEMO.tabSelected == 0 ? "primary" : "ghost" });
-    btnA.onClick(function() { global.UI_DEMO.tabSelected = 0; __ui_demo_refresh(); });
-    tabRow.add(btnA);
+    var panelA = new UiNode({ flexDirection: "column" });
+    panelA.add(new UiText("This is the content of Tab A.", { marginBottom: 8 }, { color: #64748B }));
+    panelA.add(new UiText("You can put any UiNode children here.", {}, { color: #94A3B8 }));
     
-    var btnB = new UiButton("Tab B", { height: 32, marginRight: 4 }, { variant: global.UI_DEMO.tabSelected == 1 ? "primary" : "ghost" });
-    btnB.onClick(function() { global.UI_DEMO.tabSelected = 1; __ui_demo_refresh(); });
-    tabRow.add(btnB);
+    var panelB = new UiNode({ flexDirection: "column" });
+    panelB.add(new UiText("Tab B content goes here.", { marginBottom: 8 }, { color: #64748B }));
+    panelB.add(new UiButton("Action", {}, { variant: "primary" }));
     
-    var tabContent = (global.UI_DEMO.tabSelected == 0) ? "Content for Tab A." : "Content for Tab B.";
-    PreviewCard.add(new UiText(tabContent, {}, { color: #64748B }));
+    var panelC = new UiNode({ flexDirection: "column" });
+    panelC.add(new UiText("Settings panel content.", {}, { color: #64748B }));
+    
+    var tabs1 = new UiTabs([
+        { label: "Overview",  content: panelA },
+        { label: "Details",   content: panelB },
+        { label: "Settings",  content: panelC }
+    ], { width: "100%", marginBottom: 40 });
+    PreviewCard.add(tabs1);
+    
+    __ui_demo_preview_section(PreviewCard, "Pills Variant");
+    
+    var pillA = new UiNode({ flexDirection: "column" });
+    pillA.add(new UiText("Home panel content.", {}, { color: #64748B }));
+    
+    var pillB = new UiNode({ flexDirection: "column" });
+    pillB.add(new UiText("Profile panel content.", {}, { color: #64748B }));
+    
+    var pillC = new UiNode({ flexDirection: "column" });
+    pillC.add(new UiText("Notifications panel.", {}, { color: #64748B }));
+    
+    var tabs2 = new UiTabs([
+        { label: "Home",          content: pillA },
+        { label: "Profile",       content: pillB },
+        { label: "Notifications", content: pillC }
+    ], { width: "100%", marginBottom: 40 }, { variant: "pills" });
+    PreviewCard.add(tabs2);
     
     return [
-        "var tabRow = new UiNode({ flexDirection: \"row\", marginBottom: 20 });",
+        "// Underline variant (default)",
+        "var tabs = new UiTabs([",
+        "    { label: \"Overview\", content: panelA },",
+        "    { label: \"Details\",  content: panelB },",
+        "], { width: \"100%\" });",
         "",
-        "var btnA = new UiButton(\"Tab A\", { height: 32 }, { ",
-        "    variant: selected == 0 ? \"primary\" : \"ghost\" ",
-        "});",
-        "btnA.onClick(function() { selected = 0; refresh(); });",
+        "// Pills variant",
+        "var tabs = new UiTabs([...], {}, { variant: \"pills\" });",
         "",
-        "tabRow.add(btnA);",
-        "tabRow.add(new UiText(selected == 0 ? \"Content A\" : \"Content B\"));"
+        "// onChange callback",
+        "new UiTabs([...], {}, {",
+        "    onChange: function(index, label) { ... }",
+        "});"
     ];
 }

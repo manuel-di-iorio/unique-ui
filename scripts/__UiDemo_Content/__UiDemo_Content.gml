@@ -14,7 +14,8 @@ function __ui_demo_refresh() {
     var desc = componentData != undefined ? componentData.desc : "Explore the capabilities of the component " + global.UI_DEMO.currentPage;
     Hero.add(new UiText(desc, {}, { color: #64748B }));
     
-    // Tabs
+    // Tabs — Documentation tab is hidden for foundation pages (Colors, Typography)
+    var _isFoundation = (global.UI_DEMO.currentPage == "Colors" || global.UI_DEMO.currentPage == "Typography");
     var TabRow = new UiNode({ flexDirection: "row", width: "100%", marginBottom: 32 });
     TabRow.onDraw = method(TabRow, function() {
         draw_set_color(global.UI_COL_BORDER);
@@ -22,8 +23,13 @@ function __ui_demo_refresh() {
     });
     area.add(TabRow);
     __ui_demo_tab_item(TabRow, "Preview");
-    __ui_demo_tab_item(TabRow, "Documentation");
+    if (!_isFoundation) __ui_demo_tab_item(TabRow, "Documentation");
     __ui_demo_tab_item(TabRow, "Performance");
+    
+    // If a foundation page lands on Documentation tab, redirect to Preview
+    if (_isFoundation && global.UI_DEMO.currentTab == "Documentation") {
+        global.UI_DEMO.currentTab = "Preview";
+    }
     
     if (global.UI_DEMO.currentTab == "Preview") {
         area.enableScrollbar(global.UI_COL_PRIMARY);

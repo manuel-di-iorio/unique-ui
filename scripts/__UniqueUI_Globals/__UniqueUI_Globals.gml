@@ -1,4 +1,4 @@
-global.UI_VERSION = "3.0.2";
+global.UI_VERSION = "3.1.0";
 
 // UI Theme — Modern Premium Palette
 global.UI_COL_PRIMARY          = #2563EB;

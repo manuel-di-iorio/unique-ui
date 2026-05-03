@@ -61,16 +61,19 @@ function __ui_demo_get_component_metadata() {
             ]
         },
         "Badge": {
-            desc: "Small status indicators or counters.",
+            desc: "Small pill-shaped status indicator with six semantic color variants.",
             props: [
-                { name: "variant", type: "string", desc: "Badge style (uses UiButton with variants)" }
+                { name: "variant", type: "string", desc: "Color scheme: 'default', 'primary', 'success', 'warning', 'danger', 'info'" },
+                { name: "dot",     type: "boolean", desc: "Renders a small colored dot instead of a label (default false)" }
             ]
         },
         "Alert": {
-            desc: "Contextual feedback messages for the user.",
+            desc: "Contextual feedback banner for the user with optional title and dismiss button.",
             props: [
-                { name: "type", type: "string", desc: "Alert type: 'info', 'success', 'warning', 'error'" },
-                { name: "title", type: "string", desc: "Message title" }
+                { name: "type",        type: "string",   desc: "Semantic type: 'info', 'success', 'warning', 'error'" },
+                { name: "title",       type: "string",   desc: "Optional bold title shown above the message" },
+                { name: "dismissible", type: "boolean",  desc: "Shows a close (x) button that hides the alert" },
+                { name: "onDismiss",   type: "function", desc: "Callback fired when the dismiss button is clicked" }
             ]
         },
         "Card": {
@@ -81,10 +84,12 @@ function __ui_demo_get_component_metadata() {
             ]
         },
         "Tabs": {
-            desc: "Organizes content into different navigable views.",
+            desc: "Tab navigation strip that switches between content panels. Supports underline and pills variants.",
             props: [
-                { name: "items", type: "array", desc: "List of tabs" },
-                { name: "onChange", type: "function", desc: "Callback on tab change" }
+                { name: "items",         type: "array",    desc: "Array of { label, content } structs" },
+                { name: "selectedIndex", type: "number",   desc: "Zero-based index of the active tab (default 0)" },
+                { name: "variant",       type: "string",   desc: "Visual style: 'underline' (default) or 'pills'" },
+                { name: "onChange",      type: "function", desc: "Callback: function(index, label) on tab change" }
             ]
         },
         "Tooltip": {
