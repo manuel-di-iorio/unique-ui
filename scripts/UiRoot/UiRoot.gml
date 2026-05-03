@@ -438,10 +438,16 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
 
                 // Check again if target is still valid after mousedown event
                 if (mouse_check_button_pressed(mb_left) && !(_target[$ "destroyed"] ?? false)) {
-                    if (_target[$ "draggable"] ?? false) {
-                        self.potentialDraggedElement = _target;
-                        _target.dragStartX = self.mouseX;
-                        _target.dragStartY = self.mouseY;
+                    // Search for the nearest draggable element in the hierarchy
+                    var dragSearch = _target;
+                    while (dragSearch != undefined) {
+                        if (dragSearch[$ "draggable"] ?? false) {
+                            self.potentialDraggedElement = dragSearch;
+                            dragSearch.dragStartX = self.mouseX;
+                            dragSearch.dragStartY = self.mouseY;
+                            break;
+                        }
+                        dragSearch = dragSearch.parent;
                     }
                 }
             }

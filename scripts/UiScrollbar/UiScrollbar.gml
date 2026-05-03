@@ -135,6 +135,13 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
                 self.Thumb[$ thumbSetPosName](thumbPosition);
             }
         }
+        
+        // Ensure scroll is within bounds (e.g. after items destroyed)
+        var scrollName = self.isVertical ? "scrollTop" : "scrollLeft";
+        if (self.parent[$ scrollName] > self.__maxScroll) {
+            self.parent[$ scrollName] = self.__maxScroll;
+            global.UI.requestUpdate();
+        }
     });
 }
 

@@ -14,14 +14,17 @@ function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
     self.backgroundColor = global.UI_COL_BG_SIDEBAR;
     
     // Create the items container
-    self.Items = new UiNode({ name: "UiTreeview.Items", flex: 1, width: "100%" });
+    self.Items = new UiNode({ name: "UiTreeview.Items", width: "100%" });
     self.add(self.Items);
+    
+    self.enableScrollbar(global.UI_COL_PRIMARY);
     
     // Handle delete shortcut
     self.onStep(method(self, function() {
         if (keyboard_check_pressed(vk_delete)) {
             if (self.selectedItem != undefined && !global.UI.hasAnyFocus()) {
-                self.selectedItem.__removeItem();
+                self.selectedItem.destroy();
+                self.selectedItem = undefined;
             }
         }
     }));
@@ -31,12 +34,10 @@ function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
      */
     function __onItemSelected(treeviewItem, focus = false) {
         if (self.selectedItem != treeviewItem) {
+            if (self.selectedItem != undefined) self.selectedItem.selected = false;
             self.selectedItem = treeviewItem;
-            self.Items.traverseChildren(method({ treeviewItem }, function(child) {
-                if (child[$ "isTreeviewItem"]) {
-                    child.selected = child == self.treeviewItem;
-                }
-            }));
+            self.selectedItem.selected = true;
+            global.UI.requestRedraw();
         }
         
         if (self.onItemSelected != undefined) self.onItemSelected(treeviewItem, focus);
@@ -205,7 +206,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     self.Content.add(self.Label);
 
     // Handle selection
-    self.Content.onClick(method(self, function() {
+    self.Content.onMouseDown(method(self, function() {
         self.treeview.__onItemSelected(self);
     }));
     
