@@ -271,7 +271,8 @@ function __ui_demo_get_examples_map() {
         "Sprite":      ui_demo_example_sprite,
         "ContextMenu": ui_demo_example_contextmenu,
         "Tooltip":     ui_demo_example_tooltip,
-        "Treeview":    ui_demo_example_treeview
+        "Treeview":    ui_demo_example_treeview,
+        "Modal":       ui_demo_example_modal
     };
     return _map;
 }

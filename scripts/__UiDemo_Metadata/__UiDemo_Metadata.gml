@@ -134,6 +134,17 @@ function __ui_demo_get_component_metadata() {
                 { name: "addItem", type: "function", desc: "Method to add menu items" }
             ]
         },
+        "Modal": {
+            desc: "Overlay dialog box that interrupts user workflow to ask for a decision or display information.",
+            props: [
+                { name: "title", type: "string", desc: "Title text shown in the header" },
+                { name: "backdropColor", type: "color", desc: "Color of the background overlay" },
+                { name: "backdropAlpha", type: "number", desc: "Opacity of the background overlay" },
+                { name: "dismissOnBackdropClick", type: "boolean", desc: "Whether clicking outside closes the modal" },
+                { name: "showCloseButton", type: "boolean", desc: "Whether to show the top-right close button" },
+                { name: "onClose", type: "function", desc: "Callback executed when modal closes" }
+            ]
+        },
         "Treeview": {
             desc: "Displays a hierarchical structure of expandable items.",
             props: [

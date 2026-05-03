@@ -2,3 +2,5 @@
  - `flexpanel_node_style_set_padding()` richiede sempre 3 argomenti: `(node, edge, value)`. Non passare solo 2 argomenti.
  - Quando usi `destroyChildren(true)`, i nodi flexpanel dei figli vengono distrutti. Non chiamarlo su contenitori che ospitano nodi "esterni" (come i pannelli di contenuto dei Tabs) che devono sopravvivere o essere riutilizzati.
 - Aggiorna i file AGENTS.md e GEMINI.md con indicazioni quando ritieni che possa aiutare ad evitare errori in futuro.
+- Non usare proprietà come `borderBottomWidth` o altri bordi direzionali nell'oggetto style di `UiNode`, poichè l'implementazione base di flexpanel non li supporta e causerà un crash. Disegna i bordi direzionali a mano nel metodo `onDraw` se necessario.
+- Assicurati di non utilizzare font non esistenti (es. `fTextBold`). I font attualmente disponibili nel progetto sono `fText`, `fTextItalic` e `fTextSmall`.

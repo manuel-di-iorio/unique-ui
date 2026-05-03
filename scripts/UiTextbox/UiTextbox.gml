@@ -611,45 +611,45 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                         handledTextInput = true;
                     }
                 }
+                keyboard_lastchar = ""; // Clear lastchar to avoid duplicate from fallback
             } 
             
-            // Fallback for single characters or if keyboard_string was consumed
+            // Handle key repeat OR immediate press for printable characters (fallback)
+            var isInitialPress = false;
+            var isRepeatPress = (!handledTextInput && self.keyRepeat.pressed && self.keyRepeat.key >= 32 && self.handleKeyRepeat());
+            
+            // If not handled by keyboard_string, check if a printable key was JUST pressed
+            if (!handledTextInput && !isRepeatPress && keyboard_key >= 32) {
+                if (keyboard_check_pressed(keyboard_key)) isInitialPress = true;
+            }
+
+            if (isInitialPress || isRepeatPress) {
+                var inputChar = keyboard_lastchar;
+                // If lastchar is empty or doesn't match the held key, try to derive it
+                if (inputChar == "" || ord(string_upper(inputChar)) != self.keyRepeat.key) {
+                    if (self.keyRepeat.key >= 65 && self.keyRepeat.key <= 90) { // A-Z
+                        inputChar = chr(self.keyRepeat.key);
+                        if (!keyboard_check(vk_shift)) inputChar = string_lower(inputChar);
+                    } else if (self.keyRepeat.key >= 48 && self.keyRepeat.key <= 57) { // 0-9
+                        inputChar = chr(self.keyRepeat.key);
+                    } else if (self.keyRepeat.key == vk_space) {
+                        inputChar = " ";
+                    }
+                }
+                
+                if (inputChar != "" && ord(inputChar) >= 32) {
+                    self.insertText(inputChar);
+                    handledTextInput = true;
+                    keyboard_lastchar = ""; // Clear after use
+                }
+            }
+
+            // Final fallback for single characters (only if not already handled)
             if (!handledTextInput && keyboard_lastchar != "" && ord(keyboard_lastchar) >= 32) {
                 var inputChar = keyboard_lastchar;
                 self.insertText(inputChar);
                 keyboard_lastchar = "";
                 handledTextInput = true;
-            }
-            
-            // Extra fallback: some runtimes don't populate keyboard_string/keyboard_lastchar reliably.
-            // In that case, read printable key presses directly.
-            if (!handledTextInput && keyboard_string == "" && keyboard_lastchar == "") {
-                var shiftPressed = keyboard_check(vk_shift);
-                
-                // Letters A-Z
-                for (var keyCode = ord("A"); keyCode <= ord("Z"); keyCode++) {
-                    if (keyboard_check_pressed(keyCode)) {
-                        var ch = chr(keyCode);
-                        if (!shiftPressed) ch = string_lower(ch);
-                        self.insertText(ch);
-                    }
-                }
-                
-                // Digits 0-9
-                for (var digitCode = ord("0"); digitCode <= ord("9"); digitCode++) {
-                    if (keyboard_check_pressed(digitCode)) {
-                        self.insertText(chr(digitCode));
-                    }
-                }
-                
-                // Common punctuation and space (enough for search/text use-cases)
-                if (keyboard_check_pressed(vk_space)) self.insertText(" ");
-                if (keyboard_check_pressed(vk_subtract)) self.insertText("-");
-                if (keyboard_check_pressed(vk_add)) self.insertText("+");
-                if (keyboard_check_pressed(ord("."))) self.insertText(".");
-                if (keyboard_check_pressed(ord(","))) self.insertText(",");
-                if (keyboard_check_pressed(ord("-"))) self.insertText("-");
-                if (keyboard_check_pressed(ord("_"))) self.insertText("_");
             }
         };
         
@@ -714,14 +714,15 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             var ctrl = keyboard_check(vk_control);
             var shift = keyboard_check(vk_shift);
             
-            // Check which repeatable key is currently pressed
+            // Check for repeatable keys
             if (keyboard_check(vk_left)) currentKey = vk_left;
             else if (keyboard_check(vk_right)) currentKey = vk_right;
             else if (keyboard_check(vk_backspace)) currentKey = vk_backspace;
             else if (keyboard_check(vk_delete)) currentKey = vk_delete;
             else if (ctrl && keyboard_check(ord("Z")) && !shift) currentKey = ord("Z"); // Undo
             else if (ctrl && (keyboard_check(ord("Y")) || (keyboard_check(ord("Z")) && shift))) currentKey = ord("Y"); // Redo
-            else if (ctrl && keyboard_check(ord("V"))) currentKey = ord("V"); // Paste with repeat
+            else if (ctrl && keyboard_check(ord("V"))) currentKey = ord("V"); // Paste
+            else if (keyboard_key >= 32) currentKey = keyboard_key; // Any printable character
             
             if (currentKey != self.keyRepeat.key) {
                 self.keyRepeat.key = currentKey;
