@@ -606,7 +606,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                 keyboard_string = ""; 
                 for (var i = 1; i <= string_length(newText); i++) {
                     var inputChar = string_char_at(newText, i);
-                    if (ord(inputChar) >= 32) { 
+                    if (ord(inputChar) >= 32 && ord(inputChar) != 127) { 
                         self.insertText(inputChar);
                         handledTextInput = true;
                     }
@@ -637,7 +637,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                     }
                 }
                 
-                if (inputChar != "" && ord(inputChar) >= 32) {
+                if (inputChar != "" && ord(inputChar) >= 32 && ord(inputChar) != 127) {
                     self.insertText(inputChar);
                     handledTextInput = true;
                     keyboard_lastchar = ""; // Clear after use
@@ -645,7 +645,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             }
 
             // Final fallback for single characters (only if not already handled)
-            if (!handledTextInput && keyboard_lastchar != "" && ord(keyboard_lastchar) >= 32) {
+            if (!handledTextInput && keyboard_lastchar != "" && ord(keyboard_lastchar) >= 32 && ord(keyboard_lastchar) != 127) {
                 var inputChar = keyboard_lastchar;
                 self.insertText(inputChar);
                 keyboard_lastchar = "";
