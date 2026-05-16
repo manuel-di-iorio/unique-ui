@@ -766,13 +766,16 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             
             // Set clipping region to prevent text overflow
             var _scissor = gpu_get_scissor();
-
-            var _scrollableParent = self.scrollableParent;
-            if (_scrollableParent == undefined) { 
-                gpu_set_scissor(self.x1, self.y1, self.x2 - self.x1, self.y2 - self.y1);
-            } else {
-                gpu_set_scissor(self.x1, max(_scrollableParent.y1, self.y1), self.x2 - self.x1, min(_scrollableParent.y2 - _scrollableParent.y1, self.y2 - self.y1));
-            }
+            var sx = self.x1;
+            var sy = self.y1;
+            var sw = self.x2 - self.x1;
+            var sh = self.y2 - self.y1;
+            // Intersect with inherited parent scissor to clip inside scrollable ancestors
+            var _ix1 = max(sx, _scissor.x);
+            var _iy1 = max(sy, _scissor.y);
+            var _ix2 = min(sx + sw, _scissor.x + _scissor.w);
+            var _iy2 = min(sy + sh, _scissor.y + _scissor.h);
+            gpu_set_scissor(_ix1, _iy1, max(0, _ix2 - _ix1), max(0, _iy2 - _iy1));
             
             // Text drawing settings
             draw_set_color(global.UI_COL_TEXT_MAIN);
