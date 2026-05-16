@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"__TestUiTextarea",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"__TestUiTextarea",
+  "parent":{
+    "name":"UniqueUI__Tests",
+    "path":"folders/UniqueUI__Tests.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

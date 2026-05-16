@@ -166,6 +166,7 @@ function __ui_demo_get_examples_map() {
         "Typography":  ui_demo_example_typography,
         "Button":      ui_demo_example_button,
         "Textbox":     ui_demo_example_textbox,
+        "Textarea":    ui_demo_example_textarea,
         "Checkbox":    ui_demo_example_checkbox,
         "Radio":       ui_demo_example_radio,
         "Switch":      ui_demo_example_switch,

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ui_demo_example_textarea",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ui_demo_example_textarea",
+  "parent":{
+    "name":"Textarea",
+    "path":"folders/Demo/Examples/Textarea.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

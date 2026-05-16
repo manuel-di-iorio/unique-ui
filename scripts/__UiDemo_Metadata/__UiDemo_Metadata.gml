@@ -24,6 +24,18 @@ function __ui_demo_get_component_metadata() {
                 { name: "iconRight", type: "sprite", desc: "Sprite to show on the right" }
             ]
         },
+        "Textarea": {
+            desc: "Multiline text field with cursor navigation, selection, and scrolling.",
+            props: [
+                { name: "label", type: "string", desc: "Descriptive label above the field" },
+                { name: "value", type: "string", desc: "Current multiline value of the field" },
+                { name: "placeholder", type: "string", desc: "Placeholder text when the field is empty" },
+                { name: "maxLength", type: "number", desc: "Maximum number of characters allowed" },
+                { name: "lineHeight", type: "number", desc: "Height in pixels used for each text line" },
+                { name: "onChange", type: "function", desc: "Callback called when the value changes" },
+                { name: "onBlur", type: "function", desc: "Callback called when focus leaves the field" }
+            ]
+        },
         "Checkbox": {
             desc: "Allows selecting one or more options from a set.",
             props: [
@@ -155,5 +167,4 @@ function __ui_demo_get_component_metadata() {
         }
     };
 }
-
 
