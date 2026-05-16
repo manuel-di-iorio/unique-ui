@@ -3,4 +3,3 @@
 - `destroyChildren(true)` also destroys child flexpanel nodes. Avoid using it on containers with external nodes (e.g. tab content panels) that must persist or be reused.
 - Update AGENTS.md and GEMINI.md whenever useful to prevent future errors.
 - Do not use directional border properties (e.g. borderBottomWidth) in UiNode styles — not supported and will crash. Draw them manually in onDraw if needed.
-- UiTextarea scrolls manually drawn text with Input.scrollTop/Input.scrollLeft; UiScrollbar content sizing is child-node based and should not be used for the textarea text body.
