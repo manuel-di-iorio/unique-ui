@@ -24,7 +24,7 @@ function __ui_demo_refresh(preserveScroll = false) {
     area.add(TabRow);
     __ui_demo_tab_item(TabRow, "Preview");
     if (!_isFoundation) __ui_demo_tab_item(TabRow, "Documentation");
-    __ui_demo_tab_item(TabRow, "Performance");
+
     
     // If a foundation page lands on Documentation tab, redirect to Preview
     if (_isFoundation && global.UI_DEMO.currentTab == "Documentation") {
@@ -37,9 +37,6 @@ function __ui_demo_refresh(preserveScroll = false) {
     } else if (global.UI_DEMO.currentTab == "Documentation") {
         area.enableScrollbar(global.UI_COL_PRIMARY);
         __ui_demo_render_documentazione(area);
-    } else {
-        area.enableScrollbar(global.UI_COL_PRIMARY);
-        __ui_demo_render_performance(area);
     }
     
     global.UI.update();
@@ -85,96 +82,7 @@ function __ui_demo_doc_row(parent, name, type, desc) {
     parent.add(Row);
 }
 
-function __ui_demo_render_performance(area) {
-    var Perf = new UiNode({ width: "100%", flexDirection: "column" });
-    area.add(Perf);
-    
-    Perf.add(new UiText("Live Performance", { marginBottom: 8, height: 28 }, { color: #0F172A }));
-    Perf.add(new UiText("Real-time runtime metrics of the current component. Interact with the sandbox to stress input, rendering, and layout.", { marginBottom: 20 }, { color: #64748B }));
-    
-    global.UI_DEMO.PerfLive = {
-        lastTime: current_time,
-        frameMs: 0,
-        fps: 0,
-        fpsAvg: 0,
-        fpsLow: 0,
-        sampleCount: 0,
-        redrawFrames: 0,
-        updateFrames: 0,
-        totalNodes: 0,
-        visibleNodes: 0,
-        interactiveNodes: 0,
-        sandboxNodes: 0
-    };
-    
-    var Health = new UiNode({ width: "100%", padding: 16, marginBottom: 20, flexDirection: "column" });
-    Health.onDraw = method(Health, function() {
-        draw_set_color(#F8FAFC);
-        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-    });
-    Perf.add(Health);
-    Health.add(new UiText("", { marginBottom: 8 }, { color: #0F172A, valueGetter: function() {
-        var p = global.UI_DEMO.PerfLive;
-        return "FPS: " + string_format(p.fps, 1, 1) + "   Avg: " + string_format(p.fpsAvg, 1, 1) + "   1% Low~: " + string_format(p.fpsLow, 1, 1);
-    }}));
-    Health.add(new UiText("", { marginBottom: 8 }, { color: #64748B, valueGetter: function() {
-        var p = global.UI_DEMO.PerfLive;
-        return "Frame: " + string_format(p.frameMs, 1, 2) + " ms   UpdateFrames: " + string(p.updateFrames) + "   RedrawFrames: " + string(p.redrawFrames);
-    }}));
-    Health.add(new UiText("", {}, { color: #64748B, valueGetter: function() {
-        var p = global.UI_DEMO.PerfLive;
-        return "Nodes -> total: " + string(p.totalNodes) + " | visible: " + string(p.visibleNodes) + " | interactive: " + string(p.interactiveNodes) + " | sandbox: " + string(p.sandboxNodes);
-    }}));
-    
-    Perf.add(new UiText("Component Sandbox", { marginBottom: 10, height: 28 }, { color: #0F172A }));
-    
-    var Box = new UiNode({ width: "100%", height: 320, padding: 18, marginBottom: 16, flexDirection: "column" });
-    Box.onDraw = method(Box, function() {
-        draw_set_color(c_white);
-        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-        draw_set_color(global.UI_COL_BORDER);
-        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
-    });
-    Box.enableScrollbar(global.UI_COL_PRIMARY);
-    Box.enableHorizontalScrollbar(global.UI_COL_PRIMARY);
-    Perf.add(Box);
-    __ui_demo_render_component_example(global.UI_DEMO.currentPage, Box);
-    
-    Perf.onStep(method({ boxRef: Box }, function() {
-        var p = global.UI_DEMO.PerfLive;
-        if (p == undefined) return;
-        
-        var now = current_time;
-        var delta = max(1, now - p.lastTime);
-        p.lastTime = now;
-        p.frameMs = delta;
-        p.fps = 1000 / delta;
-        
-        p.sampleCount += 1;
-        if (p.sampleCount == 1) {
-            p.fpsAvg = p.fps;
-            p.fpsLow = p.fps;
-        } else {
-            p.fpsAvg = lerp(p.fpsAvg, p.fps, 0.08);
-            p.fpsLow = min(p.fpsLow * 0.995 + p.fps * 0.005, p.fps);
-        }
-        
-        if (global.UI.needsUpdate) p.updateFrames += 1;
-        if (global.UI.needsRedraw) p.redrawFrames += 1;
-        
-        p.totalNodes = global.UI.countAll();
-        p.sandboxNodes = boxRef.countAll();
-        
-        var counters = { visible: 0, interactive: 0 };
-        global.UI.traverse(method(counters, function(node) {
-            if (node.isVisible()) self.visible += 1;
-            if (node.pointerEvents) self.interactive += 1;
-        }), true);
-        
-        p.visibleNodes = counters.visible;
-        p.interactiveNodes = counters.interactive;
-    }));
-}
+
 
 function __ui_demo_tab_item(parent, text) {
     var isActive = (text == global.UI_DEMO.currentTab);
