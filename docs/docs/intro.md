@@ -34,9 +34,6 @@ Whether you're building in-game editors, debug tools, or dynamic menus, UniqueUI
 Below is a simple example that creates a button inside a panel using UniqueUI:
 
 ```js
-// Create and initialize the root UI
-global.UI = new UiRoot();
-
 // Create a button
 var btn = new UiButton("Click Me");
 btn.onClick(function() {

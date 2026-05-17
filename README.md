@@ -38,9 +38,6 @@ UniqueUI ships with a curated "Modern Premium" design system. Components feature
 Define the root container in your controller object's Create event.
 
 ```javascript
-// Initialize the Root UI
-global.UI = new UiRoot();
-
 // Create a centered panel with a button
 var panel = new UiNode({
     width: 400,
