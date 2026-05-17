@@ -8,17 +8,12 @@ It's designed for complex asset trees or scene hierarchies, such as in a 3D edit
 
 Main Features
 
-- ✅ Single-item selection (selectedItem)
-
-- 🧩 Dynamic child container (Items)
-
-- ⚙️ Custom callbacks for events: new asset, remove item, selection, drop, etc.
-
-- 🔄 Automatic visual updates when state changes
-
-- 🧠 Integrated with the event propagation system
-
-- ⚡ Optimized for performance via surface caching and spatial partitioning
+- Single-item selection (`selectedItem`)
+- Dynamic child container (`Items`)
+- Custom callbacks for events (new asset, remove item, selection, drop, etc.)
+- Automatic visual updates when state changes
+- Fully integrated with the event propagation system
+- Performance-optimized via surface caching and spatial partitioning
 
 **Constructor**
 

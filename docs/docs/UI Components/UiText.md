@@ -12,7 +12,7 @@ Creates a dynamic text node with optional icon and auto-resizing.
 UiText(text = "", style = {}, props = {})
 ```
 
-**🧩 Description**
+**Description**
 
 UiText is a simple and efficient UI element that renders text within the UniqueUI system.
 It can automatically resize itself based on the rendered string or track a dynamic value through a valueGetter callback, making it suitable for labels, counters, or real-time indicators.
@@ -32,7 +32,7 @@ If an icon is provided, it will be drawn next to the text with proper spacing.
 | `color`       | `color`    | `c_white`                            | Text color.                                                                    |
 | `font`        | `font`     | `fText`                              | Font used to draw the text.                                                    |
 
-**🔄 Methods**
+**Methods**
 
 | Method              | Description                                                                                                     |
 | ------------------- | --------------------------------------------------------------------------------------------------------------- |
@@ -40,7 +40,7 @@ If an icon is provided, it will be drawn next to the text with proper spacing.
 | **`onStep()`**      | Called every frame. If a `valueGetter` is defined, updates the text when the value changes.                     |
 | **`onDraw()`**      | Handles the rendering of both icon and text, applying alignment, font, and color settings.                      |
 
-**🧠 Behavior**
+**Behavior**
 
 - If autoResize is true, the node automatically adjusts its size when the text changes.
  - If `autoResize` is true (the default when no explicit width/height is provided in `style`), the node automatically adjusts its size when the text changes by calling `computeSize()` which measures text width/height and optionally accounts for an icon.

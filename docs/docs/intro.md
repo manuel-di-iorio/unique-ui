@@ -15,23 +15,23 @@ Whether you're building in-game editors, debug tools, or dynamic menus, UniqueUI
 
 ---
 
-## 🔧 Requirements
+## Requirements
 
 - GameMaker Studio 2 (latest LTS or IDE version recommended)
 
 ---
 
-## 📦 Installation
+## Installation
 
-1. Download or copy the UniqueUI files from the Github Repository.  
+1. Download or copy the UniqueUI files from the GitHub repository.  
 2. Import the `uui.yymps` file by dragging it into your GameMaker project.  
-3. You’re ready to start building your UI system!
+3. You are now ready to build your user interface.
 
 ---
 
-## 🚀 Your First UI
+## Your First UI
 
-Here’s a simple example that creates a text label inside a panel using UniqueUI:
+Below is a simple example that creates a button inside a panel using UniqueUI:
 
 ```js
 // Create and initialize the root UI

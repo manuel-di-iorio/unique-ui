@@ -144,7 +144,7 @@ UI_EVENT.mouseleave
 | `click()`          | Manually triggers a click event. |
 | `onStep(cb)`       | Adds a per-frame step handler.   |
 
-> 🧠 Note: The UI system uses an internal **Dynamic AABB Tree 2D** for event dispatch, optimizing hit detection and interaction on complex interfaces with many elements.
+> **Note:** The UI system uses an internal **Dynamic AABB Tree 2D** for event dispatch, optimizing hit detection and interaction on complex interfaces with many elements.
 
 **Drag & Drop**
 
@@ -176,7 +176,7 @@ UI_EVENT.mouseleave
 
 ---
 
-**⚡ Performance Notes**
+**Performance Notes**
 
 - UiNode is backed by GameMaker's FlexPanel functions, a lightweight Yoga-style layout engine.
 - The event system uses a **Dynamic AABB Tree 2D** to efficiently resolve pointer targets, allowing for high performance even with thousands of nodes.
