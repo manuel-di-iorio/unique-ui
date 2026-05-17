@@ -36,7 +36,7 @@ Usually, you only need one instance of UiRoot per scene or project.
 | -------------------------- | ------------------------ | ----------------------------------------------------------------------------------- |
 | `root`                     | `boolean`                | Always `true` for the root node. Used to identify the top-level container.          |
 | `needsUpdate`              | `boolean`                | Triggers a full layout recalculation via FlexPanel.                                 |
-| `needsRedraw`              | `boolean`                | Marks the UI as dirty — causes re-rendering on the next `render()` call.            |
+| `needsRedraw`              | `boolean`                | Marks the UI as dirty, which triggers a re-render on the next `render()` call.      |
 | `layoutUpdated`            | `boolean`                | `true` if a new layout was computed during the last `update()`.                     |
 
 **Methods**

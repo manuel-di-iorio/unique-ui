@@ -53,4 +53,4 @@ global.UI.update();
 global.UI.draw();
 ```
 
-This creates a simple, dynamic UI structure directly from code — no external layout tools required.
+This creates a simple, dynamic UI structure directly from code, with no external layout tools required.
