@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">UiNode | Unique UI</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://manuel-di-iorio.github.io/unique-ui/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://manuel-di-iorio.github.io/unique-ui/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://manuel-di-iorio.github.io/unique-ui/docs/UI Components/UiNode"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="UiNode | Unique UI"><meta data-rh="true" name="description" content="Represents a flexible, composable UI element that manages its own layout, style, and interaction."><meta data-rh="true" property="og:description" content="Represents a flexible, composable UI element that manages its own layout, style, and interaction."><link data-rh="true" rel="icon" href="/unique-ui/img/logo.png"><link data-rh="true" rel="canonical" href="https://manuel-di-iorio.github.io/unique-ui/docs/UI Components/UiNode"><link data-rh="true" rel="alternate" href="https://manuel-di-iorio.github.io/unique-ui/docs/UI Components/UiNode" hreflang="en"><link data-rh="true" rel="alternate" href="https://manuel-di-iorio.github.io/unique-ui/docs/UI Components/UiNode" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"UiNode","item":"https://manuel-di-iorio.github.io/unique-ui/docs/UI Components/UiNode"}]}</script><link rel="stylesheet" href="/unique-ui/assets/css/styles.04ca5017.css">
-<script src="/unique-ui/assets/js/runtime~main.82d21710.js" defer="defer"></script>
+<script src="/unique-ui/assets/js/runtime~main.35c73e92.js" defer="defer"></script>
 <script src="/unique-ui/assets/js/main.f11cc513.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -42,7 +42,7 @@ Events propagate along the parent chain unless stopped.</p>
 <p><strong>Shorthand listeners</strong></p>
 <table><thead><tr><th>Method</th><th>Description</th></tr></thead><tbody><tr><td><code>onClick(cb)</code></td><td>Triggered when clicked.</td></tr><tr><td><code>onMouseDown(cb)</code></td><td>Triggered on mouse down.</td></tr><tr><td><code>onMouseUp(cb)</code></td><td>Triggered on mouse up.</td></tr><tr><td><code>onMouseEnter(cb)</code></td><td>Triggered when the mouse enters.</td></tr><tr><td><code>onMouseLeave(cb)</code></td><td>Triggered when the mouse leaves.</td></tr><tr><td><code>onWheelUp(cb)</code></td><td>Triggered on scroll up.</td></tr><tr><td><code>onWheelDown(cb)</code></td><td>Triggered on scroll down.</td></tr><tr><td><code>click()</code></td><td>Manually triggers a click event.</td></tr><tr><td><code>onStep(cb)</code></td><td>Adds a per-frame step handler.</td></tr></tbody></table>
 <blockquote>
-<p>🧠 Note: The UI system uses an internal <strong>Dynamic AABB Tree 2D</strong> for event dispatch, optimizing hit detection and interaction on complex interfaces with many elements.</p>
+<p><strong>Note:</strong> The UI system uses an internal <strong>Dynamic AABB Tree 2D</strong> for event dispatch, optimizing hit detection and interaction on complex interfaces with many elements.</p>
 </blockquote>
 <p><strong>Drag &amp; Drop</strong></p>
 <table><thead><tr><th>Property</th><th>Description</th></tr></thead><tbody><tr><td><code>draggable</code></td><td>Enables dragging.</td></tr><tr><td><code>dropzone</code></td><td>Allows receiving dropped elements.</td></tr></tbody></table>
@@ -52,7 +52,7 @@ Events propagate along the parent chain unless stopped.</p>
 <p><strong>Naming</strong></p>
 <table><thead><tr><th>Method</th><th>Description</th></tr></thead><tbody><tr><td><code>setName(name)</code></td><td>Sets the internal FlexPanel node name.</td></tr><tr><td><code>getName()</code></td><td>Returns the node name.</td></tr></tbody></table>
 <hr>
-<p><strong>⚡ Performance Notes</strong></p>
+<p><strong>Performance Notes</strong></p>
 <ul>
 <li class="">UiNode is backed by GameMaker&#x27;s FlexPanel functions, a lightweight Yoga-style layout engine.</li>
 <li class="">The event system uses a <strong>Dynamic AABB Tree 2D</strong> to efficiently resolve pointer targets, allowing for high performance even with thousands of nodes.</li>
