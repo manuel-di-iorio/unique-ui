@@ -115,6 +115,7 @@
     {"id":{"name":"UiScrollbar","path":"scripts/UiScrollbar/UiScrollbar.yy",},},
     {"id":{"name":"UiSlider","path":"scripts/UiSlider/UiSlider.yy",},},
     {"id":{"name":"UiSprite","path":"scripts/UiSprite/UiSprite.yy",},},
+    {"id":{"name":"UiStore","path":"scripts/UiStore/UiStore.yy",},},
     {"id":{"name":"UiSwitch","path":"scripts/UiSwitch/UiSwitch.yy",},},
     {"id":{"name":"UiTabs","path":"scripts/UiTabs/UiTabs.yy",},},
     {"id":{"name":"UiText","path":"scripts/UiText/UiText.yy",},},
