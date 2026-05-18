@@ -101,7 +101,7 @@ UniqueUI is optimized for high-refresh-rate applications:
 
 ## AI NOTE
 
-I use AI for the development of UniqueUI (through tools like Codex, Antigravity, Copilot, etc..) and in the generation of the documentation/descriptions, and I prefer being open about it.
+I use AI to develop UniqueUI (through tools like Codex, Antigravity, and Copilot) and to generate its documentation and descriptions, as I prefer being open about it.
 
 UniqueUI is still designed, architected, and directed by me, a human developer. AI is simply part of the workflow: a tool that helps speed up repetitive tasks, explore edge cases, and keep the project moving fast without sacrificing quality.
 
