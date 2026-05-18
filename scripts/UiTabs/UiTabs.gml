@@ -74,7 +74,7 @@ function UiTabs(items, style = {}, props = {}): UiNode(style, props) constructor
             
             var textColor = global.UI_COL_TEXT_DIM;
             if (isActive) {
-                textColor = (self.variant == "pills") ? c_white : global.UI_COL_PRIMARY;
+                textColor = (self.variant == "pills") ? function() { return #FFFFFF; } : global.UI_COL_PRIMARY;
             }
 
             _tab.add(new UiText(item.label, {}, {
