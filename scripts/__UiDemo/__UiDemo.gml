@@ -38,16 +38,9 @@ function ui_demo_create() {
     Main.add(Sidebar);
     
     // Logo
-    var LogoRow = new UiNode({ flexDirection: "row", alignItems: "center", marginBottom: 32, paddingLeft: 12 });
-    Sidebar.add(LogoRow);
-    LogoRow.add(new UiText("UniqueUI", { marginRight: 8 }, { color: c_white }));
-    var VersionBadge = new UiNode({ padding: 4 });
-    VersionBadge.onDraw = method(VersionBadge, function() {
-        draw_set_color(#312E81);
-        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 4, 4, false);
-    });
-    VersionBadge.add(new UiText(global.UI_VERSION, {}, { color: #818CF8 }));
-    LogoRow.add(VersionBadge);
+    global.UI_DEMO.LogoRowContainer = new UiNode({ marginBottom: 32 });
+    Sidebar.add(global.UI_DEMO.LogoRowContainer);
+    __ui_demo_render_logo();
     
     global.UI_DEMO.SearchQuery = "";
     
@@ -118,6 +111,7 @@ function ui_demo_create() {
                 global.UI_DEMO.currentTheme = "light";
                 ui_set_theme("light");
             }
+            __ui_demo_render_logo();
             __ui_demo_render_sidebar();
             __ui_demo_refresh();
         }
@@ -130,6 +124,19 @@ function ui_demo_create() {
     global.UI_DEMO.ScrollArea = ScrollArea;
     
     __ui_demo_refresh();
-    
-    // Overlay layer is added automatically by UiRoot
+}
+
+function __ui_demo_render_logo() {
+    var container = global.UI_DEMO.LogoRowContainer;
+    container.destroyChildren(true);
+    var LogoRow = new UiNode({ flexDirection: "row", alignItems: "center", paddingLeft: 12 });
+    container.add(LogoRow);
+    LogoRow.add(new UiText("UniqueUI", { marginRight: 8 }, { color: function() { return #FFFFFF; } }));
+    var VersionBadge = new UiNode({ padding: 4 });
+    VersionBadge.onDraw = method(VersionBadge, function() {
+        draw_set_color(#312E81);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 4, 4, false);
+    });
+    VersionBadge.add(new UiText(global.UI_VERSION, {}, { color: #818CF8 }));
+    LogoRow.add(VersionBadge);
 }

@@ -30,5 +30,5 @@ function __ui_demo_sidebar_item(parent, text) {
 }
 
 function __ui_demo_sidebar_label(parent, text, mt = 0) {
-    parent.add(new UiText(text, { marginTop: mt, marginBottom: 12, marginLeft: 12 }, { color: #475569 }));
+    parent.add(new UiText(text, { marginTop: mt, marginBottom: 12, marginLeft: 12 }, { color: global.UI_COL_TEXT_DIM }));
 }

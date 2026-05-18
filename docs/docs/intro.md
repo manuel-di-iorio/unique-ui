@@ -51,3 +51,51 @@ global.UI.draw();
 ```
 
 This creates a simple, dynamic UI structure directly from code, with no external layout tools required.
+
+---
+
+## Theming
+
+UniqueUI supports light and dark themes out of the box. Use `ui_set_theme()` to switch between them:
+
+```gml
+// Switch to dark mode
+ui_set_theme("dark");
+
+// Switch to light mode
+ui_set_theme("light");
+```
+
+### Custom Themes
+
+You can also define your own custom themes by modifying `global.UI_THEMES` in `__UniqueUI_Globals.gml`!
+
+```gml
+global.UI_THEMES.myCustomTheme = {
+    primary: #FF5722,
+    primaryHover: #E64A19,
+    bgSidebar: #121212,
+    bgMain: #1E1E1E,
+    bgCard: #2D2D2D,
+    textMain: #FFFFFF,
+    textDim: #B0B0B0,
+    border: #404040,
+    selected: #FF5722,
+    selectedHover: #E64A19,
+    btnHover: #3D3D3D,
+    box: #2D2D2D,
+    inputBg: #121212,
+    barBg: #2D2D2D,
+    checkboxHover: #3D3D3D,
+    dropdownListBg: #1E1E1E,
+    inspectorBg: #2D2D2D,
+    treeBg: #121212,
+    selection: #FF5722,
+    success: #4CAF50,
+    warning: #FF9800,
+    danger: #F44336
+};
+
+// Then use it:
+ui_set_theme("myCustomTheme");
+```

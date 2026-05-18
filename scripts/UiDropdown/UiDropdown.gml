@@ -174,7 +174,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
                 var _items = _Dropdown.items;
         
                 if (!array_length(_items)) {
-                    self.Items.add(new UiText("No items found", { marginLeft: 5 }, { color: c_ltgray, font: fTextItalic }));
+                    self.Items.add(new UiText("No items found", { marginLeft: 5 }, { color: #CBD5E1, font: fTextItalic }));
                 }
         
                 // Add the items
@@ -215,11 +215,11 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
                                 draw_set_color(global.UI_COL_PRIMARY);
                                 draw_rectangle(self.itemNode.x1, self.itemNode.y1, self.itemNode.x2, self.itemNode.y2, false);
                             } else if (self.itemNode.hovered) {
-                                draw_set_color(global.UI_COL_BTN_HOVER);
+                                draw_set_color(#334155);
                                 draw_rectangle(self.itemNode.x1, self.itemNode.y1, self.itemNode.x2, self.itemNode.y2, false);
                             }
                             
-                            var text_color = (self.Dropdown.value == self.itemNode.value) ? c_white : global.UI_COL_TEXT_MAIN;
+                            var text_color = (self.Dropdown.value == self.itemNode.value) ? c_white : #F8FAFC;
                             draw_set_halign(fa_left); draw_set_valign(fa_middle); draw_set_color(text_color);
                             draw_text(self.itemNode.x1 + 12, ~~mean(self.itemNode.y1, self.itemNode.y2), self.itemNode.label);
                         });

@@ -183,15 +183,16 @@ ui_test_suite("UiStore", function() {
         var store = new UiStore({ count: 10 });
         var testState = { triggeredCount: 0, receivedState: undefined };
         
-        store.subscribe(method(testState, function(newState) {
-            triggeredCount++;
-            receivedState = newState;
-        }));
+        var callback = method(testState, function(newState) {
+            self.triggeredCount++;
+            self.receivedState = newState;
+        });
         
+        store.subscribe(callback);
         store.set("count", 20);
         
         assert_equal(testState.triggeredCount, 1, "subscriber was called once");
-        assert_not_equal(testState.receivedState, undefined, "received new state");
+        assert_not_undefined(testState.receivedState, "received new state");
         assert_equal(testState.receivedState[$ "count"], 20, "received correct state value");
     });
     

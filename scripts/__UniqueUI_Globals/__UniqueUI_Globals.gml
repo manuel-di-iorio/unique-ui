@@ -87,7 +87,7 @@ global.UI_THEMES.light = {
     inputBg: #F8FAFC,
     barBg: #FFFFFF,
     checkboxHover: #F1F5F9,
-    dropdownListBg: #FFFFFF,
+    dropdownListBg: #1E293B,
     inspectorBg: #F1F5F9,
     treeBg: #F8FAFC,
     selection: #3B82F6,

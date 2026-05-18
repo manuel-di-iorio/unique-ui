@@ -12,7 +12,7 @@ function __ui_demo_refresh(preserveScroll = false) {
     var metadata = __ui_demo_get_component_metadata();
     var componentData = metadata[$ global.UI_DEMO.currentPage];
     var desc = componentData != undefined ? componentData.desc : "Explore the capabilities of the component " + global.UI_DEMO.currentPage;
-    Hero.add(new UiText(desc, {}, { color: #64748B }));
+    Hero.add(new UiText(desc, {}, { color: global.UI_COL_TEXT_DIM }));
     
     // Tabs — Documentation tab is hidden for foundation pages (Colors, Typography)
     var _isFoundation = (global.UI_DEMO.currentPage == "Colors" || global.UI_DEMO.currentPage == "Typography");
@@ -52,10 +52,10 @@ function __ui_demo_render_documentazione(area) {
     area.add(Doc);
     
     Doc.add(new UiText("Usage", { marginBottom: 16, height: 28 }, { color: global.UI_COL_TEXT_MAIN }));
-    Doc.add(new UiText("The " + global.UI_DEMO.currentPage + " component is designed to be highly customizable.", { marginBottom: 32 }, { color: #64748B }));
+    Doc.add(new UiText("The " + global.UI_DEMO.currentPage + " component is designed to be highly customizable.", { marginBottom: 32 }, { color: global.UI_COL_TEXT_DIM }));
     
     if (componentData != undefined && variable_struct_exists(componentData, "props")) {
-        Doc.add(new UiText("Properties", { marginBottom: 16, height: 28 }, { color: #0F172A }));
+        Doc.add(new UiText("Properties", { marginBottom: 16, height: 28 }, { color: global.UI_COL_TEXT_MAIN }));
         var Table = new UiNode({ width: "100%", flexDirection: "column", padding: 16 });
         Table.onDraw = method(Table, function() {
             draw_set_color(global.UI_COL_INPUT_BG);
@@ -69,15 +69,15 @@ function __ui_demo_render_documentazione(area) {
             __ui_demo_doc_row(Table, p.name, p.type, p.desc);
         }
     } else {
-        Doc.add(new UiText("No specific properties documented for this component.", { marginBottom: 32 }, { color: #64748B }));
+        Doc.add(new UiText("No specific properties documented for this component.", { marginBottom: 32 }, { color: global.UI_COL_TEXT_DIM }));
     }
 }
 
 function __ui_demo_doc_row(parent, name, type, desc) {
     var Row = new UiNode({ flexDirection: "row", marginBottom: 12, width: "100%" });
     Row.add(new UiText(name, { width: 220 }, { color: global.UI_COL_PRIMARY }));
-    Row.add(new UiText(type, { width: 90 }, { color: #94A3B8 }));
-    Row.add(new UiText(desc, { flex: 1 }, { color: #64748B, wrap: true }));
+    Row.add(new UiText(type, { width: 90 }, { color: global.UI_COL_TEXT_DIM }));
+    Row.add(new UiText(desc, { flex: 1 }, { color: global.UI_COL_TEXT_DIM, wrap: true }));
     parent.add(Row);
 }
 
@@ -94,7 +94,7 @@ function __ui_demo_tab_item(parent, text) {
             draw_line_width(self.x1, self.y2, self.x2, self.y2, 2);
         }
     });
-    tab.add(new UiText(text, {}, { color: isActive ? global.UI_COL_PRIMARY : #64748B }));
+    tab.add(new UiText(text, {}, { color: isActive ? global.UI_COL_PRIMARY : global.UI_COL_TEXT_DIM }));
     tab.onClick(method({ text }, function() {
         global.UI_DEMO.currentTab = text;
         __ui_demo_refresh();
@@ -155,7 +155,7 @@ function __ui_demo_render_component_example(page, parent) {
         return exampleFunc(parent);
     }
     
-    parent.add(new UiText("Preview for " + page + " coming soon.", {}, { color: #64748B }));
+    parent.add(new UiText("Preview for " + page + " coming soon.", {}, { color: global.UI_COL_TEXT_DIM }));
     return ["// Example not available"];
 }
 

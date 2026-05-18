@@ -44,6 +44,16 @@ function assert_equal(actual, expected, msg = "") {
     }
 }
 
+/// Assert two values are NOT equal (uses !=).
+function assert_not_equal(actual, expected, msg = "") {
+    if (actual == expected) {
+        __ui_assert_fail(
+            (msg != "" ? msg + " | " : "") +
+            "Expected NOT [" + string(expected) + "] but got [" + string(actual) + "]"
+        );
+    }
+}
+
 /// Assert value is true.
 function assert_true(value, msg = "") {
     if (!value) {
