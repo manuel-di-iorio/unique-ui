@@ -99,5 +99,17 @@ UniqueUI is optimized for high-refresh-rate applications:
 
 ---
 
+## AI NOTE
+
+I use AI for the development of UniqueUI (through tools like Codex, Antigravity, Copilot, etc..) and in the generation of the documentation/descriptions, and I prefer being open about it.
+
+UniqueUI is still designed, architected, and directed by me, a human developer. AI is simply part of the workflow: a tool that helps speed up repetitive tasks, explore edge cases, and keep the project moving fast without sacrificing quality.
+
+Instead of replacing craftsmanship, it lets me spend more time on the parts that actually matter: design decisions, usability, performance, and polish.
+
+At the end of the day, every line of code and documentation is vetted, refined, and shaped by human hands to ensure it feels premium, intuitive, and extremely fast.
+
+---
+
 ## LICENSE
-Distributed under the MIT License. Copyright 2025 Emmanuel Di Iorio.
+Distributed under the MIT License. Copyright 2025-2026 Emmanuel Di Iorio.
