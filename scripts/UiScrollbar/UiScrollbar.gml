@@ -76,7 +76,8 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
             var marginName = self.isVertical ? "getMarginBottom" : "getMarginRight";
             var paddingName = self.isVertical ? "getPaddingBottom" : "getPaddingRight";
 
-            self.__contentSize = self.parent.reduceChildren(method({ scrollableParent: self.parent, propName, posName, marginName }, function(maxS, child) {
+            var _parent = self.parent;
+            self.__contentSize = self.parent.reduceChildren(method({ scrollableParent: _parent, propName, posName, marginName }, function(maxS, child) {
                 if (child.isScrollbar) return maxS;
                 var m = child[$ marginName]();
                 if (is_undefined(m) || is_nan(m)) m = 0;

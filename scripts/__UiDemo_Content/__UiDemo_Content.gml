@@ -7,7 +7,7 @@ function __ui_demo_refresh(preserveScroll = false) {
     // Title Section
     var Hero = new UiNode({ width: "100%", flexDirection: "column", marginBottom: 32 });
     area.add(Hero);
-    Hero.add(new UiText(global.UI_DEMO.currentPage, { marginBottom: 8, height: 40 }, { color: #0F172A, font: fText })); 
+    Hero.add(new UiText(global.UI_DEMO.currentPage, { marginBottom: 8, height: 40 }, { color: global.UI_COL_TEXT_MAIN, font: fText })); 
     
     var metadata = __ui_demo_get_component_metadata();
     var componentData = metadata[$ global.UI_DEMO.currentPage];
@@ -39,7 +39,6 @@ function __ui_demo_refresh(preserveScroll = false) {
         __ui_demo_render_documentazione(area);
     }
     
-    global.UI.update();
     if (preserveScroll) area.scrollTop = _oldScroll; else area.scrollTop = 0;
     
     global.UI.requestUpdate();
@@ -52,14 +51,14 @@ function __ui_demo_render_documentazione(area) {
     var Doc = new UiNode({ width: "100%", flexDirection: "column" });
     area.add(Doc);
     
-    Doc.add(new UiText("Usage", { marginBottom: 16, height: 28 }, { color: #0F172A }));
+    Doc.add(new UiText("Usage", { marginBottom: 16, height: 28 }, { color: global.UI_COL_TEXT_MAIN }));
     Doc.add(new UiText("The " + global.UI_DEMO.currentPage + " component is designed to be highly customizable.", { marginBottom: 32 }, { color: #64748B }));
     
     if (componentData != undefined && variable_struct_exists(componentData, "props")) {
         Doc.add(new UiText("Properties", { marginBottom: 16, height: 28 }, { color: #0F172A }));
         var Table = new UiNode({ width: "100%", flexDirection: "column", padding: 16 });
         Table.onDraw = method(Table, function() {
-            draw_set_color(#F8FAFC);
+            draw_set_color(global.UI_COL_INPUT_BG);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
         });
         Doc.add(Table);
@@ -120,7 +119,7 @@ function __ui_demo_render_anteprima(area) {
     PreviewCard.enableScrollbar(global.UI_COL_PRIMARY);
     PreviewCard.enableHorizontalScrollbar(global.UI_COL_PRIMARY);
     PreviewCard.onDraw = method(PreviewCard, function() {
-        draw_set_color(c_white);
+        draw_set_color(global.UI_COL_BG_CARD);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 12, 12, false);
         draw_set_color(global.UI_COL_BORDER);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 12, 12, true);
@@ -145,7 +144,7 @@ function __ui_demo_render_anteprima(area) {
 }
 
 function __ui_demo_preview_section(parent, title, mt = 0) {
-    parent.add(new UiText(title, { marginTop: mt, marginBottom: 16, height: 28 }, { color: #0F172A }));
+    parent.add(new UiText(title, { marginTop: mt, marginBottom: 16, height: 28 }, { color: global.UI_COL_TEXT_MAIN }));
 }
 
 function __ui_demo_render_component_example(page, parent) {

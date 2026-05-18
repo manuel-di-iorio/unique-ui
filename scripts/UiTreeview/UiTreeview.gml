@@ -139,13 +139,15 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     });
     self.add(self.Content);
     
+    var _item = self;
+    var _content = self.Content;
+    
     // Background highlight
-    self.Content.onDraw = method(self.Content, function() {
-        var _item = self.parent; 
-        if (self.hovered || _item.selected) {
-            draw_set_color(_item.selected ? global.UI_COL_SELECTED : global.UI_COL_BTN_HOVER);
-            draw_set_alpha(_item.selected ? 0.3 : 0.1);
-            draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
+    self.Content.onDraw = method({ Content: _content, Item: _item }, function() {
+        if (self.Content.hovered || self.Item.selected) {
+            draw_set_color(self.Item.selected ? global.UI_COL_SELECTED : global.UI_COL_BTN_HOVER);
+            draw_set_alpha(self.Item.selected ? 0.3 : 0.1);
+            draw_rectangle(self.Content.x1, self.Content.y1, self.Content.x2, self.Content.y2, false);
             draw_set_alpha(1);
         }
     });
@@ -155,13 +157,14 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     self.Content.add(self.ArrowContainer);
     
     self.Arrow = new UiNode({ width: 12, height: 12 }, { pointerEvents: true });
-    self.Arrow.onDraw = method(self.Arrow, function() {
-        var _item = self.parent.parent.parent; 
-        if (_item.assetType != "Folder") return;
+    var _arrow = self.Arrow;
+    
+    self.Arrow.onDraw = method({ Arrow: _arrow, Item: _item }, function() {
+        if (self.Item.assetType != "Folder") return;
         draw_set_color(c_white);
-        var mx = (self.x1 + self.x2) / 2;
-        var my = (self.y1 + self.y2) / 2;
-        if (_item.collapsed) {
+        var mx = (self.Arrow.x1 + self.Arrow.x2) / 2;
+        var my = (self.Arrow.y1 + self.Arrow.y2) / 2;
+        if (self.Item.collapsed) {
             draw_triangle(mx-3, my-4, mx-3, my+4, mx+3, my, false);
         } else {
             draw_triangle(mx-4, my-3, mx+4, my-3, mx, my+3, false);
@@ -174,28 +177,29 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
 
     // Icon
     self.Icon = new UiNode({ width: 20, height: 20, marginLeft: 4, marginRight: 8 });
-    self.Icon.onDraw = method(self.Icon, function() {
-        var _item = self.parent.parent; 
-        var mx = (self.x1 + self.x2) / 2;
-        var my = (self.y1 + self.y2) / 2;
+    var _icon = self.Icon;
+    
+    self.Icon.onDraw = method({ Icon: _icon, Item: _item }, function() {
+        var mx = (self.Icon.x1 + self.Icon.x2) / 2;
+        var my = (self.Icon.y1 + self.Icon.y2) / 2;
         
-        if (_item.icon != undefined && _item.icon != -1) {
-            var _sw = sprite_get_width(_item.icon);
-            var _sh = sprite_get_height(_item.icon);
+        if (self.Item.icon != undefined && self.Item.icon != -1) {
+            var _sw = sprite_get_width(self.Item.icon);
+            var _sh = sprite_get_height(self.Item.icon);
             var _scale = min(16 / _sw, 16 / _sh);
-            var _ox = sprite_get_xoffset(_item.icon);
-            var _oy = sprite_get_yoffset(_item.icon);
+            var _ox = sprite_get_xoffset(self.Item.icon);
+            var _oy = sprite_get_yoffset(self.Item.icon);
             // Draw centered regardless of origin
-            draw_sprite_ext(_item.icon, 0, mx - (_sw/2 - _ox) * _scale, my - (_sh/2 - _oy) * _scale, _scale, _scale, 0, c_white, 1);
+            draw_sprite_ext(self.Item.icon, 0, mx - (_sw/2 - _ox) * _scale, my - (_sh/2 - _oy) * _scale, _scale, _scale, 0, c_white, 1);
         } else {
-            if (_item.assetType == "Folder") {
-                draw_set_color(_item.collapsed ? #F59E0B : #FCD34D);
+            if (self.Item.assetType == "Folder") {
+                draw_set_color(self.Item.collapsed ? #F59E0B : #FCD34D);
                 // Folder shape
-                draw_rectangle(self.x1+2, self.y1+6, self.x2-2, self.y2-4, false);
-                draw_rectangle(self.x1+2, self.y1+4, self.x1+10, self.y1+6, false);
+                draw_rectangle(self.Icon.x1+2, self.Icon.y1+6, self.Icon.x2-2, self.Icon.y2-4, false);
+                draw_rectangle(self.Icon.x1+2, self.Icon.y1+4, self.Icon.x1+10, self.Icon.y1+6, false);
             } else {
                 draw_set_color(#6366F1);
-                draw_rectangle(self.x1+4, self.y1+4, self.x2-4, self.y2-4, false);
+                draw_rectangle(self.Icon.x1+4, self.Icon.y1+4, self.Icon.x2-4, self.Icon.y2-4, false);
             }
         }
     });

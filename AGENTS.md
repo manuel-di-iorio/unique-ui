@@ -3,3 +3,6 @@
 - `destroyChildren(true)` also destroys child flexpanel nodes. Avoid using it on containers with external nodes (e.g. tab content panels) that must persist or be reused.
 - Update AGENTS.md and GEMINI.md whenever useful to prevent future errors.
 - Do not use directional border properties (e.g. borderBottomWidth) in UiNode styles — not supported and will crash. Draw them manually in onDraw if needed.
+- Avoid using tree-climbing parent properties (like `parent.parent.Dropdown` or `parent.parent.collapsed`) in nested sub-node callbacks/draw functions. Use method bindings (e.g. `method({ Arrow: self.Arrow, Accordion: self }, function() { ... })`) to cleanly inject dependencies and decouple the node layout hierarchy.
+- Inside constructor functions, writing `self` inside a struct literal passed to a method binding (e.g. `method({ Accordion: self }, ...)`) makes the GML compiler evaluate `self` as the *struct literal itself* rather than the outer instance, causing variable access crashes. To resolve this, always assign `self` to a local variable first (e.g. `var _this = self;`) and pass the local variable in the struct literal (e.g. `method({ Accordion: _this }, ...)`).
+- For variables, do not use reserved names of GameMaker, like x, y, speed, gravity, etc...

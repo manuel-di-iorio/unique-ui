@@ -42,7 +42,7 @@ function UiModal(style = {}, props = {}) : UiNode(style, props) constructor {
     // ── Content Panel ────────────────────────────────────────────────────────
     var _panelStyle = props[$ "panelStyle"] ?? {};
     if (_panelStyle[$ "width"] == undefined) _panelStyle.width = 440;
-    if (_panelStyle[$ "backgroundColor"] == undefined) _panelStyle.backgroundColor = c_white;
+    if (_panelStyle[$ "backgroundColor"] == undefined) _panelStyle.backgroundColor = global.UI_COL_BG_CARD;
     if (_panelStyle[$ "borderRadius"] == undefined) _panelStyle.borderRadius = 12;
     if (_panelStyle[$ "flexDirection"] == undefined) _panelStyle.flexDirection = "column";
     
@@ -132,9 +132,7 @@ function UiModal(style = {}, props = {}) : UiNode(style, props) constructor {
     // ── Methods ──────────────────────────────────────────────────────────────
     self.open = function() {
         if (self.parent == undefined) {
-            if (global.UI.Overlay != undefined) {
-                global.UI.Overlay.add(self);
-            }
+            global.UI.getOverlay().add(self);
         }
     }
     

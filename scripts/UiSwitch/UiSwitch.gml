@@ -23,7 +23,7 @@ function UiSwitch(style = {}, props = {}) : UiNode(style, props) constructor {
     
     // Label node second
     if (self.label != undefined) {
-        self.Label = new UiText(self.label, {}, { color: global.UI_COL_TEXT_MAIN });
+        self.Label = new UiText(self.label, {}, { color: "main" });
         self.add(self.Label);
     }
     
@@ -41,8 +41,8 @@ function UiSwitch(style = {}, props = {}) : UiNode(style, props) constructor {
             var r = h / 2;
             
             // Track
-            var trackColor = merge_color(#E2E8F0, global.UI_COL_PRIMARY, p.animThumbPos);
-            if (p.hovered && !p.value) trackColor = #CBD5E1;
+            var trackColor = merge_color(global.UI_COL_BORDER, global.UI_COL_PRIMARY, p.animThumbPos);
+            if (p.hovered && !p.value) trackColor = global.UI_COL_BTN_HOVER;
             
             draw_set_color(trackColor);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, r, r, false);

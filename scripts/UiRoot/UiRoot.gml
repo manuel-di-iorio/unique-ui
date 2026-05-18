@@ -9,6 +9,25 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
     self.needsRedraw = true;
     self.currentCursor = cr_default;
     self.isScrolling = false;
+    self.Overlay = undefined;
+    self.Tooltip = undefined;
+
+    self.getOverlay = function() {
+        if (self.Overlay == undefined) {
+            self.Overlay = new UiNode({ name: "Overlay", position: "absolute", left: 0, top: 0, width: "100%", height: "100%" }, { pointerEvents: false });
+            self.add(self.Overlay);
+        }
+        return self.Overlay;
+    }
+
+    self.getTooltip = function() {
+        if (self.Tooltip == undefined) {
+            var overlay = self.getOverlay();
+            self.Tooltip = new UiTooltip();
+            overlay.add(self.Tooltip);
+        }
+        return self.Tooltip;
+    }
 
     // Track modified elements for optimization/debugging
     self.dirtyElements = [];
@@ -86,7 +105,8 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         
         var currentIndex = -1;
         if (self.focusedElement != undefined) {
-            currentIndex = array_find_index(self.focusableElements, method({ el: self.focusedElement }, function(item) {
+            var _focused = self.focusedElement;
+            currentIndex = array_find_index(self.focusableElements, method({ el: _focused }, function(item) {
                 return item == el;
             }));
         }
@@ -113,7 +133,8 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         
         var currentIndex = -1;
         if (self.focusedElement != undefined) {
-            currentIndex = array_find_index(self.focusableElements, method({ el: self.focusedElement }, function(item) {
+            var _focused = self.focusedElement;
+            currentIndex = array_find_index(self.focusableElements, method({ el: _focused }, function(item) {
                 return item == el;
             }));
         }
@@ -241,7 +262,9 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         var _children = elem.children;
         var _len = elem.childrenLength;
         for (var i = 0; i < _len; i++) {
-            self.__updateElemLayout(_children[i], _nextScrollableParent, _isVisible);
+            var child = _children[i];
+            if (elem.root && (child == elem.Overlay || child == elem.Tooltip)) continue;
+            self.__updateElemLayout(child, _nextScrollableParent, _isVisible);
         }
         
         // Special case for scrollbars: they are drawn after children
@@ -252,6 +275,16 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         if (elem.__UiScrollbarH != undefined) {
             self.__updateElemLayout(elem.__UiScrollbarH, _nextScrollableParent, _isVisible);
             elem.__UiScrollbarH.Thumb.__drawIndex = self.__layoutDrawIndex++;
+        }
+
+        // Run layout updates on Overlay and Tooltip last if this is root
+        if (elem.root) {
+            if (elem.Overlay != undefined) {
+                self.__updateElemLayout(elem.Overlay, _nextScrollableParent, _isVisible);
+            }
+            if (elem.Tooltip != undefined) {
+                self.__updateElemLayout(elem.Tooltip, _nextScrollableParent, _isVisible);
+            }
         }
     }
     
@@ -297,6 +330,10 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
     function update() {
         gml_pragma("forceinline"); 
         self.layoutUpdated = false;
+        
+        // Lazy initialize Overlay and Tooltip layers
+        self.getOverlay();
+        self.getTooltip();
         
         if (self.needsUpdate) {
             self.__processLayout();
@@ -571,7 +608,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             }
             
             _scissor = [sx1, sy1, sw, sh];
-            gpu_set_scissor(sx1, sy1, sw, sh);
+            uui_set_scissor(sx1, sy1, sw, sh);
         }
 
         // Run the draw method of the element
@@ -581,6 +618,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         for (var i = 0; i < elem.childrenLength; i++) {
             var child = elem.children[i];
             if (child.isScrollbar) continue;
+            if (elem.root && (child == elem.Overlay || child == elem.Tooltip)) continue;
             self.__renderChild(child, debug, _scissor);
         }
         
@@ -588,9 +626,9 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         if (_ownScissor) {
             // Restore to inherited scissor or no scissor
             if (inheritedScissor != undefined) {
-                gpu_set_scissor(inheritedScissor[0], inheritedScissor[1], inheritedScissor[2], inheritedScissor[3]);
+                uui_set_scissor(inheritedScissor[0], inheritedScissor[1], inheritedScissor[2], inheritedScissor[3]);
             } else {
-                gpu_set_scissor(0, 0, self.width, self.height);
+                uui_set_scissor(0, 0, self.width, self.height);
             }
             if (elem.__UiScrollbar != undefined) {
                 self.__renderChild(elem.__UiScrollbar, debug, inheritedScissor);
@@ -601,6 +639,16 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
                 self.__renderChild(elem.__UiScrollbarH, debug, inheritedScissor);
                 elem.__UiScrollbarH.Thumb.__drawIndex = self.rootDrawIndex++;
                 elem.__UiScrollbarH.Thumb.onDraw();
+            }
+        }
+
+        // Draw Overlay and Tooltip last if this is root
+        if (elem.root) {
+            if (elem.Overlay != undefined) {
+                self.__renderChild(elem.Overlay, debug, _scissor);
+            }
+            if (elem.Tooltip != undefined) {
+                self.__renderChild(elem.Tooltip, debug, _scissor);
             }
         }
         
@@ -622,6 +670,12 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
     function render(debug = false) {
         gml_pragma("forceinline");
         if (!self.width) return;
+        
+        if (surface_exists(self.surface)) {
+            if (surface_get_width(self.surface) != self.width || surface_get_height(self.surface) != self.height) {
+                surface_free(self.surface);
+            }
+        }
         
         if (!surface_exists(self.surface)) {
             self.surface = surface_create(self.width, self.height);

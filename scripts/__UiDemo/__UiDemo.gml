@@ -14,10 +14,9 @@ function ui_demo_create() {
     // Setup root
     global.UI.setSize(W, H);
     
-    // Overlay node
-    global.UI.Overlay = new UiNode({ name: "Overlay", position: "absolute", left: 0, top: 0, width: "100%", height: "100%" });
-    global.UI.Tooltip = new UiTooltip();
-    global.UI.Overlay.add(global.UI.Tooltip);
+    // Get overlay and tooltip from root (lazy initialized automatically)
+    global.UI.getOverlay();
+    global.UI.getTooltip();
     
     // ============================================================
     // MAIN LAYOUT
@@ -86,7 +85,7 @@ function ui_demo_create() {
     // Top Bar
     var TopBar = new UiNode({ width: "100%", height: 64, flexDirection: "row", alignItems: "center", paddingLeft: 40, paddingRight: 40 });
     TopBar.onDraw = method(TopBar, function() {
-        draw_set_color(c_white);
+        draw_set_color(global.UI_COL_BOX);
         draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
         draw_set_color(global.UI_COL_BORDER);
         draw_line(self.x1, self.y2, self.x2, self.y2);
@@ -94,17 +93,36 @@ function ui_demo_create() {
     Content.add(TopBar);
     
     var Breadcrumbs = new UiNode({ flexDirection: "row", flex: 1 });
-    Breadcrumbs.add(new UiText("Components", { marginRight: 8 }, { color: #64748B }));
-    Breadcrumbs.add(new UiText(">", { marginRight: 8 }, { color: #CBD5E1 }));
-    global.UI_DEMO.BreadcrumbPage = new UiText("Button", {}, { color: #0F172A });
+    Breadcrumbs.add(new UiText("Components", { marginRight: 8 }, { color: "dim" }));
+    Breadcrumbs.add(new UiText(">", { marginRight: 8 }, { color: "dim" }));
+    global.UI_DEMO.BreadcrumbPage = new UiText("Button", {}, { color: "main" });
     Breadcrumbs.add(global.UI_DEMO.BreadcrumbPage);
     TopBar.add(Breadcrumbs);
     
-    var DocLink = new UiText("Documentation", { marginRight: 24 }, { color: #64748B, pointerEvents: true, handpoint: true });
+    var DocLink = new UiText("Documentation", { marginRight: 24 }, { color: "dim", pointerEvents: true, handpoint: true });
     DocLink.onClick(function() {
         url_open("https://manuel-di-iorio.github.io/unique-ui");
     });
     TopBar.add(DocLink);
+    
+    // Dynamic Theme Toggler (Switch)
+    global.UI_DEMO.currentTheme = "light";
+    var ThemeToggle = new UiSwitch({ marginRight: 8 }, {
+        label: "Dark Mode",
+        value: false,
+        onChange: function(val) {
+            if (val) {
+                global.UI_DEMO.currentTheme = "dark";
+                ui_set_theme("dark");
+            } else {
+                global.UI_DEMO.currentTheme = "light";
+                ui_set_theme("light");
+            }
+            __ui_demo_render_sidebar();
+            __ui_demo_refresh();
+        }
+    });
+    TopBar.add(ThemeToggle);
     
     // Scroll Area (Main Content)
     var ScrollArea = new UiNode({ flex: 1, width: "100%", flexDirection: "column", padding: 40 });
@@ -113,5 +131,5 @@ function ui_demo_create() {
     
     __ui_demo_refresh();
     
-    global.UI.add(global.UI.Overlay);
+    // Overlay layer is added automatically by UiRoot
 }

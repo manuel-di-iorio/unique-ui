@@ -154,3 +154,57 @@ ui_test_suite("EventSystem", function() {
     });
     
 });
+
+// ============================================================
+//  UiStore Tests (Reactive State Management)
+// ============================================================
+
+ui_test_suite("UiStore", function() {
+    
+    ui_test("UiStore stores initial state from constructor", function() {
+        var store = new UiStore({ username: "Manuel", theme: "dark" });
+        assert_equal(store.get("username"), "Manuel", "get username");
+        assert_equal(store.get("theme"), "dark", "get theme");
+    });
+    
+    ui_test("UiStore get method supports default values", function() {
+        var store = new UiStore();
+        assert_is_undefined(store.get("nonexistent"), "returns undefined by default");
+        assert_equal(store.get("nonexistent", "fallback"), "fallback", "returns default value");
+    });
+    
+    ui_test("UiStore set method updates state values", function() {
+        var store = new UiStore({ count: 0 });
+        store.set("count", 42);
+        assert_equal(store.get("count"), 42, "updates state key");
+    });
+    
+    ui_test("UiStore subscribe triggers callback on set", function() {
+        var store = new UiStore({ count: 10 });
+        var testState = { triggeredCount: 0, receivedState: undefined };
+        
+        store.subscribe(method(testState, function(newState) {
+            triggeredCount++;
+            receivedState = newState;
+        }));
+        
+        store.set("count", 20);
+        
+        assert_equal(testState.triggeredCount, 1, "subscriber was called once");
+        assert_not_equal(testState.receivedState, undefined, "received new state");
+        assert_equal(testState.receivedState[$ "count"], 20, "received correct state value");
+    });
+    
+    ui_test("UiStore supports multiple subscribers", function() {
+        var store = new UiStore({ val: "A" });
+        var tracker = { hits: 0 };
+        
+        var cb = method(tracker, function(s) { hits++; });
+        store.subscribe(cb);
+        store.subscribe(cb);
+        
+        store.set("val", "B");
+        assert_equal(tracker.hits, 2, "both subscribers called");
+    });
+    
+});

@@ -108,7 +108,7 @@ function UiContextMenu(x, y, items = []) constructor {
                         marginVertical: 3,
                     });
                     separator.onDraw = method(separator, function() {
-                         draw_set_color(global.UI_COL_INSPECTOR_BG);
+                         draw_set_color(global.UI_COL_BORDER);
                          var _y = floor(mean(self.y1, self.y2));
                          draw_line(self.x1, _y, self.x2, _y);
                     });
@@ -155,7 +155,7 @@ function UiContextMenu(x, y, items = []) constructor {
                     
                     self.onDraw = function() {
                         if (self.hovered) {
-                            draw_set_color(global.UI_COL_INSPECTOR_BG);
+                            draw_set_color(global.UI_COL_PRIMARY);
                             draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
                         }
                         
@@ -169,7 +169,8 @@ function UiContextMenu(x, y, items = []) constructor {
                         }
                         
                         // Draw label
-                        draw_set_color(c_white);
+                        var labelCol = self.hovered ? c_white : global.UI_COL_TEXT_MAIN;
+                        draw_set_color(labelCol);
                         draw_set_halign(fa_left);
                         draw_set_valign(fa_middle);
                         draw_set_font(fText);
@@ -177,7 +178,8 @@ function UiContextMenu(x, y, items = []) constructor {
 
                         // Draw shortcut
                         if (self.shortcut != undefined) {
-                            draw_set_color(c_gray);
+                            var shortcutCol = self.hovered ? c_ltgray : global.UI_COL_TEXT_DIM;
+                            draw_set_color(shortcutCol);
                             draw_set_halign(fa_right);
                             draw_text(self.x2 - 15, yy, self.shortcut);
                             draw_set_halign(fa_left);
@@ -189,7 +191,7 @@ function UiContextMenu(x, y, items = []) constructor {
             }
         }
         
-        global.UI.Overlay.add(self.Menu);
+        global.UI.getOverlay().add(self.Menu);
     }
     
     /**

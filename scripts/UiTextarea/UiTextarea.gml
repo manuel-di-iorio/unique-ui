@@ -643,7 +643,7 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
             var _iy1 = max(sy, _scissor.y);
             var _ix2 = min(sx + sw, _scissor.x + _scissor.w);
             var _iy2 = min(sy + sh, _scissor.y + _scissor.h);
-            gpu_set_scissor(_ix1, _iy1, max(0, _ix2 - _ix1), max(0, _iy2 - _iy1));
+            uui_set_scissor(_ix1, _iy1, max(0, _ix2 - _ix1), max(0, _iy2 - _iy1));
             
             draw_set_font(fText);
             draw_set_halign(fa_left);

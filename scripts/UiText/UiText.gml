@@ -7,7 +7,7 @@ function UiText(text = "", style = {}, props = {}): UiNode(style, props) constru
     self.valign = fa_top;
     self.valueGetter = props[$ "valueGetter"];
     self.icon = props[$ "icon"];
-    self.color = props[$ "color"] ?? c_white;
+    self.color = props[$ "color"] ?? global.UI_COL_TEXT_MAIN;
     self.font = props[$ "font"] ?? fText;
     self.wrap = props[$ "wrap"] ?? (style[$ "width"] != undefined);
     self.sep = props[$ "sep"] ?? -1;
@@ -69,7 +69,16 @@ function UiText(text = "", style = {}, props = {}): UiNode(style, props) constru
             _x += 23;
         }
         
-        draw_set_font(self.font); draw_set_color(self.color); draw_set_halign(self.halign); draw_set_valign(self.valign);
+        var textCol = self.color;
+        if (textCol == "main" || textCol == #0F172A || textCol == #F8FAFC || textCol == global.UI_COL_TEXT_MAIN || textCol == c_white || textCol == undefined) {
+            textCol = global.UI_COL_TEXT_MAIN;
+        } else if (textCol == "dim" || textCol == #64748B || textCol == #CBD5E1 || textCol == global.UI_COL_TEXT_DIM) {
+            textCol = global.UI_COL_TEXT_DIM;
+        } else if (is_callable(textCol)) {
+            textCol = textCol();
+        }
+        
+        draw_set_font(self.font); draw_set_color(textCol); draw_set_halign(self.halign); draw_set_valign(self.valign);
         
         if (self.wrap) {
             var _w = self.x2 - _x;

@@ -78,7 +78,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, true);
 
             // Button arrow (Modern Chevron)
-            var arrowCol = self.hovered ? #0F172A : #64748B;
+            var arrowCol = self.hovered ? global.UI_COL_TEXT_MAIN : global.UI_COL_TEXT_DIM;
             var cx = self.x2 - 16;
             var cy = floor(self.y1 + self.height/2);
             var size = 3;
@@ -97,15 +97,15 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             
             // Selected value
             draw_set_halign(fa_left); draw_set_valign(fa_middle); draw_set_color(global.UI_COL_TEXT_MAIN);
-            var _selectedIndex = array_find_index(self.parent.items, method({ value: self.parent.value }, function(item) {
+            var _val = self.parent.value;
+            var _selectedIndex = array_find_index(self.parent.items, method({ value: _val }, function(item) {
                 return item.value == self.value;
             }));
        
             var _text = _selectedIndex != -1 ? self.parent.items[_selectedIndex].label : "Select...";
             
-            // Clip text to button width
             var _scissor = gpu_get_scissor();
-            gpu_set_scissor(self.x1, self.y1, self.x2 - self.x1 - 25, self.y2 - self.y1);
+            uui_set_scissor(self.x1, self.y1, self.x2 - self.x1 - 25, self.y2 - self.y1);
             draw_text(self.x1 + 8, ~~mean(self.y1, self.y2), _text);
             gpu_set_scissor(_scissor);
          };
@@ -163,7 +163,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             });
             
             self.onDraw = function() {
-                draw_set_color(c_white);
+                draw_set_color(global.UI_COL_DROPDOWN_LIST_BG);
                 draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
                 draw_set_color(global.UI_COL_BORDER);
                 draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
@@ -194,14 +194,13 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
                         self.pointerEvents = true;
                         self.handpoint = true;
                         
-                        self.onClick(function() {
-                            var Dropdown = self.parent.parent.Dropdown;
-                            if (Dropdown.value != self.value) {
-                                Dropdown.value = self.value;
-                                Dropdown.onChange(self.value);
+                        self.onClick(method({ Dropdown: _Dropdown, itemValue: _item.value }, function() {
+                            if (self.Dropdown.value != self.itemValue) {
+                                self.Dropdown.value = self.itemValue;
+                                self.Dropdown.onChange(self.itemValue);
                             }
-                            Dropdown.closeList();
-                        });
+                            self.Dropdown.closeList();
+                        }));
                         
                         self.onMouseEnter(function() {
                             global.UI.requestRedraw();
@@ -211,19 +210,19 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
                             global.UI.requestRedraw();
                         });
                         
-                        self.onDraw = function() {
-                            if (self.parent.parent.Dropdown.value == self.value) {
+                        self.onDraw = method({ itemNode: _itemNode, Dropdown: _Dropdown }, function() {
+                            if (self.Dropdown.value == self.itemNode.value) {
                                 draw_set_color(global.UI_COL_PRIMARY);
-                                draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
-                            } else if (self.hovered) {
+                                draw_rectangle(self.itemNode.x1, self.itemNode.y1, self.itemNode.x2, self.itemNode.y2, false);
+                            } else if (self.itemNode.hovered) {
                                 draw_set_color(global.UI_COL_BTN_HOVER);
-                                draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
+                                draw_rectangle(self.itemNode.x1, self.itemNode.y1, self.itemNode.x2, self.itemNode.y2, false);
                             }
                             
-                            var text_color = (self.parent.parent.Dropdown.value == self.value) ? c_white : global.UI_COL_TEXT_MAIN;
+                            var text_color = (self.Dropdown.value == self.itemNode.value) ? c_white : global.UI_COL_TEXT_MAIN;
                             draw_set_halign(fa_left); draw_set_valign(fa_middle); draw_set_color(text_color);
-                            draw_text(self.x1 + 12, ~~mean(self.y1, self.y2), self.label);
-                        };
+                            draw_text(self.itemNode.x1 + 12, ~~mean(self.itemNode.y1, self.itemNode.y2), self.itemNode.label);
+                        });
                     }
                     
                     self.Items.add(_itemNode);
@@ -274,7 +273,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             self.createItems(); 
         }
         
-        global.UI.Overlay.add(self.List);
+        global.UI.getOverlay().add(self.List);
         // Don't call computePosition() here - layout isn't calculated yet!
         // It will be called in the first onStep after layout is ready.
     }

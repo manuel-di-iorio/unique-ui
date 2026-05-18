@@ -56,7 +56,7 @@ function UiTabs(items, style = {}, props = {}): UiNode(style, props) constructor
                         draw_set_color(global.UI_COL_PRIMARY);
                         draw_line_width(self.x1, self.y2, self.x2, self.y2, 2);
                     } else if (self.hovered) {
-                        draw_set_color(#F1F5F9);
+                        draw_set_color(global.UI_COL_BTN_HOVER);
                         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2 - 2, 6, 6, false);
                     }
                 });
@@ -66,13 +66,13 @@ function UiTabs(items, style = {}, props = {}): UiNode(style, props) constructor
                         draw_set_color(global.UI_COL_PRIMARY);
                         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
                     } else if (self.hovered) {
-                        draw_set_color(#F1F5F9);
+                        draw_set_color(global.UI_COL_BTN_HOVER);
                         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
                     }
                 });
             }
             
-            var textColor = #64748B;
+            var textColor = global.UI_COL_TEXT_DIM;
             if (isActive) {
                 textColor = (self.variant == "pills") ? c_white : global.UI_COL_PRIMARY;
             }

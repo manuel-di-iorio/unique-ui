@@ -8,11 +8,10 @@ function UiAccordion(text, style = {}, data = {}) : UiNode(style, data) construc
     
     // Main Container Styling
     self.onDraw = method(self, function() {
-        var borderCol = #E2E8F0;
         // Draw main border around the whole component
-        draw_set_color(c_white);
+        draw_set_color(global.UI_COL_BG_CARD);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 12, 12, false);
-        draw_set_color(borderCol);
+        draw_set_color(global.UI_COL_BORDER);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 12, 12, true);
     });
     
@@ -25,32 +24,37 @@ function UiAccordion(text, style = {}, data = {}) : UiNode(style, data) construc
         height: 48,
     }, { pointerEvents: true });
     
-    self.Header.onDraw = method(self.Header, function() {
-        var hoverCol = #F8FAFC;
-        var borderCol = #E2E8F0;
+    var _accordion = self;
+    var _header = self.Header;
+    
+    self.Header.onDraw = method({ Header: _header, Accordion: _accordion }, function() {
+        var hoverCol = global.UI_COL_BTN_HOVER;
+        var borderCol = global.UI_COL_BORDER;
         
         // Background on hover
-        if (self.hovered) {
+        if (self.Header.hovered) {
             draw_set_color(hoverCol);
-            draw_roundrect_ext(self.x1 + 1, self.y1 + 1, self.x2 - 1, self.y2 - 1, 11, 11, false);
+            draw_roundrect_ext(self.Header.x1 + 1, self.Header.y1 + 1, self.Header.x2 - 1, self.Header.y2 - 1, 11, 11, false);
         }
         
         // Separator line when expanded
-        if (!self.parent.collapsed) {
+        if (!self.Accordion.collapsed) {
             draw_set_color(borderCol);
-            draw_line(self.x1, self.y2, self.x2, self.y2);
+            draw_line(self.Header.x1, self.Header.y2, self.Header.x2, self.Header.y2);
         }
     });
     
     // Arrow (Chevron)
     self.Arrow = new UiNode({ width: 16, height: 16, marginRight: 12 });
-    self.Arrow.onDraw = method(self.Arrow, function() {
-        var cx = floor(self.x1 + self.width/2);
-        var cy = floor(self.y1 + self.height/2);
+    var _arrow = self.Arrow;
+    
+    self.Arrow.onDraw = method({ Arrow: _arrow, Accordion: _accordion }, function() {
+        var cx = floor(self.Arrow.x1 + self.Arrow.width/2);
+        var cy = floor(self.Arrow.y1 + self.Arrow.height/2);
         var size = 3;
         
-        draw_set_color(#64748B);
-        if (self.parent.parent.collapsed) {
+        draw_set_color(global.UI_COL_TEXT_DIM);
+        if (self.Accordion.collapsed) {
             // Right Chevron (thinner, more elegant)
             draw_line_width(cx - size/2, cy - size, cx + size/2, cy, 1.5);
             draw_line_width(cx + size/2, cy, cx - size/2, cy + size, 1.5);
@@ -63,7 +67,7 @@ function UiAccordion(text, style = {}, data = {}) : UiNode(style, data) construc
     
     // Label
     self.Label = new UiText(self.text, { height: 20 }, { 
-        color: #0F172A,
+        color: global.UI_COL_TEXT_MAIN,
         font: fText
     });
     

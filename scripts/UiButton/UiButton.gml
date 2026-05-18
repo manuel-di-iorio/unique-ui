@@ -86,9 +86,9 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     function onDraw() {
         var radius = 6;
         
-        var bg_color = #E2E8F0;
-        var text_color = #0F172A;
-        var hover_color = #CBD5E1;
+        var bg_color = global.UI_COL_BORDER;
+        var text_color = global.UI_COL_TEXT_MAIN;
+        var hover_color = global.UI_COL_BTN_HOVER;
         var border_color = undefined;
         
         if (self.variant == "primary") {
@@ -96,16 +96,16 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
             hover_color = global.UI_COL_PRIMARY_HOVER;
             text_color = c_white;
         } else if (self.variant == "outline") {
-            bg_color = c_white;
-            hover_color = #F8FAFC;
-            text_color = #0F172A;
-            border_color = #E2E8F0;
+            bg_color = global.UI_COL_BOX;
+            hover_color = global.UI_COL_BTN_HOVER;
+            text_color = global.UI_COL_TEXT_MAIN;
+            border_color = global.UI_COL_BORDER;
         } else if (self.variant == "ghost") {
             bg_color = -1;
-            hover_color = #F1F5F9;
-            text_color = #64748B;
+            hover_color = global.UI_COL_BTN_HOVER;
+            text_color = global.UI_COL_TEXT_DIM;
         } else if (self.variant == "danger") {
-            bg_color = #EF4444;
+            bg_color = global.UI_COL_DANGER;
             hover_color = #DC2626;
             text_color = c_white;
         }
@@ -133,12 +133,13 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
         // Ripples
         if (array_length(self.ripples) > 0) {
             var _scissor = gpu_get_scissor();
-            gpu_set_scissor(self.x1, self.y1, self.x2 - self.x1, self.y2 - self.y1);
+            uui_set_scissor(self.x1, self.y1, self.x2 - self.x1, self.y2 - self.y1);
+            var dt_scale = clamp((delta_time / 1000000) * 60, 0.1, 4.0);
             for (var i = array_length(self.ripples) - 1; i >= 0; i--) {
                 var r = self.ripples[i];
-                r.radius += 3;
-                r.alpha -= 0.015;
-                draw_set_alpha(r.alpha);
+                r.radius += 3 * dt_scale;
+                r.alpha -= 0.015 * dt_scale;
+                draw_set_alpha(max(0, r.alpha));
                 draw_set_color(c_white);
                 draw_circle(r.x, r.y, r.radius, false);
                 if (r.alpha <= 0) array_delete(self.ripples, i, 1);

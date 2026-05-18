@@ -1,8 +1,8 @@
 function ui_demo_example_contextmenu(PreviewCard) {
     __ui_demo_preview_section(PreviewCard, "Example (Right Click)");
-    var zone = new UiNode({ width: "100%", height: 200, backgroundColor: #F1F5F9, borderRadius: 8, justifyContent: "center", alignItems: "center" });
+    var zone = new UiNode({ width: "100%", height: 200, backgroundColor: global.UI_COL_INPUT_BG, borderRadius: 8, justifyContent: "center", alignItems: "center" });
     zone.pointerEvents = true;
-    zone.add(new UiText("Right click here", {}, { color: #64748B }));
+    zone.add(new UiText("Right click here", {}, { color: "dim" }));
     PreviewCard.add(zone);
     
     zone.onContextMenu(function() {
