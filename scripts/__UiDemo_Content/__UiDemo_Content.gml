@@ -170,6 +170,7 @@ function __ui_demo_get_examples_map() {
         "Radio":       ui_demo_example_radio,
         "Switch":      ui_demo_example_switch,
         "Select":      ui_demo_example_dropdown,
+        "ColorPicker": ui_demo_example_colorpicker,
         "Badge":       ui_demo_example_badge,
         "Alert":       ui_demo_example_alert,
         "Card":        ui_demo_example_card,

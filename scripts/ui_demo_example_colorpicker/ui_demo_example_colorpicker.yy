@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ui_demo_example_colorpicker",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ui_demo_example_colorpicker",
+  "parent":{
+    "name":"ColorPicker",
+    "path":"folders/Demo/Examples/ColorPicker.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
