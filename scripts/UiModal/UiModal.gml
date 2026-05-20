@@ -41,12 +41,14 @@ function UiModal(style = {}, props = {}) : UiNode(style, props) constructor {
     
     // ── Content Panel ────────────────────────────────────────────────────────
     var _panelStyle = props[$ "panelStyle"] ?? {};
-    if (_panelStyle[$ "width"] == undefined) _panelStyle.width = 440;
-    if (_panelStyle[$ "backgroundColor"] == undefined) _panelStyle.backgroundColor = global.UI_COL_BG_CARD;
-    if (_panelStyle[$ "borderRadius"] == undefined) _panelStyle.borderRadius = 12;
-    if (_panelStyle[$ "flexDirection"] == undefined) _panelStyle.flexDirection = "column";
+    var _panelProps = props[$ "panelProps"] ?? {};
     
-    self.Panel = new UiNode(_panelStyle);
+    if (_panelStyle[$ "width"] == undefined) _panelStyle.width = 440;
+    if (_panelStyle[$ "flexDirection"] == undefined) _panelStyle.flexDirection = "column";
+    if (_panelProps[$ "backgroundColor"] == undefined) _panelProps.backgroundColor = global.UI_COL_BG_CARD;
+    if (_panelProps[$ "borderRadius"] == undefined) _panelProps.borderRadius = 12;
+    
+    self.Panel = new UiNode(_panelStyle, _panelProps);
     self.Panel.pointerEvents = true;
     self.Panel.onMouseDown(function() {}); // Block clicks from propagating to the backdrop
     

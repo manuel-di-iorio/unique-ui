@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ui_demo_example_modal",
   "parent":{
-    "name":"Alert",
-    "path":"folders/Demo/Examples/Alert.yy",
+    "name":"Modal",
+    "path":"folders/Demo/Examples/Modal.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",
