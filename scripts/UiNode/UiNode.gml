@@ -19,31 +19,12 @@ enum UI_EVENT {
 global.UI_ID = 0;
 
 function UiNode(style = {}, props = {}) constructor {
-    // Filter Yoga style properties from visual properties
-    var _layoutStyle = {};
-    var _visualProps = {
-        backgroundColor: undefined,
-        borderRadius: 0,
-        borderColor: #191A21,
-        borderWidth: 1
-    };
-    
-    var _keys = variable_struct_get_names(style);
-    for (var i = 0; i < array_length(_keys); i++) {
-        var _k = _keys[i];
-        if (_k == "backgroundColor" || _k == "borderRadius" || _k == "borderColor" || _k == "borderWidth" || _k == "border") {
-            _visualProps[$ _k] = style[$ _k];
-        } else {
-            _layoutStyle[$ _k] = style[$ _k];
-        }
-    }
-
     self.id = global.UI_ID++;
-    _layoutStyle.name = _layoutStyle[$ "name"] ?? "UiNode";
-    _layoutStyle.data = self;
+    style.name = style[$ "name"] ?? "UiNode";
+    style.data = self;
     self.type = "UiNode";
     self.isUiNode = true;
-    self.node = flexpanel_create_node(_layoutStyle);
+    self.node = flexpanel_create_node(style);
     self.root = false;
     self.parent = undefined;
     self.__drawIndex = 0;
@@ -51,10 +32,10 @@ function UiNode(style = {}, props = {}) constructor {
     self.onMount = undefined;
     
     // Visual properties
-    self.backgroundColor = _visualProps.backgroundColor;
-    self.borderRadius = _visualProps.borderRadius;
-    self.borderColor = _visualProps.borderColor;
-    self.borderWidth = _visualProps.borderWidth;
+    self.backgroundColor = props[$ "backgroundColor"] ?? undefined;
+    self.borderRadius = props[$ "borderRadius"] ?? 0;
+    self.borderColor = props[$ "borderColor"] ?? #191A21;
+    self.borderWidth = props[$ "borderWidth"] ?? 1;
 
     self.onDraw = props[$ "onDraw"] ?? function() {
         if (self.backgroundColor != undefined) {
@@ -78,7 +59,7 @@ function UiNode(style = {}, props = {}) constructor {
     
     self.onDestroy = props[$ "onDestroy"] ?? undefined;
     self.pointerEvents = props[$ "pointerEvents"] ?? false;
-    self.border = props[$ "border"] ?? (style[$ "border"] ?? false);
+    self.border = props[$ "border"] ?? false;
     self.visible = props[$ "visible"] ?? true;
     self.focusable = props[$ "focusable"] ?? false;
     self.focused = false;
@@ -134,7 +115,6 @@ function UiNode(style = {}, props = {}) constructor {
     self.onDrop = undefined;
 
     
-
     /** Methods */
     
     // Request a layout update

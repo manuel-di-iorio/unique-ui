@@ -5,8 +5,8 @@ function ui_demo_example_card(PreviewCard) {
         draw_set_color(global.UI_COL_BORDER); draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 12, 12, true);
     });
     PreviewCard.add(card);
-    card.add(new UiText("Card Title", { marginBottom: 8, height: 24 }, { color: global.UI_COL_TEXT_MAIN }));
-    card.add(new UiText("This is content inside a modern card.", { height: 40 }, { color: global.UI_COL_TEXT_DIM }));
+    card.add(new UiText("Card Title", { marginBottom: 8 }, { color: global.UI_COL_TEXT_MAIN }));
+    card.add(new UiText("This is content inside a modern card.", undefined, { color: global.UI_COL_TEXT_DIM }));
     return [
         "var card = new UiNode({ width: \"100%\", padding: 24, flexDirection: \"column\" });",
         "card.onDraw = function() {",

@@ -24,18 +24,6 @@ global.UI_COL_SUCCESS         = #22C55E;
 global.UI_COL_WARNING         = #F59E0B;
 global.UI_COL_DANGER          = #EF4444;
 
-draw_set_circle_precision(64);
-
-// Missing Asset Mocks (required for components to function without crashes)
-#macro sprUiTreeviewArrowRight -1
-#macro sprUiTreeviewArrowDown -1
-#macro sprUiFolderCollapsed -1
-#macro sprUiFolderExpanded -1
-#macro sprUiCheckboxChecked -1
-#macro sprUiCheckboxUnchecked -1
-#macro sprUiDropdownArrow -1
-#macro sprUiCheckTick -1
-
 /// @desc Sets a scissor rect using GUI coordinates, automatically scaling them to real window/viewport space.
 function uui_set_scissor(x, y, w, h) {
     var factor_x = window_get_width() / max(1, display_get_gui_width());

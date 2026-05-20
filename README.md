@@ -35,7 +35,7 @@ UniqueUI ships with a curated "Modern Premium" design system. Components feature
 ## QUICK START
 
 ### Initialization
-Define the root container in your controller object's Create event.
+Define the container in your controller object's Create event.
 
 ```javascript
 // Create a centered panel with a button
@@ -103,11 +103,7 @@ UniqueUI is optimized for high-refresh-rate applications:
 
 I use AI to develop UniqueUI (through tools like Codex, Antigravity, and Copilot) and to generate its documentation and descriptions, as I prefer being open about it.
 
-UniqueUI is still designed, architected, and directed by me, a human developer. AI is simply part of the workflow: a tool that helps speed up repetitive tasks, explore edge cases, and keep the project moving fast without sacrificing quality.
-
-Instead of replacing craftsmanship, it lets me spend more time on the parts that actually matter: design decisions, usability, performance, and polish.
-
-At the end of the day, every line of code and documentation is vetted, refined, and shaped by human hands to ensure it feels premium, intuitive, and extremely fast.
+UniqueUI is still designed, architected, and directed by me. AI is simply part of the workflow, a tool that helps speed up repetitive tasks, explore edge cases, and keep the project moving fast without sacrificing quality. Instead of replacing craftsmanship, it lets me spend more time on the parts that actually matter, design decisions, usability, performance, and polish.
 
 ---
 
