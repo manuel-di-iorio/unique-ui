@@ -76,7 +76,7 @@ function __ui_demo_render_documentazione(area) {
 function __ui_demo_doc_row(parent, name, type, desc) {
     var Row = new UiNode({ flexDirection: "row", marginBottom: 12, width: "100%" });
     Row.add(new UiText(name, { width: 220 }, { color: global.UI_COL_PRIMARY }));
-    Row.add(new UiText(type, { width: 90 }, { color: global.UI_COL_TEXT_DIM }));
+    Row.add(new UiText(type, { width: 120 }, { color: global.UI_COL_TEXT_DIM }));
     Row.add(new UiText(desc, { flex: 1 }, { color: global.UI_COL_TEXT_DIM, wrap: true }));
     parent.add(Row);
 }

@@ -121,13 +121,15 @@ function __ui_demo_get_component_metadata() {
             ]
         },
         "Slider": {
-            desc: "Allows selecting a value from a numeric range.",
+            desc: "Allows selecting a value from a numeric range. Supports dual-thumb range mode.",
             props: [
-                { name: "value", type: "number", desc: "Current value" },
+                { name: "value", type: "number", desc: "Current value (single mode)" },
+                { name: "valueStart", type: "number", desc: "Start value (range mode)" },
+                { name: "valueEnd", type: "number", desc: "End value (range mode)" },
                 { name: "min", type: "number", desc: "Minimum value" },
                 { name: "max", type: "number", desc: "Maximum value" },
                 { name: "step", type: "number", desc: "Minimum increment" },
-                { name: "onChange", type: "function", desc: "Callback on value change" }
+                { name: "onChange", type: "function", desc: "Callback on value change (returns value or [valueStart, valueEnd])" }
             ]
         },
         "Accordion": {

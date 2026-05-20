@@ -1,7 +1,7 @@
 function ui_demo_create() {
     var W = display_get_gui_width();
     var H = display_get_gui_height();
-    display_reset(4, true); // Enable MSAA for smoother primitive edges
+    display_reset(4, true);
     
     global.UI_DEMO = {
         currentPage: "Button",

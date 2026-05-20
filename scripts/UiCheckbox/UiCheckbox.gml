@@ -101,4 +101,4 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
         global.UI.requestRedraw();
         return true;
     });
-}
+}

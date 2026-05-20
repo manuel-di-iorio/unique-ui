@@ -33,9 +33,6 @@ function UiSwitch(style = {}, props = {}) : UiNode(style, props) constructor {
     with (self.Input) {
         self.onDraw = function() {
             var p = self.parent;
-            var targetPos = p.value ? 1 : 0;
-            p.animThumbPos += (targetPos - p.animThumbPos) * 0.3;
-            if (abs(p.animThumbPos - targetPos) > 0.01) global.UI.requestRedraw();
             
             var h = (self.y2 - self.y1);
             var r = h / 2;
@@ -59,6 +56,10 @@ function UiSwitch(style = {}, props = {}) : UiNode(style, props) constructor {
     
     self.onStep(function() {
         if (self.valueGetter != undefined) self.value = self.valueGetter();
+        
+        var targetPos = self.value ? 1 : 0;
+        self.animThumbPos += (targetPos - self.animThumbPos) * 0.3;
+        if (abs(self.animThumbPos - targetPos) > 0.01) global.UI.requestRedraw();
     });
     
     self.onClick(function() {
