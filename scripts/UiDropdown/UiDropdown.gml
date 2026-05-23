@@ -35,7 +35,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             }
             if (!found) {
                 self.value = undefined;
-                self.onChange(undefined);
+                self.onChange(self, undefined);
             }
         }
     });

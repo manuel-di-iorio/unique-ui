@@ -318,7 +318,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         gml_pragma("forceinline");
         self.needsUpdate = false;
         self.layoutUpdated = true;
-        flexpanel_calculate_layout(self.node, undefined, undefined, flexpanel_direction.LTR);
+        flexpanel_calculate_layout(self.node, "100%", "100%", flexpanel_direction.LTR);
         
         self.__layoutDrawIndex = 0;
         
@@ -418,6 +418,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             // Waiting for timer
             if (current_time >= self.tooltipTimer) {
                 if (global.UI.Tooltip != undefined) {
+                    // feather ignore GM1019
                     global.UI.Tooltip.show(self.tooltipElement, self.tooltipElement.tooltip);
                 }
                 self.tooltipTimer = -1; // Tooltip shown
@@ -697,6 +698,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             draw_clear_alpha(c_black, 0);
             self.__renderChild(self, debug);
             surface_reset_target();
+            // feather ignore GM1020
             gpu_set_blendmode_ext_sepalpha(currentBlendMode);
         }
         

@@ -220,7 +220,7 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
             var lines = self.getLines();
             targetLine = clamp(targetLine, 0, array_length(lines) - 1);
             var targetCursorX = self.preferredCursorX;
-            if (targetCursorX == undefined) targetCursorX = cursor.x;
+            targetCursorX ??= cursor.x;
             self.cursorPos = self.getPosAtLineX(targetLine, targetCursorX);
             if (!shift) {
                 self.selectionStart = self.cursorPos;
