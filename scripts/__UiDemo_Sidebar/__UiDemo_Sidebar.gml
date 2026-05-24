@@ -28,7 +28,7 @@ function __ui_demo_sidebar_item(parent, text) {
             draw_set_color(#EAF1FF);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 7, 7, false);
         } else if (self.hovered) {
-            draw_set_color(#F1F5FB);
+            draw_set_color(global.UI_COL_BTN_HOVER);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 7, 7, false);
         }
         

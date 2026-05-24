@@ -17,28 +17,36 @@ function __ui_demo_refresh(preserveScroll = false) {
     
     // Tabs — Documentation tab is hidden for foundation pages (Colors, Typography)
     var _isFoundation = (global.UI_DEMO.currentPage == "Colors" || global.UI_DEMO.currentPage == "Typography");
-    var TabRow = new UiNode({ flexDirection: "row", width: "100%", marginBottom: 32 });
-    TabRow.onDraw = method(TabRow, function() {
-        draw_set_color(global.UI_COL_BORDER);
-        draw_line(self.x1, self.y2, self.x2, self.y2);
-    });
-    area.add(TabRow);
-    __ui_demo_tab_item(TabRow, "Preview");
-    if (!_isFoundation) __ui_demo_tab_item(TabRow, "Documentation");
 
-    
     // If a foundation page lands on Documentation tab, redirect to Preview
     if (_isFoundation && global.UI_DEMO.currentTab == "Documentation") {
         global.UI_DEMO.currentTab = "Preview";
     }
-    
-    if (global.UI_DEMO.currentTab == "Preview") {
-        area.enableScrollbar(function() { return global.UI_COL_SCROLLBAR_THUMB; });
-        __ui_demo_render_anteprima(area);
-    } else if (global.UI_DEMO.currentTab == "Documentation") {
-        area.enableScrollbar(function() { return global.UI_COL_SCROLLBAR_THUMB; });
-        __ui_demo_render_documentazione(area);
+
+    var PreviewPanel = new UiNode({ width: "100%", flexDirection: "column" });
+    PreviewPanel.enableScrollbar(function() { return global.UI_COL_SCROLLBAR_THUMB; });
+    __ui_demo_render_anteprima(PreviewPanel);
+
+    var tabsItems = [
+        { label: "Preview", content: PreviewPanel }
+    ];
+
+    if (!_isFoundation) {
+        var DocsPanel = new UiNode({ width: "100%", flexDirection: "column" });
+        DocsPanel.enableScrollbar(function() { return global.UI_COL_SCROLLBAR_THUMB; });
+        __ui_demo_render_documentazione(DocsPanel);
+        array_push(tabsItems, { label: "Documentation", content: DocsPanel });
     }
+
+    var _selectedIndex = (global.UI_DEMO.currentTab == "Documentation" && !_isFoundation) ? 1 : 0;
+    var DemoTabs = new UiTabs(tabsItems, { width: "100%", marginBottom: 0 }, {
+        selectedIndex: _selectedIndex,
+        variant: "underline",
+        onChange: function(index, label) {
+            global.UI_DEMO.currentTab = label;
+        }
+    });
+    area.add(DemoTabs);
     
     if (preserveScroll) area.scrollTop = _oldScroll; else area.scrollTop = 0;
     
@@ -84,30 +92,10 @@ function __ui_demo_doc_row(parent, name, type, desc) {
 
 
 
-function __ui_demo_tab_item(parent, text) {
-    var isActive = (text == global.UI_DEMO.currentTab);
-    var tab = new UiNode({ paddingLeft: 16, paddingRight: 16, height: 40, justifyContent: "center" });
-    tab.pointerEvents = true; tab.handpoint = true;
-    tab.__isActive = isActive;
-    tab.onDraw = method(tab, function() {
-        if (self.__isActive) {
-            draw_set_color(global.UI_COL_PRIMARY);
-            draw_line_width(self.x1, self.y2, self.x2, self.y2, 2);
-        }
-    });
-    tab.add(new UiText(text, {}, { color: isActive ? global.UI_COL_PRIMARY : global.UI_COL_TEXT_DIM }));
-    tab.onClick(method({ text }, function() {
-        global.UI_DEMO.currentTab = text;
-        __ui_demo_refresh();
-    }));
-    parent.add(tab);
-}
-
 function __ui_demo_render_anteprima(area) {
     var MainRow = new UiNode({ 
         flexDirection: "row", 
-        width: "100%",
-        flex: 1
+        width: "100%"
     });
     area.add(MainRow);
     
@@ -130,7 +118,7 @@ function __ui_demo_render_anteprima(area) {
     var codeLines = __ui_demo_render_component_example(global.UI_DEMO.currentPage, PreviewCard);
     
     // Code Panel
-    var CodePanel = new UiNode({ flex: 1, padding: 24, flexDirection: "column" });
+    var CodePanel = new UiNode({ flexGrow: 1, padding: 24, flexDirection: "column" });
     CodePanel.onDraw = method(CodePanel, function() {
         draw_set_color(#142033);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);

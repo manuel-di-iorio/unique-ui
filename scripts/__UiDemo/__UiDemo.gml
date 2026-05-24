@@ -2,6 +2,7 @@ function ui_demo_create() {
     var W = display_get_gui_width();
     var H = display_get_gui_height();
     display_reset(8, true);
+    draw_set_circle_precision(64);
     
     global.UI_DEMO = {
         currentPage: "Button",
