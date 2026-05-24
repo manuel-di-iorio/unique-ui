@@ -85,7 +85,6 @@ global.UI_THEMES.myCustomTheme = {
     btnHover: #3D3D3D,
     box: #2D2D2D,
     inputBg: #121212,
-    barBg: #2D2D2D,
     checkboxHover: #3D3D3D,
     dropdownListBg: #1E1E1E,
     inspectorBg: #2D2D2D,

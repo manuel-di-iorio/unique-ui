@@ -14,7 +14,6 @@ global.UI_COL_SELECTED_HOVER   = #215CDA;
 global.UI_COL_BTN_HOVER        = #EDF3FF;
 global.UI_COL_BOX              = #FFFFFF;
 global.UI_COL_INPUT_BG         = #FFFFFF;
-global.UI_COL_BAR_BG           = #FFFFFF;
 global.UI_COL_CHECKBOX_HOVER   = #EDF3FF;
 global.UI_COL_DROPDOWN_LIST_BG = #172338;
 global.UI_COL_INSPECTOR_BG     = #EEF3FA;
@@ -49,7 +48,6 @@ global.UI_THEMES.dark = {
     btnHover: #334155,
     box: #1E293B,
     inputBg: #0B0F19,
-    barBg: #1E293B,
     checkboxHover: #334155,
     dropdownListBg: #1E293B,
     inspectorBg: #1E293B,
@@ -75,7 +73,6 @@ global.UI_THEMES.light = {
     btnHover: #EDF3FF,
     box: #FFFFFF,
     inputBg: #FFFFFF,
-    barBg: #FFFFFF,
     checkboxHover: #EDF3FF,
     dropdownListBg: #172338,
     inspectorBg: #EEF3FA,
@@ -104,7 +101,6 @@ function ui_set_theme(themeName) {
     global.UI_COL_BTN_HOVER        = t.btnHover;
     global.UI_COL_BOX              = t.box;
     global.UI_COL_INPUT_BG         = t.inputBg;
-    global.UI_COL_BAR_BG           = t.barBg;
     global.UI_COL_CHECKBOX_HOVER   = t.checkboxHover;
     global.UI_COL_DROPDOWN_LIST_BG = t.dropdownListBg;
     global.UI_COL_INSPECTOR_BG     = t.inspectorBg;

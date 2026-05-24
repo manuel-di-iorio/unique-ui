@@ -7,7 +7,7 @@ function UiBadge(text, style = {}, props = {}): UiNode(style, props) constructor
     self.dot     = props[$ "dot"]     ?? false; // Show as a dot (no text)
     
     // Size defaults if not specified
-    if (style[$ "height"] == undefined) self.setHeight(self.dot ? 10 : 24);
+    if (style[$ "height"] == undefined) self.setHeight(self.dot ? 10 : 22);
     if (!self.dot && style[$ "width"] == undefined) {
         draw_set_font(fTextSmall);
         self.setWidth(string_width(text) + 24);

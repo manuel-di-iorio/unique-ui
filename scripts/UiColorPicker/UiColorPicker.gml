@@ -317,7 +317,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
                     var _cy = lerp(self.y2, self.y1, _Picker.brightness);
                     draw_set_color(c_white);
                     draw_circle(_cx, _cy, 6, false);
-                    draw_set_color(#0F172A);
+                    draw_set_color(global.UI_COL_TEXT_MAIN);
                     draw_circle(_cx, _cy, 6, true);
                 };
             }
@@ -375,7 +375,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
                     var _hx = lerp(self.x1, self.x2, self.parent.Picker.hue);
                     draw_set_color(c_white);
                     draw_roundrect_ext(_hx - 3, self.y1 - 2, _hx + 3, self.y2 + 2, 2, 2, false);
-                    draw_set_color(#0F172A);
+                    draw_set_color(global.UI_COL_TEXT_MAIN);
                     draw_roundrect_ext(_hx - 3, self.y1 - 2, _hx + 3, self.y2 + 2, 2, 2, true);
                 };
             }

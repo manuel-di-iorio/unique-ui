@@ -23,7 +23,7 @@ function ui_demo_example_colorpicker(PreviewCard) {
         "});",
         "",
         "new UiColorPicker({}, {",
-        "  value: #22C55E,",
+        "  value: #23A75A,",
         "  onChange: function(col, picker) {",
         "    show_debug_message(uui_color_to_hex(col));",
         "  }",

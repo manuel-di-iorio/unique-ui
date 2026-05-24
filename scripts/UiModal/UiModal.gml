@@ -17,7 +17,7 @@ function UiModal(style = {}, props = {}) : UiNode(style, props) constructor {
     self.pointerEvents = true; 
     
     // Settings
-    self.backdropColor = props[$ "backdropColor"] ?? #0F172A;
+    self.backdropColor = props[$ "backdropColor"] ?? global.UI_COL_TEXT_MAIN;
     self.backdropAlpha = props[$ "backdropAlpha"] ?? 0.65;
     self.dismissOnBackdropClick = props[$ "dismissOnBackdropClick"] ?? true;
     self.onClose = props[$ "onClose"] ?? function() {};

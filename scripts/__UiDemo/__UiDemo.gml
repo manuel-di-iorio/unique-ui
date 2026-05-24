@@ -167,7 +167,8 @@ function __ui_demo_icon_button(iconName, size = 36) {
             draw_set_color(global.UI_COL_BTN_HOVER);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
         }
-        __ui_demo_draw_icon(self.__iconName, ~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), global.UI_COL_TEXT_MAIN, 1.1);
+        var icon_color = (global.UI_DEMO.currentTheme == "dark") ? c_white : global.UI_COL_TEXT_MAIN;
+        __ui_demo_draw_icon(self.__iconName, ~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), icon_color, 1.1);
     });
     return btn;
 }
