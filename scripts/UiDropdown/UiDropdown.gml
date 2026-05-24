@@ -9,6 +9,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
     self.itemsFull = self.items;
     self.itemsGetter = props[$ "itemsGetter"];
     self.label = props[$ "label"] ?? undefined;
+    self.placeholder = props[$ "placeholder"] ?? "Select...";
     self.onChange = props[$ "onChange"] ?? function(input, value) {};
     
     if (self.label != undefined) {
@@ -102,7 +103,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
                 return item.value == self.value;
             }));
        
-            var _text = _selectedIndex != -1 ? self.parent.items[_selectedIndex].label : "Select...";
+            var _text = _selectedIndex != -1 ? self.parent.items[_selectedIndex].label : self.parent.placeholder;
             
             var _scissor = gpu_get_scissor();
             uui_set_scissor(self.x1, self.y1, self.x2 - self.x1 - 25, self.y2 - self.y1);

@@ -51,8 +51,17 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
     
     // Label and icons should not block pointer events
     if (self.iconLeft != undefined) {
-        self.IconL = new UiSprite(self.iconLeft, { width: 16, height: 16, marginRight: 8 }, { pointerEvents: false });
+        self.IconL = new UiSprite(self.iconLeft, { width: 16, height: 16, marginRight: 8 }, { pointerEvents: false, color: function() { return global.UI_COL_TEXT_DIM; } });
         self.Input.add(self.IconL);
+    }
+    
+    if (self.iconRight != undefined) {
+        if (is_numeric(self.iconRight)) {
+            self.IconR = new UiSprite(self.iconRight, { position: "absolute", right: 12, width: 16, height: 16 }, { pointerEvents: false, color: function() { return global.UI_COL_TEXT_DIM; } });
+        } else {
+            self.IconR = self.iconRight;
+        }
+        self.Input.add(self.IconR);
     }
 
     with (self.Input) {
@@ -192,6 +201,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
         self.getMouseCursorPos = function(mouseX) {
             // Calculate text starting X position (including scroll)
             var textX = self.x1 + self.layout.paddingLeft - self.scrollOffset;
+            if (self.parent.iconLeft != undefined) textX += 24;
             
             // Calculate mouse position relative to the start of the text
             var relativeX = mouseX - textX;
@@ -300,6 +310,8 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             }
             
             var textboxWidth = self.x2 - self.x1 - 10; // Margini più stretti
+            if (self.parent.iconLeft != undefined) textboxWidth -= 24;
+            if (self.parent.iconRight != undefined) textboxWidth -= 28;
             var margin = 5;
             
             // Scroll a destra se il cursore esce dalla vista
@@ -784,6 +796,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             
             var text = self.parent.value;
             var textX = self.x1 + self.layout.paddingLeft - self.scrollOffset;
+            if (self.parent.iconLeft != undefined) textX += 24;
             var textY = floor(mean(self.y1, self.y2));
             
             // Draw selection highlight (only when focused)

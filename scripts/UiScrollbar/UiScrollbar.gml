@@ -187,7 +187,8 @@ function UiScrollbarThumb(style = {}, props = {}): UiNode(style, props) construc
         if (self.parent.__maxScroll <= 0) return;
         
         var layoutSize = self.parent.isVertical ? self.parent.layout.height : self.parent.layout.width;
-        draw_set_color(self.thumbColor);
+        var col = (typeof(self.thumbColor) == "method") ? self.thumbColor() : self.thumbColor;
+        draw_set_color(col);
         draw_set_alpha(0.4);
         if (self.parent.isVertical) {
             draw_roundrect_ext(self.x1 + 3, self.y1 + 4, self.x2 - 3, self.y2 - 4, 4, 4, false);

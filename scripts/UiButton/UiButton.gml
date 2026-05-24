@@ -86,28 +86,36 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     function onDraw() {
         var radius = 6;
         
-        var bg_color = global.UI_COL_BORDER;
+        var bg_color = global.UI_COL_BOX;
         var text_color = global.UI_COL_TEXT_MAIN;
         var hover_color = global.UI_COL_BTN_HOVER;
-        var border_color = undefined;
+        var border_color = global.UI_COL_BORDER;
+        var ripple_color = c_white;
         
         if (self.variant == "primary") {
             bg_color = global.UI_COL_PRIMARY;
             hover_color = global.UI_COL_PRIMARY_HOVER;
             text_color = c_white;
+            border_color = undefined;
         } else if (self.variant == "outline") {
             bg_color = global.UI_COL_BOX;
             hover_color = global.UI_COL_BTN_HOVER;
             text_color = global.UI_COL_TEXT_MAIN;
             border_color = global.UI_COL_BORDER;
+            ripple_color = merge_color(global.UI_COL_TEXT_MAIN, c_black, 0.15);
         } else if (self.variant == "ghost") {
             bg_color = -1;
             hover_color = global.UI_COL_BTN_HOVER;
             text_color = global.UI_COL_TEXT_DIM;
+            border_color = undefined;
+            ripple_color = merge_color(global.UI_COL_TEXT_MAIN, c_black, 0.15);
         } else if (self.variant == "danger") {
             bg_color = global.UI_COL_DANGER;
             hover_color = #DC2626;
             text_color = c_white;
+            border_color = undefined;
+        } else {
+            ripple_color = merge_color(global.UI_COL_TEXT_MAIN, c_black, 0.15);
         }
         
         if (self.selected) {
@@ -140,7 +148,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
                 r.radius += 3 * dt_scale;
                 r.alpha -= 0.015 * dt_scale;
                 draw_set_alpha(max(0, r.alpha));
-                draw_set_color(c_white);
+                draw_set_color(ripple_color);
                 draw_circle(r.x, r.y, r.radius, false);
                 if (r.alpha <= 0) array_delete(self.ripples, i, 1);
             }
@@ -184,4 +192,3 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
         self.resize();
     }
 }
-

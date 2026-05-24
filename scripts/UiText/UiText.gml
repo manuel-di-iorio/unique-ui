@@ -74,8 +74,8 @@ function UiText(text = "", style = {}, props = {}): UiNode(style, props) constru
             textCol = global.UI_COL_TEXT_MAIN;
         } else if (textCol == "dim" || textCol == #64748B || textCol == #CBD5E1 || textCol == global.UI_COL_TEXT_DIM) {
             textCol = global.UI_COL_TEXT_DIM;
-        } else if (is_callable(textCol)) {
-            textCol = method_call(textCol);
+        } else if (typeof(textCol) == "method") {
+            textCol = textCol();
         }
         
         draw_set_font(self.font); draw_set_color(textCol); draw_set_halign(self.halign); draw_set_valign(self.valign);

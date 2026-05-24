@@ -1,7 +1,7 @@
 function ui_demo_create() {
     var W = display_get_gui_width();
     var H = display_get_gui_height();
-    display_reset(4, true);
+    display_reset(8, true);
     
     global.UI_DEMO = {
         currentPage: "Button",
@@ -26,28 +26,29 @@ function ui_demo_create() {
     
     // === SIDEBAR ===
     var Sidebar = new UiNode({
-        name: "Sidebar", width: 260, height: "100%", flexDirection: "column",
-        paddingTop: 16, paddingLeft: 8, paddingRight: 8, paddingBottom: 16,
+        name: "Sidebar", width: 284, height: "100%", flexDirection: "column",
+        paddingTop: 18, paddingLeft: 24, paddingRight: 20, paddingBottom: 18,
     });
     Sidebar.onDraw = method(Sidebar, function() {
         draw_set_color(global.UI_COL_BG_SIDEBAR);
         draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
-        draw_set_color(#1E293B);
+        draw_set_color(#E5EAF3);
         draw_line(self.x2, self.y1, self.x2, self.y2);
     });
     Main.add(Sidebar);
-    
+
     // Logo
-    global.UI_DEMO.LogoRowContainer = new UiNode({ marginBottom: 32 });
+    global.UI_DEMO.LogoRowContainer = new UiNode({ marginBottom: 24 });
     Sidebar.add(global.UI_DEMO.LogoRowContainer);
     __ui_demo_render_logo();
     
     global.UI_DEMO.SearchQuery = "";
     
     // Search
-    var SearchInput = new UiTextbox({ width: "100%", height: 36, marginBottom: 32 }, {
-        placeholder: "Search...",
+    var SearchInput = new UiTextbox({ width: "100%", height: 40, marginBottom: 26 }, {
+        placeholder: "Search components...",
         value: global.UI_DEMO.SearchQuery,
+        iconLeft: sprUiIconSearch,
         onChange: function(val) {
             global.UI_DEMO.SearchQuery = string_lower(val);
             __ui_demo_render_sidebar();
@@ -61,7 +62,7 @@ function ui_demo_create() {
     
     // Sidebar List
     var SidebarItems = new UiNode({ flex: 1, width: "100%", flexDirection: "column" });
-    SidebarItems.enableScrollbar(global.UI_COL_PRIMARY);
+    SidebarItems.enableScrollbar(function() { return global.UI_COL_SCROLLBAR_THUMB; });
     Sidebar.add(SidebarItems);
     global.UI_DEMO.SidebarItems = SidebarItems;
     
@@ -76,7 +77,7 @@ function ui_demo_create() {
     Main.add(Content);
     
     // Top Bar
-    var TopBar = new UiNode({ width: "100%", height: 64, flexDirection: "row", alignItems: "center", paddingLeft: 40, paddingRight: 40 });
+    var TopBar = new UiNode({ width: "100%", height: 98, flexDirection: "row", alignItems: "center", paddingLeft: 46, paddingRight: 38 });
     TopBar.onDraw = method(TopBar, function() {
         draw_set_color(global.UI_COL_BOX);
         draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
@@ -92,19 +93,30 @@ function ui_demo_create() {
     Breadcrumbs.add(global.UI_DEMO.BreadcrumbPage);
     TopBar.add(Breadcrumbs);
     
-    var DocLink = new UiText("Documentation", { marginRight: 24 }, { color: "dim", pointerEvents: true, handpoint: true });
+    var DocLink = new UiText("Documentation", { marginRight: 14 }, { color: "dim", pointerEvents: true, handpoint: true });
     DocLink.onClick(function() {
         url_open("https://manuel-di-iorio.github.io/unique-ui");
     });
     TopBar.add(DocLink);
+
+    var BookIcon = __ui_demo_icon_button(sprUiIconBook, 42);
+    BookIcon.onClick(function() {
+        url_open("https://manuel-di-iorio.github.io/unique-ui");
+    });
+    TopBar.add(BookIcon);
+
+    var Divider = new UiNode({ width: 1, height: 34, marginLeft: 20, marginRight: 20 });
+    Divider.onDraw = method(Divider, function() {
+        draw_set_color(#E5EAF3);
+        draw_line(self.x1, self.y1, self.x1, self.y2);
+    });
+    TopBar.add(Divider);
     
     // Dynamic Theme Toggler (Switch)
     global.UI_DEMO.currentTheme = "light";
-    var ThemeToggle = new UiSwitch({ marginRight: 8 }, {
-        label: "Dark Mode",
-        value: false,
-        onChange: function(val) {
-            if (val) {
+    var ThemeToggle = __ui_demo_icon_button(sprUiIconSun, 42);
+    ThemeToggle.onClick(function() {
+            if (global.UI_DEMO.currentTheme == "light") {
                 global.UI_DEMO.currentTheme = "dark";
                 ui_set_theme("dark");
             } else {
@@ -114,12 +126,11 @@ function ui_demo_create() {
             __ui_demo_render_logo();
             __ui_demo_render_sidebar();
             __ui_demo_refresh();
-        }
     });
     TopBar.add(ThemeToggle);
     
     // Scroll Area (Main Content)
-    var ScrollArea = new UiNode({ flex: 1, width: "100%", flexDirection: "column", padding: 40 });
+    var ScrollArea = new UiNode({ flex: 1, width: "100%", flexDirection: "column", paddingLeft: 46, paddingRight: 38, paddingTop: 30, paddingBottom: 36 });
     Content.add(ScrollArea);
     global.UI_DEMO.ScrollArea = ScrollArea;
     
@@ -129,14 +140,68 @@ function ui_demo_create() {
 function __ui_demo_render_logo() {
     var container = global.UI_DEMO.LogoRowContainer;
     container.destroyChildren(true);
-    var LogoRow = new UiNode({ flexDirection: "row", alignItems: "center", paddingLeft: 12 });
+    var LogoRow = new UiNode({ flexDirection: "row", alignItems: "center" });
     container.add(LogoRow);
-    LogoRow.add(new UiText("UniqueUI", { marginRight: 8 }, { color: function() { return #FFFFFF; } }));
-    var VersionBadge = new UiNode({ padding: 4 });
-    VersionBadge.onDraw = method(VersionBadge, function() {
-        draw_set_color(#312E81);
-        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 4, 4, false);
+    var Mark = new UiNode({ width: 28, height: 28, marginRight: 10 });
+    Mark.onDraw = method(Mark, function() {
+        __ui_demo_draw_logo_mark(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), 12, global.UI_COL_TEXT_MAIN);
     });
-    VersionBadge.add(new UiText(global.UI_VERSION, {}, { color: #818CF8 }));
+    LogoRow.add(Mark);
+    LogoRow.add(new UiText("Unique UI", { marginRight: 10 }, { color: "main" }));
+    var VersionBadge = new UiNode({ paddingLeft: 7, paddingRight: 7, height: 24, justifyContent: "center" });
+    VersionBadge.onDraw = method(VersionBadge, function() {
+        draw_set_color(#E8F0FF);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
+    });
+    VersionBadge.add(new UiText(global.UI_VERSION, {}, { color: global.UI_COL_PRIMARY }));
     LogoRow.add(VersionBadge);
+}
+
+function __ui_demo_icon_button(iconName, size = 36) {
+    var btn = new UiNode({ width: size, height: size, justifyContent: "center", alignItems: "center" }, { pointerEvents: true, handpoint: true });
+    btn.__iconName = iconName;
+    btn.onMouseEnter(function() { global.UI.requestRedraw(); });
+    btn.onMouseLeave(function() { global.UI.requestRedraw(); });
+    btn.onDraw = method(btn, function() {
+        if (self.hovered) {
+            draw_set_color(global.UI_COL_BTN_HOVER);
+            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
+        }
+        __ui_demo_draw_icon(self.__iconName, ~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), global.UI_COL_TEXT_MAIN, 1.1);
+    });
+    return btn;
+}
+
+function __ui_demo_draw_logo_mark(cx, cy, r, col) {
+    if (sprite_exists(sprUiIconLogoMark)) {
+        var target_size = r * 2;
+        var spr_w = sprite_get_width(sprUiIconLogoMark);
+        var spr_h = sprite_get_height(sprUiIconLogoMark);
+        var factor_x = target_size / spr_w;
+        var factor_y = target_size / spr_h;
+        draw_sprite_ext(sprUiIconLogoMark, 0, cx, cy, factor_x, factor_y, 0, col, 1);
+    } else {
+        draw_set_color(col);
+        draw_line_width(cx, cy - r, cx + r - 2, cy - r / 2, 2);
+        draw_line_width(cx + r - 2, cy - r / 2, cx + r - 2, cy + r / 2, 2);
+        draw_line_width(cx + r - 2, cy + r / 2, cx, cy + r, 2);
+        draw_line_width(cx, cy + r, cx - r + 2, cy + r / 2, 2);
+        draw_line_width(cx - r + 2, cy + r / 2, cx - r + 2, cy - r / 2, 2);
+        draw_line_width(cx - r + 2, cy - r / 2, cx, cy - r, 2);
+        draw_circle(cx, cy, 3, false);
+        draw_line_width(cx, cy - 6, cx, cy - 3, 2);
+        draw_line_width(cx + 5, cy + 3, cx + 2, cy + 1, 2);
+        draw_line_width(cx - 5, cy + 3, cx - 2, cy + 1, 2);
+    }
+}
+
+function __ui_demo_draw_icon(spr, cx, cy, col, scale = 1) {
+    var target_size = 20 * scale;
+    var spr_w = sprite_get_width(spr);
+    var spr_h = sprite_get_height(spr);
+    var factor_x = target_size / spr_w;
+    var factor_y = target_size / spr_h;
+    var offset_x = (spr_w / 2 - sprite_get_xoffset(spr)) * factor_x;
+    var offset_y = (spr_h / 2 - sprite_get_yoffset(spr)) * factor_y;
+    draw_sprite_ext(spr, 0, cx - offset_x, cy - offset_y, factor_x, factor_y, 0, col, 1);
 }

@@ -17,18 +17,64 @@ function __ui_demo_render_sidebar() {
 
 function __ui_demo_sidebar_item(parent, text) {
     var isSelected = (text == global.UI_DEMO.currentPage);
-    var btn = new UiButton(text, { width: "100%", height: 36, marginBottom: 2, paddingLeft: 12 }, { 
-        halign: fa_left, variant: isSelected ? "primary" : "ghost" 
+    var item = new UiNode({ width: "100%", height: 36, marginBottom: 2, paddingLeft: 12 }, { pointerEvents: true, handpoint: true });
+    item.__text = text;
+    item.__selected = isSelected;
+    item.__icon = __ui_demo_sidebar_icon_name(text);
+    item.onMouseEnter(function() { global.UI.requestRedraw(); });
+    item.onMouseLeave(function() { global.UI.requestRedraw(); });
+    item.onDraw = method(item, function() {
+        if (self.__selected) {
+            draw_set_color(#EAF1FF);
+            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 7, 7, false);
+        } else if (self.hovered) {
+            draw_set_color(#F1F5FB);
+            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 7, 7, false);
+        }
+        
+        var col = self.__selected ? global.UI_COL_PRIMARY : global.UI_COL_TEXT_MAIN;
+        __ui_demo_draw_icon(self.__icon, self.x1 + 18, ~~mean(self.y1, self.y2), col, 0.78);
+        draw_set_font(fText);
+        draw_set_color(col);
+        draw_set_halign(fa_left);
+        draw_set_valign(fa_middle);
+        draw_text(self.x1 + 40, ~~mean(self.y1, self.y2), self.__text);
     });
-    btn.onClick(method({ text }, function() {
+    item.onClick(method({ text }, function() {
         global.UI_DEMO.currentPage = text;
         global.UI_DEMO.currentTab = "Preview";
         __ui_demo_render_sidebar();
         __ui_demo_refresh();
     }));
-    parent.add(btn);
+    parent.add(item);
 }
 
 function __ui_demo_sidebar_label(parent, text, mt = 0) {
-    parent.add(new UiText(text, { marginTop: mt, marginBottom: 12, marginLeft: 12 }, { color: global.UI_COL_TEXT_DIM }));
+    parent.add(new UiText(text, { marginTop: mt, marginBottom: 12, marginLeft: 12 }, { color: global.UI_COL_TEXT_DIM, font: fTextSmall }));
+}
+
+function __ui_demo_sidebar_icon_name(text) {
+    switch (string_lower(text)) {
+        case "colors": return sprUiIconPalette;
+        case "typography": return sprUiIconTypography;
+        case "textbox": return sprUiIconTextbox;
+        case "textarea": return sprUiIconTextarea;
+        case "select": return sprUiIconSelect;
+        case "colorpicker": return sprUiIconPicker;
+        case "checkbox": return sprUiIconCheckbox;
+        case "radio": return sprUiIconRadio;
+        case "switch": return sprUiIconSwitchOn;
+        case "badge": return sprUiIconBadge;
+        case "alert": return sprUiIconAlert;
+        case "card": return sprUiIconCard;
+        case "tabs": return sprUiIconTabs;
+        case "tooltip": return sprUiIconTooltip;
+        case "slider": return sprUiIconSlider;
+        case "accordion": return sprUiIconAccordion;
+        case "sprite": return sprUiIconSprite;
+        case "contextmenu": return sprUiIconMenu;
+        case "modal": return sprUiIconModal;
+        case "treeview": return sprUiIconTreeview;
+        default: return sprUiIconButton;
+    }
 }

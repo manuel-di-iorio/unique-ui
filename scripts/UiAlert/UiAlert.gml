@@ -29,13 +29,13 @@ function UiAlert(message, style = {}, props = {}): UiNode(style, props) construc
     self.onDraw = method(self, function() {
         var pal = __alert_palette();
         draw_set_color(pal.bg);
-        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
+        draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
         draw_set_color(pal.border);
-        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
+        draw_rectangle(self.x1, self.y1, self.x2, self.y2, true);
         
         // Left accent bar
         draw_set_color(pal.icon);
-        draw_roundrect_ext(self.x1, self.y1, self.x1 + 4, self.y2, 4, 4, false);
+        draw_rectangle(self.x1, self.y1, self.x1 + 4, self.y2, false);
     });
     
     // Content column

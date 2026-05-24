@@ -31,44 +31,27 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
     
     with (self.Input) {
         self.onDraw = function() {
-            var radius = (self.parent.variant == "radio") ? 9 : 4;
             var isChecked = self.parent.value;
-            
-            // Background
-            draw_set_color(isChecked ? global.UI_COL_PRIMARY : global.UI_COL_INPUT_BG);
-            if (self.parent.variant == "radio") {
-                draw_circle(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), 9, false);
-            } else {
-                draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
-            }
-            
-            // Border
-            draw_set_color(isChecked ? global.UI_COL_PRIMARY : global.UI_COL_BORDER);
-            if (self.parent.variant == "radio") {
-                draw_circle(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), 9, true);
-            } else {
-                draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, true);
-            }
+            var isRadio = (self.parent.variant == "radio");
+            var _checkedSprite = isRadio ? sprUiIconRadio : sprUiIconCheckbox;
+            var _uncheckedSprite = isRadio ? sprUiIconRadioUnchecked : sprUiIconCheckboxUnchecked;
+            var _sprite = isChecked ? _checkedSprite : _uncheckedSprite;
+            var _col = isChecked ? global.UI_COL_PRIMARY : global.UI_COL_TEXT_DIM;
             
             if (self.parent.hovered && !isChecked) {
                 draw_set_color(global.UI_COL_BTN_HOVER);
-                if (self.parent.variant == "radio") {
-                    draw_circle(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), 9, false);
-                } else {
-                    draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
-                }
+                draw_roundrect_ext(self.x1 - 1, self.y1 - 1, self.x2 + 1, self.y2 + 1, 6, 6, false);
             }
             
-            if (isChecked) {
-                draw_set_color(c_white);
-                var cx = ~~mean(self.x1, self.x2);
-                var cy = ~~mean(self.y1, self.y2);
-                if (self.parent.variant == "radio") {
-                    draw_circle(cx, cy, 4, false);
-                } else {
-                    draw_line_width(cx - 4, cy, cx - 1, cy + 3, 2);
-                    draw_line_width(cx - 1, cy + 3, cx + 5, cy - 4, 2);
-                }
+            if (sprite_exists(_sprite)) {
+                var _sw = sprite_get_width(_sprite);
+                var _sh = sprite_get_height(_sprite);
+                var _scale = min((self.x2 - self.x1) / _sw, (self.y2 - self.y1) / _sh);
+                var _ox = sprite_get_xoffset(_sprite);
+                var _oy = sprite_get_yoffset(_sprite);
+                var _mx = mean(self.x1, self.x2);
+                var _my = mean(self.y1, self.y2);
+                draw_sprite_ext(_sprite, 0, _mx - (_sw / 2 - _ox) * _scale, _my - (_sh / 2 - _oy) * _scale, _scale, _scale, 0, _col, 1);
             }
         };
     }

@@ -1,28 +1,29 @@
-global.UI_VERSION = "3.4.0";
+global.UI_VERSION = "4.0.0";
 
 // UI Theme — Modern Premium Palette
-global.UI_COL_PRIMARY          = #2563EB;
-global.UI_COL_PRIMARY_HOVER    = #1D4ED8;
-global.UI_COL_BG_SIDEBAR       = #0F172A;
-global.UI_COL_BG_MAIN          = #F8FAFC;
+global.UI_COL_PRIMARY          = #2F6FEF;
+global.UI_COL_PRIMARY_HOVER    = #215CDA;
+global.UI_COL_BG_SIDEBAR       = #F8FAFC;
+global.UI_COL_BG_MAIN          = #FBFCFF;
 global.UI_COL_BG_CARD          = #FFFFFF;
-global.UI_COL_TEXT_MAIN        = #0F172A;
-global.UI_COL_TEXT_DIM         = #64748B;
-global.UI_COL_BORDER           = #E2E8F0;
-global.UI_COL_SELECTED         = #2563EB;
-global.UI_COL_SELECTED_HOVER   = #1D4ED8;
-global.UI_COL_BTN_HOVER        = #F1F5F9;
+global.UI_COL_TEXT_MAIN        = #13213A;
+global.UI_COL_TEXT_DIM         = #60708D;
+global.UI_COL_BORDER           = #DDE5F0;
+global.UI_COL_SELECTED         = #2F6FEF;
+global.UI_COL_SELECTED_HOVER   = #215CDA;
+global.UI_COL_BTN_HOVER        = #EDF3FF;
 global.UI_COL_BOX              = #FFFFFF;
-global.UI_COL_INPUT_BG         = #F8FAFC;
+global.UI_COL_INPUT_BG         = #FFFFFF;
 global.UI_COL_BAR_BG           = #FFFFFF;
-global.UI_COL_CHECKBOX_HOVER   = #F1F5F9;
-global.UI_COL_DROPDOWN_LIST_BG = #1E293B;
-global.UI_COL_INSPECTOR_BG     = #334155;
-global.UI_COL_TREE_BG          = #0F172A;
-global.UI_COL_SELECTION       = #3B82F6;
-global.UI_COL_SUCCESS         = #22C55E;
-global.UI_COL_WARNING         = #F59E0B;
-global.UI_COL_DANGER          = #EF4444;
+global.UI_COL_CHECKBOX_HOVER   = #EDF3FF;
+global.UI_COL_DROPDOWN_LIST_BG = #172338;
+global.UI_COL_INSPECTOR_BG     = #EEF3FA;
+global.UI_COL_TREE_BG          = #F8FAFC;
+global.UI_COL_SELECTION        = #3B82F6;
+global.UI_COL_SUCCESS          = #23A75A;
+global.UI_COL_WARNING          = #F59E0B;
+global.UI_COL_DANGER           = #EF4444;
+global.UI_COL_SCROLLBAR_THUMB  = #CBD5E1;
 
 /// @desc Sets a scissor rect using GUI coordinates, automatically scaling them to real window/viewport space.
 function uui_set_scissor(x, y, w, h) {
@@ -56,32 +57,34 @@ global.UI_THEMES.dark = {
     selection: #3B82F6,
     success: #22C55E,
     warning: #F59E0B,
-    danger: #EF4444
+    danger: #EF4444,
+    scrollbarThumb: #475569
 };
 
 global.UI_THEMES.light = {
-    primary: #2563EB,
-    primaryHover: #1D4ED8,
-    bgSidebar: #0F172A,
-    bgMain: #F8FAFC,
+    primary: #2F6FEF,
+    primaryHover: #215CDA,
+    bgSidebar: #F8FAFC,
+    bgMain: #FBFCFF,
     bgCard: #FFFFFF,
-    textMain: #0F172A,
-    textDim: #64748B,
-    border: #E2E8F0,
-    selected: #2563EB,
-    selectedHover: #1D4ED8,
-    btnHover: #F1F5F9,
+    textMain: #13213A,
+    textDim: #60708D,
+    border: #DDE5F0,
+    selected: #2F6FEF,
+    selectedHover: #215CDA,
+    btnHover: #EDF3FF,
     box: #FFFFFF,
-    inputBg: #F8FAFC,
+    inputBg: #FFFFFF,
     barBg: #FFFFFF,
-    checkboxHover: #F1F5F9,
-    dropdownListBg: #1E293B,
-    inspectorBg: #F1F5F9,
+    checkboxHover: #EDF3FF,
+    dropdownListBg: #172338,
+    inspectorBg: #EEF3FA,
     treeBg: #F8FAFC,
     selection: #3B82F6,
-    success: #22C55E,
+    success: #23A75A,
     warning: #F59E0B,
-    danger: #EF4444
+    danger: #EF4444,
+    scrollbarThumb: #CBD5E1
 };
 
 /// @desc Sets the active UI theme by name and requests a full redraw.
@@ -110,6 +113,7 @@ function ui_set_theme(themeName) {
     global.UI_COL_SUCCESS         = t.success;
     global.UI_COL_WARNING         = t.warning;
     global.UI_COL_DANGER          = t.danger;
+    global.UI_COL_SCROLLBAR_THUMB = t.scrollbarThumb;
     
     if (global.UI != undefined) {
         global.UI.requestRedraw();
