@@ -175,30 +175,16 @@ function __ui_demo_icon_button(iconName, size = 36) {
 }
 
 function __ui_demo_draw_logo_mark(cx, cy, r, col) {
-    if (sprite_exists(sprUiIconLogoMark)) {
-        var target_size = r * 2;
-        var spr_w = sprite_get_width(sprUiIconLogoMark);
-        var spr_h = sprite_get_height(sprUiIconLogoMark);
-        var factor_x = target_size / spr_w;
-        var factor_y = target_size / spr_h;
-        draw_sprite_ext(sprUiIconLogoMark, 0, cx, cy, factor_x, factor_y, 0, col, 1);
-    } else {
-        draw_set_color(col);
-        draw_line_width(cx, cy - r, cx + r - 2, cy - r / 2, 2);
-        draw_line_width(cx + r - 2, cy - r / 2, cx + r - 2, cy + r / 2, 2);
-        draw_line_width(cx + r - 2, cy + r / 2, cx, cy + r, 2);
-        draw_line_width(cx, cy + r, cx - r + 2, cy + r / 2, 2);
-        draw_line_width(cx - r + 2, cy + r / 2, cx - r + 2, cy - r / 2, 2);
-        draw_line_width(cx - r + 2, cy - r / 2, cx, cy - r, 2);
-        draw_circle(cx, cy, 3, false);
-        draw_line_width(cx, cy - 6, cx, cy - 3, 2);
-        draw_line_width(cx + 5, cy + 3, cx + 2, cy + 1, 2);
-        draw_line_width(cx - 5, cy + 3, cx - 2, cy + 1, 2);
-    }
+    var target_size = r * 2;
+    var spr_w = sprite_get_width(sprUiIconLogoMark);
+    var spr_h = sprite_get_height(sprUiIconLogoMark);
+    var factor_x = target_size / spr_w;
+    var factor_y = target_size / spr_h;
+    draw_sprite_ext(sprUiIconLogoMark, 0, cx, cy, factor_x, factor_y, 0, col, 1);
 }
 
 function __ui_demo_draw_icon(spr, cx, cy, col, scale = 1) {
-    var target_size = 20 * scale;
+    var target_size = 24 * scale;
     var spr_w = sprite_get_width(spr);
     var spr_h = sprite_get_height(spr);
     var factor_x = target_size / spr_w;

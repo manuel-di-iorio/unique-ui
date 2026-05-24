@@ -448,7 +448,6 @@ function __ui_demo_add_code_lines(parent, lines) {
         }
 
         var col = #8AB4FF;
-        if (string_pos("new ", lines[i]) == 1) col = #D38CFF;
         if (string_pos("//", lines[i]) == 1) col = #6B7C99;
         parent.add(new UiText(lines[i], { marginBottom: 7, width: "100%" }, { color: col, font: fTextSmall, wrap: true }));
     }
