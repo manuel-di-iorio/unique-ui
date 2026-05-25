@@ -132,6 +132,7 @@ function ui_demo_create() {
     
     // Scroll Area (Main Content)
     var ScrollArea = new UiNode({ flex: 1, width: "100%", flexDirection: "column", paddingLeft: 46, paddingRight: 38, paddingTop: 30, paddingBottom: 36 });
+    ScrollArea.enableScrollbar(function() { return global.UI_COL_SCROLLBAR_THUMB; });
     Content.add(ScrollArea);
     global.UI_DEMO.ScrollArea = ScrollArea;
     

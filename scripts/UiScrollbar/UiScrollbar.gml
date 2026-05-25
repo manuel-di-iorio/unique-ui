@@ -27,6 +27,8 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
         if (self.isVertical) {
             self.parent.onWheelUp(method(self, function(ev) {
                 if (self.parent == undefined) return;
+                var _prevTop = self.parent.scrollTop;
+                var _prevLeft = self.parent.scrollLeft;
                 
                 // Shift + wheel => horizontal scrolling when available
                 if (keyboard_check(vk_shift) && self.parent.__UiScrollbarH != undefined) {
@@ -36,13 +38,21 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
                 } else {
                     self.parent.scrollTop = max(0, self.parent.scrollTop - 60);
                 }
-                global.UI.requestUpdate();
-                global.UI.requestRedraw();
-                return true;
+
+                if (self.parent.scrollTop != _prevTop || self.parent.scrollLeft != _prevLeft) {
+                    global.UI.requestUpdate();
+                    global.UI.requestRedraw();
+                    return true;
+                }
+                
+                // Nothing moved: allow event bubbling to parent scroll containers.
+                return false;
             }));
             
             self.parent.onWheelDown(method(self, function(ev) {
                 if (self.parent == undefined) return;
+                var _prevTop = self.parent.scrollTop;
+                var _prevLeft = self.parent.scrollLeft;
                 
                 // Shift + wheel => horizontal scrolling when available
                 if (keyboard_check(vk_shift) && self.parent.__UiScrollbarH != undefined) {
@@ -51,9 +61,15 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
                 } else {
                     self.parent.scrollTop = min(self.__maxScroll, self.parent.scrollTop + 60);
                 }
-                global.UI.requestUpdate();
-                global.UI.requestRedraw();
-                return true;
+
+                if (self.parent.scrollTop != _prevTop || self.parent.scrollLeft != _prevLeft) {
+                    global.UI.requestUpdate();
+                    global.UI.requestRedraw();
+                    return true;
+                }
+
+                // Nothing moved: allow event bubbling to parent scroll containers.
+                return false;
             }));
         } else {
             // Horizontal wheel

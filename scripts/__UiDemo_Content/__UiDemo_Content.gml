@@ -1,6 +1,7 @@
 function __ui_demo_refresh(preserveScroll = false) {
     var area = global.UI_DEMO.ScrollArea;
     var _oldScroll = area.scrollTop;
+    var _panelHeight = max(320, display_get_gui_height() - 220);
     if (global.UI_DEMO.currentPage == "Overview") global.UI_DEMO.currentPage = "Button";
     area.destroyChildren(true);
     global.UI_DEMO.BreadcrumbPage.text = global.UI_DEMO.currentPage;
@@ -23,7 +24,7 @@ function __ui_demo_refresh(preserveScroll = false) {
         global.UI_DEMO.currentTab = "Preview";
     }
 
-    var PreviewPanel = new UiNode({ width: "100%", flexDirection: "column" });
+    var PreviewPanel = new UiNode({ width: "100%", height: _panelHeight, flexDirection: "column" });
     PreviewPanel.enableScrollbar(function() { return global.UI_COL_SCROLLBAR_THUMB; });
     __ui_demo_render_anteprima(PreviewPanel);
 
@@ -32,7 +33,7 @@ function __ui_demo_refresh(preserveScroll = false) {
     ];
 
     if (!_isFoundation) {
-        var DocsPanel = new UiNode({ width: "100%", flexDirection: "column" });
+        var DocsPanel = new UiNode({ width: "100%", height: _panelHeight, flexDirection: "column" });
         DocsPanel.enableScrollbar(function() { return global.UI_COL_SCROLLBAR_THUMB; });
         __ui_demo_render_documentazione(DocsPanel);
         array_push(tabsItems, { label: "Documentation", content: DocsPanel });
@@ -95,12 +96,14 @@ function __ui_demo_doc_row(parent, name, type, desc) {
 function __ui_demo_render_anteprima(area) {
     var MainRow = new UiNode({ 
         flexDirection: "row", 
-        width: "100%"
+        width: "100%",
+        height: "100%"
     });
     area.add(MainRow);
     
     var PreviewCard = new UiNode({
         width: "60%", 
+        height: "100%",
         padding: 30,
         marginRight: 20,
         flexDirection: "column"
@@ -118,7 +121,7 @@ function __ui_demo_render_anteprima(area) {
     var codeLines = __ui_demo_render_component_example(global.UI_DEMO.currentPage, PreviewCard);
     
     // Code Panel
-    var CodePanel = new UiNode({ flexGrow: 1, padding: 24, flexDirection: "column" });
+    var CodePanel = new UiNode({ flexGrow: 1, height: "100%", padding: 24, flexDirection: "column" });
     CodePanel.onDraw = method(CodePanel, function() {
         draw_set_color(#142033);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
