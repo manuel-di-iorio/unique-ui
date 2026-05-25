@@ -25,7 +25,7 @@ function UiTabs(items, style = {}, props = {}): UiNode(style, props) constructor
     self.add_base(self.Strip);
     
     // ── Content Area ─────────────────────────────────────────────────────────
-    self.ContentArea = new UiNode({ width: "100%", flexDirection: "column", paddingTop: 16 });
+    self.ContentArea = new UiNode({ width: "100%", flex: 1, flexDirection: "column", paddingTop: 16 });
     self.add_base(self.ContentArea);
     
     // ── Build tabs ───────────────────────────────────────────────────────────
