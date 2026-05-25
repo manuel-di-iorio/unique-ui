@@ -8,6 +8,7 @@ function UiTabs(items, style = {}, props = {}): UiNode(style, props) constructor
     self.selectedIndex = props[$ "selectedIndex"] ?? 0;
     self.onChange      = props[$ "onChange"]      ?? function(index, label) {};
     self.variant       = props[$ "variant"]       ?? "underline"; // "underline" | "pills"
+    self.__fillContent = (style[$ "height"] != undefined || style[$ "flex"] != undefined || style[$ "flexGrow"] != undefined);
     
     if (style[$ "width"] == undefined) self.setWidth("100%");
     flexpanel_node_style_set_flex_direction(self.node, flexpanel_flex_direction.column);
@@ -25,7 +26,9 @@ function UiTabs(items, style = {}, props = {}): UiNode(style, props) constructor
     self.add_base(self.Strip);
     
     // ── Content Area ─────────────────────────────────────────────────────────
-    self.ContentArea = new UiNode({ width: "100%", flexDirection: "column", paddingTop: 16 });
+    var _contentStyle = { width: "100%", flexDirection: "column", paddingTop: 16 };
+    if (self.__fillContent) _contentStyle.flex = 1;
+    self.ContentArea = new UiNode(_contentStyle);
     self.add_base(self.ContentArea);
     
     // ── Build tabs ───────────────────────────────────────────────────────────

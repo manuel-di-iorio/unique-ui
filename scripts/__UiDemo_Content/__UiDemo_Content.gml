@@ -1,7 +1,6 @@
 function __ui_demo_refresh(preserveScroll = false) {
     var area = global.UI_DEMO.ScrollArea;
     var _oldScroll = area.scrollTop;
-    var _panelHeight = max(320, display_get_gui_height() - 220);
     if (global.UI_DEMO.currentPage == "Overview") global.UI_DEMO.currentPage = "Button";
     area.destroyChildren(true);
     global.UI_DEMO.BreadcrumbPage.text = global.UI_DEMO.currentPage;
@@ -24,8 +23,7 @@ function __ui_demo_refresh(preserveScroll = false) {
         global.UI_DEMO.currentTab = "Preview";
     }
 
-    var PreviewPanel = new UiNode({ width: "100%", height: _panelHeight, flexDirection: "column" });
-    PreviewPanel.enableScrollbar(function() { return global.UI_COL_SCROLLBAR_THUMB; });
+    var PreviewPanel = new UiNode({ width: "100%", height: "100%", flexDirection: "column" });
     __ui_demo_render_anteprima(PreviewPanel);
 
     var tabsItems = [
@@ -33,14 +31,14 @@ function __ui_demo_refresh(preserveScroll = false) {
     ];
 
     if (!_isFoundation) {
-        var DocsPanel = new UiNode({ width: "100%", height: _panelHeight, flexDirection: "column" });
+        var DocsPanel = new UiNode({ width: "100%", height: "100%", flexDirection: "column" });
         DocsPanel.enableScrollbar(function() { return global.UI_COL_SCROLLBAR_THUMB; });
         __ui_demo_render_documentazione(DocsPanel);
         array_push(tabsItems, { label: "Documentation", content: DocsPanel });
     }
 
     var _selectedIndex = (global.UI_DEMO.currentTab == "Documentation" && !_isFoundation) ? 1 : 0;
-    var DemoTabs = new UiTabs(tabsItems, { width: "100%", marginBottom: 0 }, {
+    var DemoTabs = new UiTabs(tabsItems, { width: "100%", flex: 1, marginBottom: 0 }, {
         selectedIndex: _selectedIndex,
         variant: "underline",
         onChange: function(index, label) {
