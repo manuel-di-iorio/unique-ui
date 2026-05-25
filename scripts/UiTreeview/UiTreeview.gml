@@ -145,7 +145,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     // Background highlight
     self.Content.onDraw = method({ Content: _content, Item: _item }, function() {
         if (self.Content.hovered || self.Item.selected) {
-            draw_set_color(self.Item.selected ? global.UI_COL_SELECTED : global.UI_COL_BTN_HOVER);
+            draw_set_color(self.Item.selected ? global.UI_COL_PRIMARY : global.UI_COL_BTN_HOVER);
             draw_set_alpha(self.Item.selected ? 0.3 : 0.1);
             draw_rectangle(self.Content.x1, self.Content.y1, self.Content.x2, self.Content.y2, false);
             draw_set_alpha(1);

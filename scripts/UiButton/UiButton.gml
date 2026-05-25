@@ -86,7 +86,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     function onDraw() {
         var radius = 6;
         
-        var bg_color = global.UI_COL_BOX;
+        var bg_color = global.UI_COL_BG_CARD;
         var text_color = global.UI_COL_TEXT_MAIN;
         var hover_color = global.UI_COL_BTN_HOVER;
         var border_color = global.UI_COL_BORDER;
@@ -98,7 +98,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
             text_color = c_white;
             border_color = undefined;
         } else if (self.variant == "outline") {
-            bg_color = global.UI_COL_BOX;
+            bg_color = global.UI_COL_BG_CARD;
             hover_color = global.UI_COL_BTN_HOVER;
             text_color = global.UI_COL_TEXT_MAIN;
             border_color = global.UI_COL_BORDER;

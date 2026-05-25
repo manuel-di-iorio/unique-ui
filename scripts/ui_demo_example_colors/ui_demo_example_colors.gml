@@ -9,8 +9,6 @@ function ui_demo_example_colors(PreviewCard) {
         {name: "Success", col: global.UI_COL_SUCCESS, hex: "#23A75A"},
         {name: "Warning", col: global.UI_COL_WARNING, hex: "#F59E0B"},
         {name: "Danger", col: global.UI_COL_DANGER, hex: "#EF4444"},
-        {name: "Selected", col: global.UI_COL_SELECTED, hex: "#2F6FEF"},
-        {name: "Selected Hover", col: global.UI_COL_SELECTED_HOVER, hex: "#215CDA"},
         {name: "BG Sidebar", col: global.UI_COL_BG_SIDEBAR, hex: "#F8FAFC"},
         {name: "BG Main", col: global.UI_COL_BG_MAIN, hex: "#FBFCFF"},
         {name: "BG Card", col: global.UI_COL_BG_CARD, hex: "#FFFFFF"},
@@ -18,9 +16,6 @@ function ui_demo_example_colors(PreviewCard) {
         {name: "Text Dim", col: global.UI_COL_TEXT_DIM, hex: "#60708D"},
         {name: "Border", col: global.UI_COL_BORDER, hex: "#DDE5F0"},
         {name: "Btn Hover", col: global.UI_COL_BTN_HOVER, hex: "#EDF3FF"},
-        {name: "Box", col: global.UI_COL_BOX, hex: "#FFFFFF"},
-        {name: "Input BG", col: global.UI_COL_INPUT_BG, hex: "#FFFFFF"},
-        {name: "Checkbox Hover", col: global.UI_COL_CHECKBOX_HOVER, hex: "#EDF3FF"},
         {name: "Dropdown BG", col: global.UI_COL_DROPDOWN_LIST_BG, hex: "#172338"},
         {name: "Scrollbar Thumb", col: global.UI_COL_SCROLLBAR_THUMB, hex: "#CBD5E1"}
     ];

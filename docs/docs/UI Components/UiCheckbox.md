@@ -83,7 +83,7 @@ var syncBox = new UiCheckbox({}, {
 
 - The Input node (UiCheckbox.Input) handles all visual and interactive behavior.
 
-- When hovered, a subtle highlight is drawn using global.UI_COL_CHECKBOX_HOVER.
+- When hovered, a subtle highlight is drawn using global.UI_COL_BTN_HOVER.
 
 - When checked, the tick mark (sprUiCheckTick) appears centered within the box.
 

@@ -80,7 +80,7 @@ function ui_demo_create() {
     // Top Bar
     var TopBar = new UiNode({ width: "100%", height: 98, flexDirection: "row", alignItems: "center", paddingLeft: 46, paddingRight: 38 });
     TopBar.onDraw = method(TopBar, function() {
-        draw_set_color(global.UI_COL_BOX);
+        draw_set_color(global.UI_COL_BG_CARD);
         draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
         draw_set_color(global.UI_COL_BORDER);
         draw_line(self.x1, self.y2, self.x2, self.y2);

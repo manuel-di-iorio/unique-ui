@@ -7,7 +7,7 @@ function UiBadge(text, style = {}, props = {}): UiNode(style, props) constructor
     self.dot     = props[$ "dot"]     ?? false; // Show as a dot (no text)
     
     // Size defaults if not specified
-    if (style[$ "height"] == undefined) self.setHeight(self.dot ? 10 : 22);
+    if (style[$ "height"] == undefined) self.setHeight(self.dot ? 10 : 26);
     if (!self.dot && style[$ "width"] == undefined) {
         draw_set_font(fTextSmall);
         self.setWidth(string_width(text) + 24);
@@ -31,7 +31,7 @@ function UiBadge(text, style = {}, props = {}): UiNode(style, props) constructor
         }
 
         return {
-            bg: merge_color(accent, global.UI_COL_BOX, 0.76),
+            bg: merge_color(accent, global.UI_COL_BG_CARD, 0.76),
             text: merge_color(accent, global.UI_COL_TEXT_MAIN, 0.12),
             border: merge_color(accent, global.UI_COL_BORDER, 0.45)
         };

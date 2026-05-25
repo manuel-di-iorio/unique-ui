@@ -49,7 +49,7 @@ function UiSlider(style = {}, props = {}) : UiNode(style, props) constructor {
             var fillX2 = lerp(self.x1, self.x2, t2);
             
             if (fillX2 > fillX1) {
-                draw_set_color(global.UI_COL_SELECTED);
+                draw_set_color(global.UI_COL_PRIMARY);
                 draw_roundrect_ext(fillX1, cy - trackH/2, fillX2, cy + trackH/2, trackH/2, trackH/2, false);
             }
         } else {
@@ -57,7 +57,7 @@ function UiSlider(style = {}, props = {}) : UiNode(style, props) constructor {
             var fillX = lerp(self.x1, self.x2, t);
             
             if (fillX > self.x1) {
-                draw_set_color(global.UI_COL_SELECTED);
+                draw_set_color(global.UI_COL_PRIMARY);
                 draw_roundrect_ext(self.x1, cy - trackH/2, fillX, cy + trackH/2, trackH/2, trackH/2, false);
             }
         }
@@ -86,7 +86,7 @@ function UiSlider(style = {}, props = {}) : UiNode(style, props) constructor {
             
             // Hover ring
             if (self.hovered || self.draggingThumb != 0) {
-                draw_set_color(global.UI_COL_SELECTED);
+                draw_set_color(global.UI_COL_PRIMARY);
                 draw_set_alpha(0.2);
                 if (self.draggingThumb == 1) draw_circle(x1, cy, thumbR + 4, false);
                 else if (self.draggingThumb == 2) draw_circle(x2, cy, thumbR + 4, false);
@@ -102,7 +102,7 @@ function UiSlider(style = {}, props = {}) : UiNode(style, props) constructor {
             draw_circle(fillX, cy, thumbR, true);
             
             if (self.hovered || self.draggingThumb != 0) {
-                draw_set_color(global.UI_COL_SELECTED);
+                draw_set_color(global.UI_COL_PRIMARY);
                 draw_set_alpha(0.2);
                 draw_circle(fillX, cy, thumbR + 4, false);
                 draw_set_alpha(1.0);

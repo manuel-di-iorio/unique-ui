@@ -8,7 +8,7 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
     self.__contentHeight = 0;
     self.__maxThumbPosition = 0;
     self.__maxScroll = 0;
-    self.thumbColor = props[$ "thumbColor"] ?? global.UI_COL_BOX;
+    self.thumbColor = props[$ "thumbColor"] ?? global.UI_COL_BG_CARD;
     self.orientation = props[$ "orientation"] ?? "vertical";
     self.isVertical = self.orientation == "vertical";
     

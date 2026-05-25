@@ -21,7 +21,7 @@ UiScrollbar(style = {}, props = {})
 
 | Property     | Type  | Default             | Description                         |
 | ------------ | ----- | ------------------- | ----------------------------------- |
-| `thumbColor` | `int` | `global.UI_COL_BOX` | Color used for the scrollbar thumb. |
+| `thumbColor` | `int` | `global.UI_COL_BG_CARD` | Color used for the scrollbar thumb. |
 
 **Internal State Variables**
 

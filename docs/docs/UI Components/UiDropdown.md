@@ -98,7 +98,7 @@ This allows dynamic filtering, ideal for asset browsers or large data lists.
 
 - List background: uses global.UI_COL_DROPDOWN_LIST_BG.
 
-- Search highlight: scrollbar uses global.UI_COL_CHECKBOX_HOVER.
+- Search highlight: scrollbar uses global.UI_COL_BTN_HOVER.
 
 ---
 

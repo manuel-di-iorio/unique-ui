@@ -55,7 +55,7 @@ It uses the global UI color palette:
 | Constant                  | Description                         |
 | ------------------------- | ----------------------------------- |
 | `global.UI_COL_BTN_HOVER` | Background color when hovered.      |
-| `global.UI_COL_BOX`       | Normal background or outline color. |
+| `global.UI_COL_BG_CARD`   | Normal background or outline color. |
 
 
 If text is defined, the button draws centered text using fText.

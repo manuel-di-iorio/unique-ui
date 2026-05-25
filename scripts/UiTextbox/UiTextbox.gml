@@ -770,7 +770,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
         // Draw the textbox
         self.onDraw = function() {
             // Background with border if focused
-            draw_set_color(global.UI_COL_INPUT_BG);
+            draw_set_color(global.UI_COL_BG_CARD);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
             
             draw_set_color(self.focused ? global.UI_COL_PRIMARY : global.UI_COL_BORDER);

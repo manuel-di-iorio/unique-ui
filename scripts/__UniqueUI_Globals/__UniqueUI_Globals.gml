@@ -9,15 +9,9 @@ global.UI_COL_BG_CARD          = #FFFFFF;
 global.UI_COL_TEXT_MAIN        = #13213A;
 global.UI_COL_TEXT_DIM         = #60708D;
 global.UI_COL_BORDER           = #DDE5F0;
-global.UI_COL_SELECTED         = #2F6FEF;
-global.UI_COL_SELECTED_HOVER   = #215CDA;
 global.UI_COL_BTN_HOVER        = #EDF3FF;
-global.UI_COL_BOX              = #FFFFFF;
-global.UI_COL_INPUT_BG         = #FFFFFF;
-global.UI_COL_CHECKBOX_HOVER   = #EDF3FF;
 global.UI_COL_DROPDOWN_LIST_BG = #172338;
 global.UI_COL_INSPECTOR_BG     = #EEF3FA;
-global.UI_COL_TREE_BG          = #F8FAFC;
 global.UI_COL_SELECTION        = #3B82F6;
 global.UI_COL_SUCCESS          = #23A75A;
 global.UI_COL_WARNING          = #F59E0B;
@@ -43,15 +37,9 @@ global.UI_THEMES.dark = {
     textMain: #F8FAFC,
     textDim: #CBD5E1,
     border: #334155,
-    selected: #3B82F6,
-    selectedHover: #2563EB,
     btnHover: #334155,
-    box: #1E293B,
-    inputBg: #0B0F19,
-    checkboxHover: #334155,
     dropdownListBg: #1E293B,
     inspectorBg: #1E293B,
-    treeBg: #0B0F19,
     selection: #3B82F6,
     success: #22C55E,
     warning: #F59E0B,
@@ -68,15 +56,9 @@ global.UI_THEMES.light = {
     textMain: #13213A,
     textDim: #60708D,
     border: #DDE5F0,
-    selected: #2F6FEF,
-    selectedHover: #215CDA,
     btnHover: #EDF3FF,
-    box: #FFFFFF,
-    inputBg: #FFFFFF,
-    checkboxHover: #EDF3FF,
     dropdownListBg: #172338,
     inspectorBg: #EEF3FA,
-    treeBg: #F8FAFC,
     selection: #3B82F6,
     success: #23A75A,
     warning: #F59E0B,
@@ -96,15 +78,9 @@ function ui_set_theme(themeName) {
     global.UI_COL_TEXT_MAIN        = t.textMain;
     global.UI_COL_TEXT_DIM         = t.textDim;
     global.UI_COL_BORDER           = t.border;
-    global.UI_COL_SELECTED         = t.selected;
-    global.UI_COL_SELECTED_HOVER   = t.selectedHover;
     global.UI_COL_BTN_HOVER        = t.btnHover;
-    global.UI_COL_BOX              = t.box;
-    global.UI_COL_INPUT_BG         = t.inputBg;
-    global.UI_COL_CHECKBOX_HOVER   = t.checkboxHover;
     global.UI_COL_DROPDOWN_LIST_BG = t.dropdownListBg;
     global.UI_COL_INSPECTOR_BG     = t.inspectorBg;
-    global.UI_COL_TREE_BG          = t.treeBg;
     global.UI_COL_SELECTION       = t.selection;
     global.UI_COL_SUCCESS         = t.success;
     global.UI_COL_WARNING         = t.warning;

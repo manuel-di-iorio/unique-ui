@@ -67,7 +67,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
         
         self.onDraw = function() {
             var radius = 6;
-            draw_set_color(global.UI_COL_INPUT_BG);
+            draw_set_color(global.UI_COL_BG_CARD);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
             
             if (self.hovered) {
@@ -229,7 +229,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
                     self.Items.add(_itemNode);
                 }
                 
-                self.Items.enableScrollbar(global.UI_COL_CHECKBOX_HOVER);
+                self.Items.enableScrollbar(global.UI_COL_BTN_HOVER);
             }
             
             // Create the search input

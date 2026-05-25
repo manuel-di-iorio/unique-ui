@@ -66,7 +66,7 @@ function __ui_demo_render_documentazione(area) {
         Doc.add(new UiText("Properties", { marginBottom: 16, height: 28 }, { color: global.UI_COL_TEXT_MAIN }));
         var Table = new UiNode({ width: "100%", flexDirection: "column", padding: 16 });
         Table.onDraw = method(Table, function() {
-            draw_set_color(global.UI_COL_INPUT_BG);
+                draw_set_color(global.UI_COL_BG_CARD);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
         });
         Doc.add(Table);
