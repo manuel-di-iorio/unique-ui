@@ -271,6 +271,16 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                     self.updateScrollOffset(); // Just to place the cursor, not for the drag
                     self.cursorBlinkTime = current_time;
                     self.showCursor = true;
+                } else {
+                    // Double-click didn't find a word: allow drag-selection from this position
+                    self.cursorPos = clickPos;
+                    self.isDragging = true;
+                    self.dragStartPos = self.cursorPos;
+                    self.selectionStart = self.cursorPos;
+                    self.selectionEnd = self.cursorPos;
+                    self.updateScrollOffset();
+                    self.cursorBlinkTime = current_time;
+                    self.showCursor = true;
                 }
             } else {
                 // Single click

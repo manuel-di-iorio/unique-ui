@@ -46,19 +46,26 @@ function ui_demo_create() {
     global.UI_DEMO.SearchQuery = "";
     
     // Search
+    global.UI_DEMO.__searchDebounce = undefined;
     var SearchInput = new UiTextbox({ width: "100%", height: 40, marginBottom: 26 }, {
         placeholder: "Search components...",
         value: global.UI_DEMO.SearchQuery,
         iconLeft: sprUiIconSearch,
         onChange: function(val) {
             global.UI_DEMO.SearchQuery = string_lower(val);
-            __ui_demo_render_sidebar();
+            // Debounce sidebar rebuild to avoid heavy processing on every keystroke
+            // which would block keyboard_string OS key repeat
+            if (global.UI_DEMO.__searchDebounce != undefined) {
+                time_source_destroy(global.UI_DEMO.__searchDebounce);
+            }
+            global.UI_DEMO.__searchDebounce = time_source_create(time_source_global, 1, time_source_units_frames, function() {
+                global.UI_DEMO.__searchDebounce = undefined;
+                __ui_demo_render_sidebar();
+            });
+            time_source_start(global.UI_DEMO.__searchDebounce);
         }
     });
     global.UI_DEMO.SearchInput = SearchInput;
-    SearchInput.onMouseDown(method(SearchInput, function() {
-        self.Input.focus();
-    }));
     Sidebar.add(SearchInput);
     
     // Sidebar List

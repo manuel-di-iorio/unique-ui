@@ -220,17 +220,30 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
 
         // Update element in the spatial partition tree (incremental - no clear!)
         if (_isVisible && elem.pointerEvents) {
+            // Clip bounds to scroll parent's visible area so partially-scrolled-out
+            // elements cannot be clicked in their invisible overflow region.
+            var _treeX1 = elem.x1;
+            var _treeY1 = elem.y1;
+            var _treeX2 = elem.x2;
+            var _treeY2 = elem.y2;
+            if (!elem.isScrollbar && _scrollableParent != undefined) {
+                _treeX1 = max(_treeX1, _scrollableParent.x1);
+                _treeY1 = max(_treeY1, _scrollableParent.y1);
+                _treeX2 = min(_treeX2, _scrollableParent.x2);
+                _treeY2 = min(_treeY2, _scrollableParent.y2);
+            }
+            
             // Check if element already has a valid proxy
             var hasProxy = variable_struct_exists(elem, "__spatialProxyId") && elem.__spatialProxyId != undefined;
             
             if (hasProxy) {
                 // Update existing proxy position
-                self.spatialTree.move(elem.__spatialProxyId, elem.x1, elem.y1, elem.x2, elem.y2);
+                self.spatialTree.move(elem.__spatialProxyId, _treeX1, _treeY1, _treeX2, _treeY2);
                 // Update the drawIndex in the tree node
                 self.spatialTree.updateDrawIndex(elem.__spatialProxyId, elem.__drawIndex);
             } else {
                 // Insert new proxy
-                elem.__spatialProxyId = self.spatialTree.insert(elem, elem.x1, elem.y1, elem.x2, elem.y2);
+                elem.__spatialProxyId = self.spatialTree.insert(elem, _treeX1, _treeY1, _treeX2, _treeY2);
             }
         } else {
             // Element is not visible/interactive - remove from tree if present
@@ -293,16 +306,26 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
     ///       The element must already have a __spatialProxyId from a previous layout.
     /// @param {Struct} elem The UI element to update
     function updateElementPosition(elem) {
+        // Clip bounds to scroll parent's visible area
+        var _x1 = elem.x1, _y1 = elem.y1, _x2 = elem.x2, _y2 = elem.y2;
+        var _sp = elem[$ "scrollableParent"];
+        if (!elem.isScrollbar && _sp != undefined) {
+            _x1 = max(_x1, _sp.x1);
+            _y1 = max(_y1, _sp.y1);
+            _x2 = min(_x2, _sp.x2);
+            _y2 = min(_y2, _sp.y2);
+        }
+        
         if (!variable_struct_exists(elem, "__spatialProxyId") || elem.__spatialProxyId == undefined) {
             // Element not in tree yet, insert it
             if (elem.pointerEvents && elem.visible) {
-                elem.__spatialProxyId = self.spatialTree.insert(elem, elem.x1, elem.y1, elem.x2, elem.y2);
+                elem.__spatialProxyId = self.spatialTree.insert(elem, _x1, _y1, _x2, _y2);
             }
             return;
         }
         
         // Move existing proxy
-        self.spatialTree.move(elem.__spatialProxyId, elem.x1, elem.y1, elem.x2, elem.y2);
+        self.spatialTree.move(elem.__spatialProxyId, _x1, _y1, _x2, _y2);
     }
     
     /// @desc Remove a single element from the spatial tree (for elements going invisible)
