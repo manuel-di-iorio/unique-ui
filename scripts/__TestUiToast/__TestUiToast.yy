@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"__TestUiToast",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"__TestUiToast",
+  "parent":{
+    "name":"UniqueUI__Tests",
+    "path":"folders/UniqueUI__Tests.yy"
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0"
+}

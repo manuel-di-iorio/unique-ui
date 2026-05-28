@@ -161,6 +161,7 @@ function __ui_demo_get_examples_map() {
         "ColorPicker": ui_demo_example_colorpicker,
         "Badge":       ui_demo_example_badge,
         "Alert":       ui_demo_example_alert,
+        "Toast":       ui_demo_example_toast,
         "Card":        ui_demo_example_card,
         "Tabs":        ui_demo_example_tabs,
         "Accordion":   ui_demo_example_accordion,

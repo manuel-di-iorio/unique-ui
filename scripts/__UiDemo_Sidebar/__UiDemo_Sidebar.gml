@@ -7,7 +7,7 @@ function __ui_demo_render_sidebar() {
     __ui_demo_sidebar_item(parent, "Typography");
     
     __ui_demo_sidebar_label(parent, "COMPONENTS", 20);
-    var comps = ["Button", "Textbox", "Textarea", "Select", "ColorPicker", "Checkbox", "Radio", "Switch", "Badge", "Alert", "Card", "Tabs", "Tooltip", "Slider", "Accordion", "Sprite", "ContextMenu", "Modal", "Treeview"];
+    var comps = ["Button", "Textbox", "Textarea", "Select", "ColorPicker", "Checkbox", "Radio", "Switch", "Badge", "Alert", "Toast", "Card", "Tabs", "Tooltip", "Slider", "Accordion", "Sprite", "ContextMenu", "Modal", "Treeview"];
     for (var i = 0; i < array_length(comps); i++) {
         var name = comps[i];
         if (global.UI_DEMO.SearchQuery != "" && string_pos(global.UI_DEMO.SearchQuery, string_lower(name)) == 0) continue;
@@ -66,6 +66,7 @@ function __ui_demo_sidebar_icon_name(text) {
         case "switch": return sprUiIconSwitchOn;
         case "badge": return sprUiIconBadge;
         case "alert": return sprUiIconAlert;
+        case "toast": return sprUiIconToast;
         case "card": return sprUiIconCard;
         case "tabs": return sprUiIconTabs;
         case "tooltip": return sprUiIconTooltip;

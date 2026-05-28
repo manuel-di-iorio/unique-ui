@@ -97,6 +97,17 @@ function __ui_demo_get_component_metadata() {
                 { name: "onDismiss",   type: "function", desc: "Callback fired when the dismiss button is clicked" }
             ]
         },
+        "Toast": {
+            desc: "A floating notification container stacking alerts top-right from newest to oldest. Can be instantiated or called globally via helpers.",
+            props: [
+                { name: "show(msg, type, title, duration)", type: "method", desc: "Spawns a toast notification alert. Auto-dismisses if duration > 0 (ms)." },
+                { name: "success(msg, title, duration)", type: "method", desc: "Spawns a success toast notification." },
+                { name: "error(msg, title, duration)", type: "method", desc: "Spawns an error toast notification." },
+                { name: "warning(msg, title, duration)", type: "method", desc: "Spawns a warning toast notification." },
+                { name: "info(msg, title, duration)", type: "method", desc: "Spawns an informational toast notification." },
+                { name: "destroyChildren()", type: "method", desc: "Dismisses and destroys all active toast alerts." }
+            ]
+        },
         "Card": {
             desc: "Flexible container to group related content.",
             props: [
