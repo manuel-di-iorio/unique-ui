@@ -17,8 +17,8 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
     // Input node first (the visual box/circle)
     self.Input = new UiNode({
         name: "UiCheckbox.Input", 
-        width: 18,
-        height: 18,
+        width: 20,
+        height: 20,
         marginRight: 10
     }, { pointerEvents: true, handpoint: true });
     self.add(self.Input);

@@ -73,11 +73,11 @@ ui_test_suite("UiCheckbox", function() {
         assert_true(cb.isUiNode, "isUiNode = true");
     });
     
-    ui_test("Input width is 18, height is 18", function() {
+    ui_test("Input width is 20, height is 20", function() {
         var cb  = new UiCheckbox({}, {});
         var inp = cb.Input;
-        assert_equal(inp.getWidth(),  18, "Input width = 18");
-        assert_equal(inp.getHeight(), 18, "Input height = 18");
+        assert_equal(inp.getWidth(),  20, "Input width = 20");
+        assert_equal(inp.getHeight(), 20, "Input height = 20");
     });
     
     ui_test("double toggle returns to original value", function() {

@@ -58,38 +58,33 @@ ui_test_suite("UiRoot", function() {
 
     ui_test("update handles stepHandlers removal during iteration", function() {
         var _prevStepHandlers = global.UI.stepHandlers;
-        var _calledRemover = false;
-        var _calledOther = false;
+        var _state = { calledRemover: false, calledOther: false };
 
-        var _ownerA = { destroyed: false, hasStepEvent: true };
-        var _ownerB = { destroyed: false, hasStepEvent: true };
-        var _ownerC = { destroyed: false, hasStepEvent: true };
+        var _handlerA = method(_state, function(_layoutUpdated) {
+            self.calledOther = true;
+        });
 
-        var _handlerA = function(_layoutUpdated) {
-            _calledOther = true;
-        };
+        var _handlerB = method(_state, function(_layoutUpdated) {
+            self.calledOther = true;
+        });
 
-        var _handlerB = function(_layoutUpdated) {
-            _calledOther = true;
-        };
-
-        var _handlerC = function(_layoutUpdated) {
-            _calledRemover = true;
+        var _handlerC = method(_state, function(_layoutUpdated) {
+            self.calledRemover = true;
             // Simulate a destroy path that unregisters multiple handlers while iterating.
             array_delete(global.UI.stepHandlers, 1, 1);
             array_delete(global.UI.stepHandlers, 0, 1);
-        };
+        });
 
         global.UI.stepHandlers = [
-            [_handlerA, _ownerA],
-            [_handlerB, _ownerB],
-            [_handlerC, _ownerC]
+            [_handlerA, undefined],
+            [_handlerB, undefined],
+            [_handlerC, undefined]
         ];
 
         global.UI.update();
 
-        assert_true(_calledRemover, "removal handler executed without crash");
-        assert_true(_calledOther, "other handlers can still execute from snapshot");
+        assert_true(_state.calledRemover, "removal handler executed without crash");
+        assert_true(_state.calledOther, "other handlers can still execute from snapshot");
 
         // Restore original handlers to avoid leaking test state.
         global.UI.stepHandlers = _prevStepHandlers;
