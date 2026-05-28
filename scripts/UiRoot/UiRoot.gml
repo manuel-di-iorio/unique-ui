@@ -562,9 +562,19 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             self.__processLayout();
         }
 
-        // Run the step handlers
-        for (var i = array_length(self.stepHandlers) - 1; i >= 0; i--) {
-            self.stepHandlers[i][0](self.layoutUpdated);
+        // Run step handlers from a stable snapshot so handlers can safely unregister during callbacks.
+        var _stepHandlersLength = array_length(self.stepHandlers);
+        var _stepHandlers = array_create(_stepHandlersLength);
+        array_copy(_stepHandlers, 0, self.stepHandlers, 0, _stepHandlersLength);
+        for (var i = array_length(_stepHandlers) - 1; i >= 0; i--) {
+            var _entry = _stepHandlers[i];
+            if (_entry == undefined) continue;
+            if (_entry[0] == undefined) continue;
+
+            var _owner = _entry[1];
+            if (_owner != undefined && (_owner.destroyed || _owner.hasStepEvent != true)) continue;
+
+            _entry[0](self.layoutUpdated);
         }
         
         self.mouseXPrev = self.mouseX;
