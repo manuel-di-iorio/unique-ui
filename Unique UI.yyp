@@ -130,6 +130,7 @@
     {"id":{"name":"UiTooltip","path":"scripts/UiTooltip/UiTooltip.yy",},},
     {"id":{"name":"UiTreeview","path":"scripts/UiTreeview/UiTreeview.yy",},},
     {"id":{"name":"sprDemo","path":"sprites/sprDemo/sprDemo.yy",},},
+    {"id":{"name":"sprLogo","path":"sprites/sprLogo/sprLogo.yy",},},
     {"id":{"name":"sprUiIconAccordion","path":"sprites/sprUiIconAccordion/sprUiIconAccordion.yy",},},
     {"id":{"name":"sprUiIconAlert","path":"sprites/sprUiIconAlert/sprUiIconAlert.yy",},},
     {"id":{"name":"sprUiIconBadge","path":"sprites/sprUiIconBadge/sprUiIconBadge.yy",},},
