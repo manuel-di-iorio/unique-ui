@@ -19,7 +19,7 @@ global.UI_COL_DANGER           = #EF4444;
 global.UI_COL_SCROLLBAR_THUMB  = #CBD5E1;
 
 /// @desc Sets a scissor rect using GUI coordinates, automatically scaling them to real window/viewport space.
-function uui_set_scissor(x, y, w, h) {
+function __uui_set_scissor(x, y, w, h) {
     var factor_x = window_get_width() / max(1, display_get_gui_width());
     var factor_y = window_get_height() / max(1, display_get_gui_height());
     gpu_set_scissor(x * factor_x, y * factor_y, w * factor_x, h * factor_y);

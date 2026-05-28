@@ -106,7 +106,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             var _text = _selectedIndex != -1 ? self.parent.items[_selectedIndex].label : self.parent.placeholder;
             
             var _scissor = gpu_get_scissor();
-            uui_set_scissor(self.x1, self.y1, self.x2 - self.x1 - 25, self.y2 - self.y1);
+            __uui_set_scissor(self.x1, self.y1, self.x2 - self.x1 - 25, self.y2 - self.y1);
             draw_text(self.x1 + 8, ~~mean(self.y1, self.y2), _text);
             gpu_set_scissor(_scissor);
          };

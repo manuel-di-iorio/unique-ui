@@ -153,7 +153,7 @@ function __ui_demo_get_component_metadata() {
             ]
         },
         "Sprite": {
-            desc: "Displays a GameMaker sprite resource.",
+            desc: "Displays a GameMaker sprite resource inside an UI element.",
             props: [
                 { name: "sprite", type: "sprite", desc: "Index of the sprite to display" },
                 { name: "width", type: "number/string", desc: "Desired width" },

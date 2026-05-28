@@ -18,8 +18,6 @@ Opening the panel reveals:
 - A hue slider
 - A live preview swatch and hex input (`#RRGGBB`) for typing or copying the value
 
-Helper functions `uui_color_to_hex`, `uui_hex_to_color`, `uui_rgb_to_hsv`, and `uui_hsv_to_rgb` are available globally for reuse.
-
 ---
 
 **Properties**
@@ -80,7 +78,7 @@ var picker = new UiColorPicker({ marginBottom: 16 }, {
 });
 
 // Read hex for export
-show_debug_message(uui_color_to_hex(picker.value));
+show_debug_message(__uui_color_to_hex(picker.value));
 ```
 
 **Performance Notes**

@@ -1,18 +1,18 @@
 /// @description HTML5-style color picker with popup panel, HSV selector and hex input.
 
-function uui_byte_to_hex(_n) {
+function __uui_byte_to_hex(_n) {
     _n = clamp(floor(_n), 0, 255);
     var _digits = "0123456789ABCDEF";
     return string_char_at(_digits, floor(_n / 16) + 1) + string_char_at(_digits, (_n mod 16) + 1);
 }
 
-function uui_color_to_hex(_col) {
-    return "#" + uui_byte_to_hex(color_get_red(_col))
-        + uui_byte_to_hex(color_get_green(_col))
-        + uui_byte_to_hex(color_get_blue(_col));
+function __uui_color_to_hex(_col) {
+    return "#" + __uui_byte_to_hex(color_get_red(_col))
+        + __uui_byte_to_hex(color_get_green(_col))
+        + __uui_byte_to_hex(color_get_blue(_col));
 }
 
-function uui_hex_pair_to_byte(_pair) {
+function __uui_hex_pair_to_byte(_pair) {
     var _digits = "0123456789ABCDEF";
     var _hi = string_pos(string_char_at(_pair, 1), _digits) - 1;
     var _lo = string_pos(string_char_at(_pair, 2), _digits) - 1;
@@ -20,7 +20,7 @@ function uui_hex_pair_to_byte(_pair) {
     return _hi * 16 + _lo;
 }
 
-function uui_hex_to_color(_hex) {
+function __uui_hex_to_color(_hex) {
     var _s = string_upper(string_replace_all(string(_hex), "#", ""));
     var _len = string_length(_s);
     if (_len == 3) {
@@ -30,14 +30,14 @@ function uui_hex_to_color(_hex) {
         _len = 6;
     }
     if (_len != 6) return undefined;
-    var _r = uui_hex_pair_to_byte(string_copy(_s, 1, 2));
-    var _g = uui_hex_pair_to_byte(string_copy(_s, 3, 2));
-    var _b = uui_hex_pair_to_byte(string_copy(_s, 5, 2));
+    var _r = __uui_hex_pair_to_byte(string_copy(_s, 1, 2));
+    var _g = __uui_hex_pair_to_byte(string_copy(_s, 3, 2));
+    var _b = __uui_hex_pair_to_byte(string_copy(_s, 5, 2));
     if (_r < 0 || _g < 0 || _b < 0) return undefined;
     return make_color_rgb(_r, _g, _b);
 }
 
-function uui_hsv_to_rgb(_h, _s, _v) {
+function __uui_hsv_to_rgb(_h, _s, _v) {
     if (_s <= 0) {
         var _g = _v * 255;
         return make_color_rgb(_g, _g, _g);
@@ -59,7 +59,7 @@ function uui_hsv_to_rgb(_h, _s, _v) {
     return make_color_rgb(_r * 255, _g * 255, _b * 255);
 }
 
-function uui_rgb_to_hsv(_col) {
+function __uui_rgb_to_hsv(_col) {
     var _r = color_get_red(_col) / 255;
     var _g = color_get_green(_col) / 255;
     var _b = color_get_blue(_col) / 255;
@@ -94,7 +94,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
     self.onChange = props[$ "onChange"] ?? function(_color, _picker) {};
     self.valueGetter = props[$ "valueGetter"] ?? undefined;
     
-    var _hsv = uui_rgb_to_hsv(self.value);
+    var _hsv = __uui_rgb_to_hsv(self.value);
     self.hue = _hsv.h;
     self.saturation = _hsv.s;
     self.brightness = _hsv.v;
@@ -153,14 +153,14 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
     });
     
     self.syncHsvFromValue = function() {
-        var _hsv = uui_rgb_to_hsv(self.value);
+        var _hsv = __uui_rgb_to_hsv(self.value);
         self.hue = _hsv.h;
         self.saturation = _hsv.s;
         self.brightness = _hsv.v;
     };
     
     self.colorFromHsv = function() {
-        return uui_hsv_to_rgb(self.hue, self.saturation, self.brightness);
+        return __uui_hsv_to_rgb(self.hue, self.saturation, self.brightness);
     };
     
     self.setColor = function(_col, _fireChange = true) {
@@ -171,7 +171,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
         if (self.Panel != undefined) {
             if (self.Panel.HexInput != undefined) {
                 self.__syncLock = true;
-                self.Panel.HexInput.value = uui_color_to_hex(self.value);
+                self.Panel.HexInput.value = __uui_color_to_hex(self.value);
                 self.__syncLock = false;
             }
         }
@@ -186,7 +186,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             if (self.Panel != undefined) {
                 if (self.Panel.HexInput != undefined) {
                     self.__syncLock = true;
-                    self.Panel.HexInput.value = uui_color_to_hex(self.value);
+                    self.Panel.HexInput.value = __uui_color_to_hex(self.value);
                     self.__syncLock = false;
                 }
             }
@@ -297,7 +297,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
                 });
                 
                 self.onDraw = function() {
-                    var _hueCol = uui_hsv_to_rgb(self.parent.Picker.hue, 1, 1);
+                    var _hueCol = __uui_hsv_to_rgb(self.parent.Picker.hue, 1, 1);
                     
                     // Draw SV area with smooth primitives for better gradient
                     draw_primitive_begin(pr_trianglestrip);
@@ -362,7 +362,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
                     draw_primitive_begin(pr_trianglestrip);
                     for (var _i = 0; _i <= _segments; _i++) {
                         var _h = _i / _segments;
-                        var _c = uui_hsv_to_rgb(_h, 1, 1);
+                        var _c = __uui_hsv_to_rgb(_h, 1, 1);
                         var _x = lerp(self.x1, self.x2, _i / _segments);
                         draw_vertex_color(_x, self.y1, _c, 1);
                         draw_vertex_color(_x, self.y2, _c, 1);
@@ -410,27 +410,27 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             }
             
             self.HexInput = new UiTextbox({ flexGrow: 1, height: 28 }, {
-                value: uui_color_to_hex(_Picker.value),
+                value: __uui_color_to_hex(_Picker.value),
                 maxLength: 7,
                 placeholder: "#RRGGBB",
                 onChange: method({ _Picker }, function(_hex, _input) {
                     if (_Picker.__syncLock) return;
-                    var _col = uui_hex_to_color(_hex);
+                    var _col = __uui_hex_to_color(_hex);
                     if (_col != undefined) {
                         _Picker.setColor(_col);
                     }
                 }),
                 onBlur: method({ _Picker }, function(_hex, _input) {
                     if (_Picker.__syncLock) return;
-                    var _col = uui_hex_to_color(_hex);
+                    var _col = __uui_hex_to_color(_hex);
                     if (_col != undefined) {
                         _Picker.setColor(_col);
                         _Picker.__syncLock = true;
-                        _input.value = uui_color_to_hex(_col);
+                        _input.value = __uui_color_to_hex(_col);
                         _Picker.__syncLock = false;
                     } else {
                         _Picker.__syncLock = true;
-                        _input.value = uui_color_to_hex(_Picker.value);
+                        _input.value = __uui_color_to_hex(_Picker.value);
                         _Picker.__syncLock = false;
                     }
                 })

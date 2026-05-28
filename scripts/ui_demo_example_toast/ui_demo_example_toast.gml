@@ -91,7 +91,7 @@ function ui_demo_example_toast(PreviewCard) {
     
     // Actions Section
     __ui_demo_preview_section(PreviewCard, "Actions");
-    var btnClear = new UiButton("Dismiss All Toasts", { height: 34 }, { variant: "secondary" });
+    var btnClear = new UiButton("Dismiss All Toasts", { height: 34, marginBottom: 40 }, { variant: "secondary" });
     btnClear.onClick(function() {
         if (global.UiToastInstance != undefined && !global.UiToastInstance.destroyed) {
             global.UiToastInstance.destroyChildren();

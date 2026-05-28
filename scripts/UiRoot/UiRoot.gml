@@ -619,7 +619,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             }
             
             _scissor = [sx1, sy1, sw, sh];
-            uui_set_scissor(sx1, sy1, sw, sh);
+            __uui_set_scissor(sx1, sy1, sw, sh);
         }
 
         // Run the draw method of the element
@@ -637,9 +637,9 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         if (_ownScissor) {
             // Restore to inherited scissor or no scissor
             if (inheritedScissor != undefined) {
-                uui_set_scissor(inheritedScissor[0], inheritedScissor[1], inheritedScissor[2], inheritedScissor[3]);
+                __uui_set_scissor(inheritedScissor[0], inheritedScissor[1], inheritedScissor[2], inheritedScissor[3]);
             } else {
-                uui_set_scissor(0, 0, self.width, self.height);
+                __uui_set_scissor(0, 0, self.width, self.height);
             }
             if (elem.__UiScrollbar != undefined) {
                 self.__renderChild(elem.__UiScrollbar, debug, inheritedScissor);

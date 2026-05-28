@@ -141,7 +141,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
         // Ripples
         if (array_length(self.ripples) > 0) {
             var _scissor = gpu_get_scissor();
-            uui_set_scissor(self.x1, self.y1, self.x2 - self.x1, self.y2 - self.y1);
+            __uui_set_scissor(self.x1, self.y1, self.x2 - self.x1, self.y2 - self.y1);
             var dt_scale = clamp((delta_time / 1000000) * 60, 0.1, 4.0);
             for (var i = array_length(self.ripples) - 1; i >= 0; i--) {
                 var r = self.ripples[i];

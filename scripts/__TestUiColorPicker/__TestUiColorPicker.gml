@@ -30,18 +30,18 @@ ui_test_suite("UiColorPicker", function() {
         assert_is_undefined(_cp.Panel, "Panel closed by default");
     });
     
-    ui_test("uui_color_to_hex formats correctly", function() {
-        assert_equal(uui_color_to_hex(#FF8040), "#FF8040", "hex string");
+    ui_test("__uui_color_to_hex formats correctly", function() {
+        assert_equal(__uui_color_to_hex(#FF8040), "#FF8040", "hex string");
     });
     
-    ui_test("uui_hex_to_color parses hex", function() {
-        assert_equal(uui_hex_to_color("#FF8040"), #FF8040, "parse #RRGGBB");
-        assert_equal(uui_hex_to_color("FF8040"), #FF8040, "parse without hash");
-        assert_equal(uui_hex_to_color("#F80"), #FF8800, "parse shorthand");
+    ui_test("__uui_hex_to_color parses hex", function() {
+        assert_equal(__uui_hex_to_color("#FF8040"), #FF8040, "parse #RRGGBB");
+        assert_equal(__uui_hex_to_color("FF8040"), #FF8040, "parse without hash");
+        assert_equal(__uui_hex_to_color("#F80"), #FF8800, "parse shorthand");
     });
     
-    ui_test("uui_hex_to_color returns undefined for invalid", function() {
-        assert_is_undefined(uui_hex_to_color("not-a-color"), "invalid hex");
+    ui_test("__uui_hex_to_color returns undefined for invalid", function() {
+        assert_is_undefined(__uui_hex_to_color("not-a-color"), "invalid hex");
     });
     
     ui_test("setColor updates HSV and fires onChange", function() {
@@ -76,8 +76,8 @@ ui_test_suite("UiColorPicker", function() {
     });
     
     ui_test("rgb/hsv roundtrip", function() {
-        var _hsv = uui_rgb_to_hsv(#8040FF);
-        var _rgb = uui_hsv_to_rgb(_hsv.h, _hsv.s, _hsv.v);
+        var _hsv = __uui_rgb_to_hsv(#8040FF);
+        var _rgb = __uui_hsv_to_rgb(_hsv.h, _hsv.s, _hsv.v);
         assert_equal(color_get_red(_rgb), color_get_red(#8040FF), "red channel");
         assert_equal(color_get_green(_rgb), color_get_green(#8040FF), "green channel");
         assert_equal(color_get_blue(_rgb), color_get_blue(#8040FF), "blue channel");

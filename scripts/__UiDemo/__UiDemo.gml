@@ -143,11 +143,6 @@ function __ui_demo_render_logo() {
     container.destroyChildren(true);
     var LogoRow = new UiNode({ flexDirection: "row", alignItems: "center" });
     container.add(LogoRow);
-    var Mark = new UiNode({ width: 28, height: 28, marginRight: 10 });
-    Mark.onDraw = method(Mark, function() {
-        __ui_demo_draw_logo_mark(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), 12, global.UI_COL_TEXT_MAIN);
-    });
-    LogoRow.add(Mark);
     LogoRow.add(new UiText("Unique UI", { marginRight: 10 }, { color: "main" }));
     var VersionBadge = new UiNode({ paddingLeft: 7, paddingRight: 7, height: 24, justifyContent: "center" });
     VersionBadge.onDraw = method(VersionBadge, function() {
@@ -172,15 +167,6 @@ function __ui_demo_icon_button(iconName, size = 36) {
         __ui_demo_draw_icon(self.__iconName, ~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), icon_color, 1.1);
     });
     return btn;
-}
-
-function __ui_demo_draw_logo_mark(cx, cy, r, col) {
-    var target_size = r * 2;
-    var spr_w = sprite_get_width(sprUiIconLogoMark);
-    var spr_h = sprite_get_height(sprUiIconLogoMark);
-    var factor_x = target_size / spr_w;
-    var factor_y = target_size / spr_h;
-    draw_sprite_ext(sprUiIconLogoMark, 0, cx, cy, factor_x, factor_y, 0, col, 1);
 }
 
 function __ui_demo_draw_icon(spr, cx, cy, col, scale = 1) {
