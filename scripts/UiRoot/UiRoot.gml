@@ -564,9 +564,9 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
 
         // Run step handlers from a stable snapshot so handlers can safely unregister during callbacks.
         var _stepHandlersLength = array_length(self.stepHandlers);
-        var _stepHandlers = array_create(_stepHandlersLength);
+        var _stepHandlers = [];
         array_copy(_stepHandlers, 0, self.stepHandlers, 0, _stepHandlersLength);
-        for (var i = array_length(_stepHandlers) - 1; i >= 0; i--) {
+        for (var i = _stepHandlersLength - 1; i >= 0; i--) {
             var _entry = _stepHandlers[i];
             if (_entry == undefined) continue;
             if (_entry[0] == undefined) continue;

@@ -299,15 +299,10 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
         self.updateScrollOffset = function() {
             global.UI.requestRedraw();
             var text = self.parent.value;
-            var cursorX = 0;
             
-            // Calcola posizione X del cursore
+            // Use substring width for proper kerning support
             draw_set_font(fText);
-            for (var i = 0; i < self.cursorPos; i++) {
-                if (i < string_length(text)) {
-                    cursorX += string_width(string_char_at(text, i + 1));
-                }
-            }
+            var cursorX = string_width(string_copy(text, 1, self.cursorPos));
             
             var textboxWidth = self.x2 - self.x1 - 10; // Margini più stretti
             if (self.parent.iconLeft != undefined) textboxWidth -= 24;
@@ -791,6 +786,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             
             // Text drawing settings
             draw_set_color(global.UI_COL_TEXT_MAIN);
+            draw_set_font(fText);
             draw_set_halign(fa_left);
             draw_set_valign(fa_middle);
             
@@ -804,21 +800,9 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                 var start = min(self.selectionStart, self.selectionEnd);
                 var ended = max(self.selectionStart, self.selectionEnd);
                 
-                var startX = textX;
-                var endX = textX;
-                
-                // Calculate X positions for selection start and end
-                for (var i = 0; i < start; i++) {
-                    if (i < string_length(text)) {
-                        startX += string_width(string_char_at(text, i + 1));
-                    }
-                }
-                
-                for (var i = 0; i < ended; i++) {
-                    if (i < string_length(text)) {
-                        endX += string_width(string_char_at(text, i + 1));
-                    }
-                }
+                // Use substring width for proper kerning support
+                var startX = textX + string_width(string_copy(text, 1, start));
+                var endX = textX + string_width(string_copy(text, 1, ended));
                 
                 // Draw selection rectangle
                 draw_set_color(global.UI_COL_SELECTION);
@@ -828,7 +812,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             }
             
             // Draw text (always visible)
-            draw_set_color(global.UI_COL_TEXT_MAIN); draw_set_font(fText);
+            draw_set_color(global.UI_COL_TEXT_MAIN);
             
             if (text == "" && self.parent.placeholder != undefined) {
                 // Draw placeholder text
@@ -842,14 +826,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             
             // Draw cursor (only when focused and no selection)
             if (self.focused && self.showCursor && self.selectionStart == self.selectionEnd) {
-                var cursorX = textX;
-                
-                // Calculate cursor X position
-                for (var i = 0; i < self.cursorPos; i++) {
-                    if (i < string_length(text)) {
-                        cursorX += string_width(string_char_at(text, i + 1));
-                    }
-                }
+                var cursorX = textX + string_width(string_copy(text, 1, self.cursorPos));
                 
                 draw_set_color(global.UI_COL_PRIMARY);
                 draw_line(cursorX, self.y1 + 5, cursorX, self.y2 - 5);

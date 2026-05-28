@@ -83,11 +83,12 @@ ui_test_suite("UiRoot", function() {
 
         global.UI.update();
 
+        // Restore BEFORE assertions so a failed assertion doesn't leak test state
+        // (assertions throw, which would skip code after them).
+        global.UI.stepHandlers = _prevStepHandlers;
+
         assert_true(_state.calledRemover, "removal handler executed without crash");
         assert_true(_state.calledOther, "other handlers can still execute from snapshot");
-
-        // Restore original handlers to avoid leaking test state.
-        global.UI.stepHandlers = _prevStepHandlers;
     });
     
     ui_test("dirtyElements and redrawElements are arrays", function() {
