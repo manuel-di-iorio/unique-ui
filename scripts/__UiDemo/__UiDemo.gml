@@ -1,8 +1,7 @@
 function ui_demo_create() {
     var W = display_get_gui_width();
     var H = display_get_gui_height();
-    display_reset(8, true);
-    draw_set_circle_precision(64);
+    display_reset(display_aa >= 8 ? 8 : (display_aa >= 4 ? 4 : (display_aa >= 2 ? 2 : 1)), true);
     
     global.UI_DEMO = {
         currentPage: "Button",
@@ -46,23 +45,15 @@ function ui_demo_create() {
     global.UI_DEMO.SearchQuery = "";
     
     // Search
-    global.UI_DEMO.__searchDebounce = undefined;
     var SearchInput = new UiTextbox({ width: "100%", height: 40, marginBottom: 26 }, {
         placeholder: "Search components...",
         value: global.UI_DEMO.SearchQuery,
         iconLeft: sprUiIconSearch,
         onChange: function(val) {
             global.UI_DEMO.SearchQuery = string_lower(val);
-            // Debounce sidebar rebuild to avoid heavy processing on every keystroke
-            // which would block keyboard_string OS key repeat
-            if (global.UI_DEMO.__searchDebounce != undefined) {
-                time_source_destroy(global.UI_DEMO.__searchDebounce);
-            }
-            global.UI_DEMO.__searchDebounce = time_source_create(time_source_global, 1, time_source_units_frames, function() {
-                global.UI_DEMO.__searchDebounce = undefined;
-                __ui_demo_render_sidebar();
-            });
-            time_source_start(global.UI_DEMO.__searchDebounce);
+            // In-place show/hide: no node creation/destruction, onChange stays lightweight
+            // so keyboard_string-based OS key repeat works normally.
+            __ui_demo_filter_sidebar();
         }
     });
     global.UI_DEMO.SearchInput = SearchInput;
@@ -150,7 +141,9 @@ function __ui_demo_render_logo() {
     container.destroyChildren(true);
     var LogoRow = new UiNode({ flexDirection: "row", alignItems: "center" });
     container.add(LogoRow);
-    LogoRow.add(new UiText("Unique UI", { marginRight: 10 }, { color: "main" }));
+    //LogoRow.add(new UiText("Unique UI", { marginRight: 10 }, { color: "main" }));
+    LogoRow.add(new UiSprite(sprLogo, { marginRight: 10 }));
+    
     var VersionBadge = new UiNode({ paddingLeft: 7, paddingRight: 7, height: 24, justifyContent: "center" });
     VersionBadge.onDraw = method(VersionBadge, function() {
         draw_set_color(#E8F0FF);

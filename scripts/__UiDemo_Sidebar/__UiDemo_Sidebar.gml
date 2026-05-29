@@ -9,9 +9,24 @@ function __ui_demo_render_sidebar() {
     __ui_demo_sidebar_label(parent, "COMPONENTS", 20);
     var comps = ["Button", "Textbox", "Textarea", "Select", "ColorPicker", "Checkbox", "Radio", "Switch", "Badge", "Alert", "Toast", "Card", "Tabs", "Tooltip", "Slider", "Accordion", "Sprite", "ContextMenu", "Modal", "Treeview"];
     for (var i = 0; i < array_length(comps); i++) {
-        var name = comps[i];
-        if (global.UI_DEMO.SearchQuery != "" && string_pos(global.UI_DEMO.SearchQuery, string_lower(name)) == 0) continue;
-        __ui_demo_sidebar_item(parent, name);
+        __ui_demo_sidebar_item(parent, comps[i]);
+    }
+    
+    // Re-apply current search filter without rebuilding
+    __ui_demo_filter_sidebar();
+}
+
+function __ui_demo_filter_sidebar() {
+    var q = global.UI_DEMO.SearchQuery;
+    var _items = global.UI_DEMO.SidebarItems.children;
+    var _len = array_length(_items);
+    for (var i = 0; i < _len; i++) {
+        var _item = _items[i];
+        if (!variable_struct_exists(_item, "__text")) continue; // skip labels (UiText)
+        var _shouldShow = (q == "" || string_pos(q, string_lower(_item.__text)) > 0);
+        if (_shouldShow != _item.display) {
+            if (_shouldShow) _item.show(); else _item.hide();
+        }
     }
 }
 
