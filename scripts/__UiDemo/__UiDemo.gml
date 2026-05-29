@@ -1,7 +1,8 @@
 function ui_demo_create() {
-    var W = display_get_gui_width();
-    var H = display_get_gui_height();
+    var W = max(1, window_get_width());
+    var H = max(1, window_get_height());
     display_reset(display_aa >= 8 ? 8 : (display_aa >= 4 ? 4 : (display_aa >= 2 ? 2 : 1)), true);
+    display_set_gui_size(W, H);
     
     global.UI_DEMO = {
         currentPage: "Button",

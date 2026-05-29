@@ -1,8 +1,13 @@
 /// @desc Update UniqueUI
-var W = window_get_width();
-var H = window_get_height();
-if (global.UI.width != W || global.UI.height != H) {
-    global.UI.setSize(W, H);
-    display_set_gui_size(W, H);
+var winWNew = window_get_width();
+var winHNew = window_get_height();
+
+// Detect runtime window resize and keep UI + GUI space in sync.
+if ((winW != winWNew || winH != winHNew) && winWNew != 0 && winHNew != 0) {
+    winW = winWNew;
+    winH = winHNew;
+
+    global.UI.setSize(winW, winH);
+    display_set_gui_size(winW, winH);
 }
 global.UI.update();
