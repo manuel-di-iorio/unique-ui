@@ -1,7 +1,10 @@
-# UNIQUE UI
-### A high-performance, modular interface framework for GameMaker Studio.
+<img src="other/unique_ui_logo.svg" width="300px" />
 
-UniqueUI is a state-of-the-art UI system designed for GameMaker Studio, bridging the gap between declarative design and high-performance execution. Built on a foundation of native performance and object-oriented flexibility, it provides developers with the tools to build complex, scalable, and visually stunning interfaces.
+### A high-performance, UI  Engine for GameMaker.
+
+UniqueUI is a state-of-the-art UI system designed for GameMaker, bridging the gap between declarative design and high-performance execution. Built on a foundation of native performance and object-oriented flexibility, it provides developers with the tools to build complex, scalable, and visually stunning interfaces.
+
+<img src="other/screen0.png" width="800px">
 
 ---
 
@@ -20,6 +23,8 @@ The framework features a sophisticated event system supporting Capture and Bubbl
 UniqueUI ships with a curated "Modern Premium" design system. Components feature smooth gradients, subtle micro-animations, ripple effects, and glassmorphism-ready containers out of the box.
 
 ---
+
+<img src="other/screen1.png" width="800px">
 
 ## TECHNICAL FEATURES
 
