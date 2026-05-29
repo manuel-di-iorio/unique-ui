@@ -1,0 +1,9 @@
+{
+  "name": "svg-converter",
+  "version": "1.0.0",
+  "description": "Convert SVG to PNG",
+  "main": "convert.js",
+  "dependencies": {
+    "sharp": "^0.33.2"
+  }
+}
