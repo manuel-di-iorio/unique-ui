@@ -32,10 +32,11 @@ new UiButton(textOrImage, style = {}, props = {})
 | `outline`       | `boolean`              | Draws an outline instead of a filled background.                           |
 | `halign`        | `constant`             | Horizontal alignment (`fa_left`, `fa_center`, `fa_right`). Default center. |
 | `handpoint`     | `boolean`              | Shows a hand cursor when hovering (UI convenience flag).                   |
-| `pointerEvents` | `boolean`              | Enables pointer interaction (always `true` for buttons).                   |
+| `pointerEvents` | `boolean`              | Enables pointer interaction.                                               |
 | `hovered`       | `boolean`              | True when the mouse is over the button.                                    |
 | `selected`      | `boolean`              | Indicates selection state for toggle-like buttons.                         |
 | `enableRipple`  | `boolean`              | Enables ripple click animation when pressed (default `true`).             |
+| `enabled`       | `boolean`              | Enables button interaction. When `false`, button is dimmed and unclickable (default `true`). |
 | `ripples`       | `array`                | Internal array of active ripple effects (used by the renderer).           |
 
 **Methods**
@@ -45,6 +46,7 @@ new UiButton(textOrImage, style = {}, props = {})
 | `resize()`          | `void`  | Updates width and height to fit text or sprite content. |
 | `setText(text)`     | `void`  | Sets the button text and resizes it automatically.      |
 | `setSprite(sprite)` | `void`  | Sets the button sprite and resizes it automatically.    |
+| `setEnabled(enabled)` | `void` | Enables or disables the button. When disabled, the button is visually dimmed and pointer events are disabled. |
 | `onClick(handler)`  | `void`  | Attach a click handler. When `enableRipple` is true the built-in click handler will also spawn a ripple animation centered on the click position. |
 
 **Drawing Behavior**

@@ -22,6 +22,22 @@ function ui_demo_example_button(PreviewCard) {
     row3.add(new UiButton("Center Aligned", { width: "100%", height: 36, marginBottom: 8 }, { variant: "outline", halign: fa_center }));
     row3.add(new UiButton("Right Aligned",  { width: "100%", height: 36 },                  { variant: "outline", halign: fa_right  }));
     
+    __ui_demo_preview_section(PreviewCard, "Disabled State");
+    var row4 = new UiNode({ flexDirection: "row", flexWrap: "wrap", alignItems: "center", marginBottom: 32 });
+    PreviewCard.add(row4);
+    
+    var disabledPrimary = new UiButton("Disabled Primary", { marginRight: 12, marginBottom: 8 }, { variant: "primary" });
+    disabledPrimary.setEnabled(false);
+    row4.add(disabledPrimary);
+    
+    var disabledSecondary = new UiButton("Disabled Secondary", { marginRight: 12, marginBottom: 8 }, { variant: "secondary" });
+    disabledSecondary.setEnabled(false);
+    row4.add(disabledSecondary);
+    
+    var disabledOutline = new UiButton("Disabled Outline", { marginRight: 12, marginBottom: 8 }, { variant: "outline" });
+    disabledOutline.setEnabled(false);
+    row4.add(disabledOutline);
+    
     __ui_demo_preview_section(PreviewCard, "Interactive - Toggle");
     if (!variable_struct_exists(global.UI_DEMO, "btnToggle")) global.UI_DEMO.btnToggle = false;
     var toggleBtn = new UiButton(
@@ -36,6 +52,27 @@ function ui_demo_example_button(PreviewCard) {
     }));
     PreviewCard.add(toggleBtn);
     
+    __ui_demo_preview_section(PreviewCard, "Interactive - Enable/Disable");
+    if (!variable_struct_exists(global.UI_DEMO, "enableDisableBtnState")) global.UI_DEMO.enableDisableBtnState = true;
+    var row5 = new UiNode({ flexDirection: "row", alignItems: "center", marginBottom: 16 });
+    PreviewCard.add(row5);
+    
+    var targetBtn = new UiButton("Target Button", { width: 160, height: 36, marginRight: 12 }, { variant: "primary" });
+    if (!global.UI_DEMO.enableDisableBtnState) targetBtn.setEnabled(false);
+    row5.add(targetBtn);
+    
+    var toggleEnableBtn = new UiButton(
+        global.UI_DEMO.enableDisableBtnState ? "Disable" : "Enable",
+        { width: 120, height: 36 },
+        { variant: "outline" }
+    );
+    toggleEnableBtn.onClick(method({ targetBtn, toggleEnableBtn }, function() {
+        global.UI_DEMO.enableDisableBtnState = !global.UI_DEMO.enableDisableBtnState;
+        targetBtn.setEnabled(global.UI_DEMO.enableDisableBtnState);
+        toggleEnableBtn.setText(global.UI_DEMO.enableDisableBtnState ? "Disable" : "Enable");
+    }));
+    row5.add(toggleEnableBtn);
+    
     return [
         "new UiButton(\"Primary\",   {}, { variant: \"primary\"   });",
         "new UiButton(\"Secondary\", {}, { variant: \"secondary\" });",
@@ -49,6 +86,10 @@ function ui_demo_example_button(PreviewCard) {
         "new UiButton(\"Large\",  { height: 44 }, { variant: \"outline\" });",
         "",
         "// Alignment via props.halign",
-        "new UiButton(\"Left\", { width: \"100%\" }, { variant: \"outline\", halign: fa_left });"
+        "new UiButton(\"Left\", { width: \"100%\" }, { variant: \"outline\", halign: fa_left });",
+        "",
+        "// Disabled button",
+        "var btn = new UiButton(\"Disabled\", {}, { variant: \"primary\" });",
+        "btn.setEnabled(false);"
     ];
 }

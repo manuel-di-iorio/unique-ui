@@ -1,5 +1,6 @@
 /// @description Dynamic AABB Tree 2D for high-performance spatial partitioning
 /// Based on Box2D's b2DynamicTree
+/// This script is part of UniqueMath library - https://github.com/manuel-di-iorio/unique-math
 
 function DynamicAABBTree2D(capacity = 1024) constructor {
     self.capacity = capacity;

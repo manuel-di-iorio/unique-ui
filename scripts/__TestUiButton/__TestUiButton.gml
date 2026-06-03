@@ -101,4 +101,44 @@ ui_test_suite("UiButton", function() {
         assert_equal(btn.type, "UiNode", "type = UiNode");
     });
     
+    ui_test("enabled is true by default", function() {
+        var btn = new UiButton("Test", {}, {});
+        assert_true(btn.enabled, "enabled = true");
+    });
+    
+    ui_test("setEnabled(false) sets enabled to false", function() {
+        var btn = new UiButton("Test", {}, {});
+        btn.setEnabled(false);
+        assert_false(btn.enabled, "enabled = false after setEnabled(false)");
+    });
+    
+    ui_test("setEnabled(true) sets enabled to true", function() {
+        var btn = new UiButton("Test", {}, {});
+        btn.setEnabled(false);
+        btn.setEnabled(true);
+        assert_true(btn.enabled, "enabled = true after setEnabled(true)");
+    });
+    
+    ui_test("setEnabled(false) disables pointerEvents", function() {
+        var btn = new UiButton("Test", {}, {});
+        btn.setEnabled(false);
+        assert_false(btn.pointerEvents, "pointerEvents = false when disabled");
+    });
+    
+    ui_test("setEnabled(true) enables pointerEvents", function() {
+        var btn = new UiButton("Test", {}, {});
+        btn.setEnabled(false);
+        btn.setEnabled(true);
+        assert_true(btn.pointerEvents, "pointerEvents = true when enabled");
+    });
+    
+    ui_test("disabled button does not trigger onClick", function() {
+        var btn = new UiButton("Test", {}, {});
+        var state = { hit: false };
+        btn.onClick(method(state, function() { hit = true; }));
+        btn.setEnabled(false);
+        btn.click();
+        assert_false(state.hit, "onClick not fired when disabled");
+    });
+    
 });

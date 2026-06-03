@@ -10,6 +10,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     self.halign = props[$ "halign"] ?? fa_center;
     self.handpoint = true;
     self.selected = false;
+    self.enabled = true;
     self.enableRipple = props[$ "enableRipple"] ?? true;
     self.variant = props[$ "variant"] ?? "secondary"; // primary, secondary, outline, ghost, danger
     
@@ -24,6 +25,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     self.ripples = [];
     
     self.onClick(function() {
+        if (!self.enabled) return;
         if (!self.enableRipple) return;
         
         var mx = window_mouse_get_x();
@@ -71,6 +73,12 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
         if (self.autoResize || self.style[$ "height"] == undefined) {
             self.setHeight(_h);
         }
+    }
+    
+    function setEnabled(enabled) {
+        self.enabled = enabled;
+        self.pointerEvents = enabled;
+        global.UI.requestRedraw();
     }
     
     function setText(text) {
@@ -122,6 +130,10 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
             bg_color = global.UI_COL_PRIMARY;
             text_color = c_white;
         }
+        
+        // Disabled dimming
+        var _alpha = self.enabled ? 1 : 0.35;
+        draw_set_alpha(_alpha);
 
         // Background
         if (bg_color != -1) {
@@ -153,7 +165,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
                 if (r.alpha <= 0) array_delete(self.ripples, i, 1);
             }
             gpu_set_scissor(_scissor);
-            draw_set_alpha(1);
+            draw_set_alpha(_alpha);
             if (array_length(self.ripples) > 0) global.UI.requestRedraw();
         }
         
@@ -173,12 +185,14 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
             var spriteWidth = sprite_get_width(self.sprite);
             var totalWidth = spriteWidth + string_width(self.label) + 8;
             var startX = self.x1 + (self.x2 - self.x1 - totalWidth) / 2;
-            draw_sprite(self.sprite, self.hovered ? 1 : 0, startX + spriteWidth / 2, ym);
+            draw_sprite_ext(self.sprite, self.hovered ? 1 : 0, startX + spriteWidth / 2, ym, 1, 1, 0, text_color, 1);
             draw_set_font(fText); draw_set_color(text_color); draw_set_halign(fa_left); draw_set_valign(fa_middle);
             draw_text(startX + spriteWidth + 8, ym, self.label);
         } else if (self.sprite) {
-            draw_sprite(self.sprite, self.hovered ? 1 : 0, xm, ym);
+            draw_sprite_ext(self.sprite, self.hovered ? 1 : 0, xm, ym, 1, 1, 0, text_color, 1);
         }
+
+        draw_set_alpha(1);
     }
     
     // Set the text/sprite and resize the button if specified
