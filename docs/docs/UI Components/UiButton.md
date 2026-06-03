@@ -28,6 +28,9 @@ new UiButton(textOrImage, style = {}, props = {})
 | --------------- | ---------------------- | -------------------------------------------------------------------------- |
 | `text`          | `string` | `undefined` | The button label text, if any.                                             |
 | `sprite`        | `sprite` | `undefined` | The button sprite (uses subimg 1 on hover if available).                   |
+| `label`         | `string` | `undefined` | Optional text label to show alongside a sprite.                           |
+| `spriteWidth`   | `number` | `undefined` | Custom width for the sprite (scales the sprite).                          |
+| `spriteHeight`  | `number` | `undefined` | Custom height for the sprite (scales the sprite).                         |
 | `autoResize`    | `boolean`              | Automatically adjusts size to fit content. Defaults to `true`.             |
 | `outline`       | `boolean`              | Draws an outline instead of a filled background.                           |
 | `halign`        | `constant`             | Horizontal alignment (`fa_left`, `fa_center`, `fa_right`). Default center. |

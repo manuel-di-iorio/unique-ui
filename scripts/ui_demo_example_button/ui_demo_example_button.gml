@@ -38,6 +38,31 @@ function ui_demo_example_button(PreviewCard) {
     disabledOutline.setEnabled(false);
     row4.add(disabledOutline);
     
+    __ui_demo_preview_section(PreviewCard, "Sprite Buttons");
+    var row5 = new UiNode({ flexDirection: "row", flexWrap: "wrap", alignItems: "center", marginBottom: 32 });
+    PreviewCard.add(row5);
+    
+    // Sprite button (copy icon)
+    var spriteBtn = new UiButton(sprUiIconCopy, { marginRight: 12, marginBottom: 8 }, { variant: "primary" });
+    row5.add(spriteBtn);
+    
+    // Sprite button + label
+    var spriteLabelBtn = new UiButton(sprUiIconCopy, { marginRight: 12, marginBottom: 8 }, { variant: "secondary", label: "Copy" });
+    row5.add(spriteLabelBtn);
+    
+    // Sprite button with custom size
+    var smallSpriteBtn = new UiButton(sprUiIconCopy, { marginRight: 12, marginBottom: 8 }, { variant: "outline", spriteWidth: 16, spriteHeight: 16 });
+    row5.add(smallSpriteBtn);
+    
+    // Sprite button + label with custom size
+    var smallSpriteLabelBtn = new UiButton(sprUiIconCopy, { marginRight: 12, marginBottom: 8 }, { variant: "ghost", label: "Copy", spriteWidth: 18, spriteHeight: 18 });
+    row5.add(smallSpriteLabelBtn);
+    
+    // Disabled sprite button
+    var disabledSpriteBtn = new UiButton(sprUiIconCopy, { marginRight: 12, marginBottom: 8 }, { variant: "primary" });
+    disabledSpriteBtn.setEnabled(false);
+    row5.add(disabledSpriteBtn);
+    
     __ui_demo_preview_section(PreviewCard, "Interactive - Toggle");
     if (!variable_struct_exists(global.UI_DEMO, "btnToggle")) global.UI_DEMO.btnToggle = false;
     var toggleBtn = new UiButton(
@@ -88,8 +113,17 @@ function ui_demo_example_button(PreviewCard) {
         "// Alignment via props.halign",
         "new UiButton(\"Left\", { width: \"100%\" }, { variant: \"outline\", halign: fa_left });",
         "",
+        "// Sprite button (icon only)",
+        "new UiButton(sprUiIconCopy, {}, { variant: \"primary\" });",
+        "",
+        "// Sprite button + label",
+        "new UiButton(sprUiIconCopy, {}, { variant: \"secondary\", label: \"Copy\" });",
+        "",
+        "// Sprite button with custom dimensions",
+        "new UiButton(sprUiIconCopy, {}, { variant: \"outline\", spriteWidth: 16, spriteHeight: 16 });",
+        "",
         "// Disabled button",
         "var btn = new UiButton(\"Disabled\", {}, { variant: \"primary\" });",
-        "btn.setEnabled(false);"
+        "btn.setEnabled(false);",
     ];
 }
