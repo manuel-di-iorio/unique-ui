@@ -53,7 +53,23 @@ function ui_demo_example_introduction(PreviewCard) {
     demoContainer.add(rowContainer);
     PreviewCard.add(demoContainer);
     
-    // --- 3. Custom Drawing (onDraw) ---
+    // --- 3. Pointer Events & Propagation ---
+    __ui_demo_preview_section(PreviewCard, "Pointer Events & Interaction");
+    
+    PreviewCard.add(new UiText(
+        "For a node to intercept mouse input, you must set pointerEvents: true in its property constructor (or set it manually on the instance). " +
+        "Nodes with pointerEvents: false are invisible to mouse detection, allowing mouse clicks and hovers to pass straight through them to elements underneath.",
+        { width: "100%", marginBottom: 12 },
+        { color: global.UI_COL_TEXT_DIM, wrap: true }
+    ));
+
+    PreviewCard.add(new UiText(
+        "Event handlers (like onClick, onMouseEnter, etc.) trigger event propagation. Bubble-capable events propagate up from the deepest hovered target to its parent nodes.",
+        { width: "100%", marginBottom: 28 },
+        { color: global.UI_COL_TEXT_DIM, wrap: true }
+    ));
+
+    // --- 4. Custom Drawing (onDraw) ---
     __ui_demo_preview_section(PreviewCard, "Custom Drawing (onDraw)");
     
     PreviewCard.add(new UiText(
@@ -85,7 +101,87 @@ function ui_demo_example_introduction(PreviewCard) {
     customDrawNode.add(new UiText("Custom Gradient drawn inside onDraw", {}, { color: c_white, font: fTextSmall }));
     PreviewCard.add(customDrawNode);
     
-    // --- 4. Event Handling ---
+    // --- 5. Drag & Drop ---
+    __ui_demo_preview_section(PreviewCard, "Drag & Drop Operations");
+    
+    PreviewCard.add(new UiText(
+        "Natively support dragging elements and dropping them onto targeted zones: \n" +
+        "- Set draggable: true to enable dragging a node. When dragged, self.dragging becomes true.\n" +
+        "- Set dropzone: true on target nodes, and define onDrop = function(draggedNode) to handle the drop event.\n" +
+        "Drag and drop any of the blue boxes below and drop them onto the target container!",
+        { width: "100%", marginBottom: 16 },
+        { color: global.UI_COL_TEXT_DIM, wrap: true }
+    ));
+
+    // Drag & drop interactive demo
+    var dragDropContainer = new UiNode({
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: 16,
+        marginBottom: 28
+    });
+    dragDropContainer.onDraw = method(dragDropContainer, function() {
+        draw_set_color(global.UI_COL_BG_MAIN);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
+        draw_set_color(global.UI_COL_BORDER);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
+    });
+
+    var dragNode1 = new UiNode({ width: 80, height: 40, justifyContent: "center", alignItems: "center" }, { pointerEvents: true, draggable: true, handpoint: true });
+    dragNode1.onDraw = method(dragNode1, function() {
+        draw_set_color(self.dragging ? #818CF8 : #3B82F6);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
+        draw_set_color(c_white); draw_set_font(fTextSmall); draw_set_halign(fa_center); draw_set_valign(fa_middle);
+        draw_text(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), self.dragging ? "Dragging" : "Drag Me A");
+    });
+
+    var dragNode2 = new UiNode({ width: 80, height: 40, justifyContent: "center", alignItems: "center" }, { pointerEvents: true, draggable: true, handpoint: true });
+    dragNode2.onDraw = method(dragNode2, function() {
+        draw_set_color(self.dragging ? #818CF8 : #3B82F6);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
+        draw_set_color(c_white); draw_set_font(fTextSmall); draw_set_halign(fa_center); draw_set_valign(fa_middle);
+        draw_text(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), self.dragging ? "Dragging" : "Drag Me B");
+    });
+
+    var dropZoneNode = new UiNode({ width: 140, height: 50, justifyContent: "center", alignItems: "center" }, { pointerEvents: true, dropzone: true });
+    dropZoneNode.__statusText = "Dropzone";
+    dropZoneNode.onDrop = method(dropZoneNode, function(draggedNode) {
+        if (variable_struct_exists(draggedNode, "parent") && draggedNode.parent != undefined) {
+            var label = "Dropped!";
+            if (variable_struct_exists(draggedNode, "children") && array_length(draggedNode.children) > 0) {
+                label = draggedNode.children[0].text;
+            }
+            self.__statusText = "Received: " + label;
+            global.UI.requestRedraw();
+        }
+    });
+    dropZoneNode.onDraw = method(dropZoneNode, function() {
+        draw_set_color(#10B981);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
+        draw_set_color(c_white); draw_set_font(fTextSmall); draw_set_halign(fa_center); draw_set_valign(fa_middle);
+        draw_text(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), self.__statusText);
+    });
+
+    dragDropContainer.add(dragNode1);
+    dragDropContainer.add(dragNode2);
+    dragDropContainer.add(dropZoneNode);
+    PreviewCard.add(dragDropContainer);
+
+    // --- 6. UI Update vs Redraw Lifecycle ---
+    __ui_demo_preview_section(PreviewCard, "Lifecycle: Automatic vs. Manual Updates");
+    
+    PreviewCard.add(new UiText(
+        "To achieve maximum performance, UniqueUI separates structural layout computations from visual rendering. " +
+        "Crucially, the library automatically handles these updates for you in most cases:\n" +
+        "- Built-in layout methods (such as setSize(), add(), remove(), show(), and hide()) automatically trigger a layout update and repaint. You DO NOT need to call requestUpdate() manually for these actions.\n" +
+        "- State changes (like mouse hovering or text changes in responsive labels) automatically request a redraw. You only need to call global.UI.requestRedraw() manually when you modify custom variables in your drawing code (e.g., toggling a custom selected color or changing a state flag in custom event handlers).",
+        { width: "100%", marginBottom: 28 },
+        { color: global.UI_COL_TEXT_DIM, wrap: true }
+    ));
+
+    // --- 7. Interactive Event Demo ---
     __ui_demo_preview_section(PreviewCard, "Event Handling & Reactivity");
     
     PreviewCard.add(new UiText(
@@ -133,48 +229,44 @@ function ui_demo_example_introduction(PreviewCard) {
     PreviewCard.add(eventContainer);
     
     return [
-        "// === 1. CREATING A CONTAINER & NESTING CHILDREN ===",
-        "var myCard = new UiNode({",
-        "    width: \"100%\",",
-        "    padding: 16,",
-        "    flexDirection: \"column\"",
-        "});",
-        "myCard.onDraw = method(myCard, function() {",
-        "    draw_set_color(global.UI_COL_BG_CARD);",
-        "    draw_roundrect_ext(x1, y1, x2, y2, 8, 8, false);",
-        "});",
+        "// === 1. POINTER EVENTS ===",
+        "// Block input / handle clicks",
+        "var node = new UiNode({ width: 100 }, { pointerEvents: true });",
+        "// Let clicks pass through",
+        "var overlay = new UiNode({ width: 100 }, { pointerEvents: false });",
         "",
-        "var text = new UiText(\"Hello Parent!\", {}, { color: \"main\" });",
+        "// === 2. DRAG & DROP ===",
+        "var dragNode = new UiNode({ width: 60 }, {",
+        "    pointerEvents: true,",
+        "    draggable: true",
+        "});",
+        "var dropTarget = new UiNode({ width: 100 }, {",
+        "    pointerEvents: true,",
+        "    dropzone: true",
+        "});",
+        "dropTarget.onDrop = function(draggedNode) {",
+        "    show_debug_message(\"Dropped node: \" + string(draggedNode.id));",
+        "};",
+        "",
+        "// === 3. LIFECYCLE (AUTOMATIC VS MANUAL UPDATES) ===",
+        "// Wrapper methods automatically trigger layout updates and repaints internally:",
+        "node.setSize(200, 50); // Calls requestUpdate() + redraws automatically!",
+        "node.hide();           // Calls requestUpdate() + redraws automatically!",
+        "",
+        "// Call requestRedraw() manually ONLY when changing custom variables used in custom onDraw():",
+        "node.customColor = #EF4444;",
+        "global.UI.requestRedraw(); // Visual-only repaint, highly optimized!",
+        "",
+        "// === 4. CONTAINERS & NESTING ===",
+        "var myCard = new UiNode({ width: \"100%\", padding: 16 });",
         "var button = new UiButton(\"Child Button\", { height: 32 });",
-        "",
-        "myCard.add(text);",
-        "myCard.add(button); // Added as children",
+        "myCard.add(button); // Nest child inside parent container",
         "global.UI.add(myCard);",
         "",
-        "// === 2. CUSTOM DRAWING (onDraw) ===",
+        "// === 5. CUSTOM DRAWING (onDraw) ===",
         "var customNode = new UiNode({ width: \"100%\", height: 60 });",
         "customNode.onDraw = method(customNode, function() {",
-        "    // Draw a custom horizontal gradient color block",
-        "    draw_rectangle_color(x1, y1, x2, y2,",
-        "                         #6366F1, #3B82F6,",
-        "                         #3B82F6, #6366F1, false);",
-        "});",
-        "",
-        "// === 3. EVENT HANDLING ===",
-        "button.onClick(function() {",
-        "    show_debug_message(\"Button was clicked!\");",
-        "});",
-        "",
-        "// === 4. REACTIVE LABELS USING valueGetter ===",
-        "var clickState = { count: 0 };",
-        "button.onClick(method(clickState, function() {",
-        "    self.count++;",
-        "}));",
-        "",
-        "var reactiveLabel = new UiText(\"Clicks: 0\", {}, {",
-        "    valueGetter: method(clickState, function() {",
-        "        return \"Clicks: \" + string(self.count);",
-        "    })",
+        "    draw_rectangle_color(x1, y1, x2, y2, #6366F1, #3B82F6, #3B82F6, #6366F1, false);",
         "});"
     ];
 }
