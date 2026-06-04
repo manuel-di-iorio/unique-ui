@@ -86,16 +86,6 @@ function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
     }
 
     /**
-     * Validate if an item can be dropped onto another
-     */
-    function validateDrop(dragged, target) {
-        if (dragged == target) return false;
-        if (dragged.assetType == "Texture" || dragged.assetType == "Material") return false;
-        if (target.assetType != "Folder") return false;
-        return true;
-    }
-
-    /**
      * Collapse all items in the tree
      */
     function collapseAll() {
@@ -118,6 +108,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     self.assetType = props[$ "assetType"] ?? "Asset";
     self.icon = props[$ "icon"];
     self.name = props[$ "name"] ?? style[$ "name"] ?? "Item";
+    self.asset = props[$ "asset"];
     self.selected = false;
     self.collapsed = props[$ "collapsed"] ?? true;
     self.depth = props[$ "depth"] ?? 0;

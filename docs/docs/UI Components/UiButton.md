@@ -38,6 +38,7 @@ new UiButton(textOrImage, style = {}, props = {})
 | `pointerEvents` | `boolean`              | Enables pointer interaction.                                               |
 | `hovered`       | `boolean`              | True when the mouse is over the button.                                    |
 | `selected`      | `boolean`              | Indicates selection state for toggle-like buttons.                         |
+| `variant`       | `string`              | Visual theme variant (`'primary'`, `'secondary'`, `'outline'`, `'ghost'`, `'danger'`). Default `'secondary'`. |
 | `enableRipple`  | `boolean`              | Enables ripple click animation when pressed (default `true`).             |
 | `enabled`       | `boolean`              | Enables button interaction. When `false`, button is dimmed and unclickable (default `true`). |
 | `ripples`       | `array`                | Internal array of active ripple effects (used by the renderer).           |

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ui_demo_example_introduction",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ui_demo_example_introduction",
+  "parent":{
+    "name":"Introduction",
+    "path":"folders/Demo/Examples/Introduction.yy"
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0"
+}

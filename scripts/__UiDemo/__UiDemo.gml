@@ -3,9 +3,10 @@ function ui_demo_create() {
     var H = max(1, window_get_height());
     display_reset(display_aa >= 8 ? 8 : (display_aa >= 4 ? 4 : (display_aa >= 2 ? 2 : 1)), true);
     display_set_gui_size(W, H);
+    device_mouse_dbclick_enable(false);
     
     global.UI_DEMO = {
-        currentPage: "Button",
+        currentPage: "Introduction",
         currentTab: "Preview",
         ScrollArea: undefined,
         BreadcrumbPage: undefined,
@@ -89,7 +90,7 @@ function ui_demo_create() {
     var Breadcrumbs = new UiNode({ flexDirection: "row", flex: 1 });
     Breadcrumbs.add(new UiText("Components", { marginRight: 8 }, { color: "dim" }));
     Breadcrumbs.add(new UiText(">", { marginRight: 8 }, { color: "dim" }));
-    global.UI_DEMO.BreadcrumbPage = new UiText("Button", {}, { color: "main" });
+    global.UI_DEMO.BreadcrumbPage = new UiText("Introduction", {}, { color: "main" });
     Breadcrumbs.add(global.UI_DEMO.BreadcrumbPage);
     TopBar.add(Breadcrumbs);
     

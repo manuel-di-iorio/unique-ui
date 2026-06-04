@@ -3,6 +3,7 @@ function __ui_demo_render_sidebar() {
     parent.destroyChildren(true);
     
     __ui_demo_sidebar_label(parent, "FOUNDATIONS");
+    __ui_demo_sidebar_item(parent, "Introduction");
     __ui_demo_sidebar_item(parent, "Colors");
     __ui_demo_sidebar_item(parent, "Typography");
     
@@ -70,6 +71,7 @@ function __ui_demo_sidebar_label(parent, text, mt = 0) {
 
 function __ui_demo_sidebar_icon_name(text) {
     switch (string_lower(text)) {
+        case "introduction": return sprUiIconBook;
         case "colors": return sprUiIconPalette;
         case "typography": return sprUiIconTypography;
         case "textbox": return sprUiIconTextbox;

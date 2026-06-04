@@ -1,5 +1,8 @@
 function __ui_demo_get_component_metadata() {
     return {
+        "Introduction": {
+            desc: "Learn the core concepts of UniqueUI: UiRoot, UiNode, container structures, custom drawing, and event handling."
+        },
         "Button": {
             desc: "Allows users to perform an action with a single click.",
             props: [
@@ -8,7 +11,11 @@ function __ui_demo_get_component_metadata() {
                 { name: "outline", type: "boolean", desc: "Shows a thin border" },
                 { name: "enableRipple", type: "boolean", desc: "Enables ripple effect on click" },
                 { name: "label", type: "string", desc: "Text to show next to the sprite" },
-                { name: "autoResize", type: "boolean", desc: "Automatically resizes based on content" }
+                { name: "autoResize", type: "boolean", desc: "Automatically resizes based on content" },
+                { name: "spriteWidth", type: "number", desc: "Custom width for the sprite icon" },
+                { name: "spriteHeight", type: "number", desc: "Custom height for the sprite icon" },
+                { name: "enabled", type: "boolean", desc: "Enables button interaction" },
+                { name: "selected", type: "boolean", desc: "Indicates selection state for toggle-like buttons" }
             ]
         },
         "Textbox": {

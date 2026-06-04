@@ -15,8 +15,8 @@ function __ui_demo_refresh(preserveScroll = false) {
     var desc = (componentData != undefined ? componentData.desc : "Explore the capabilities of the component " + global.UI_DEMO.currentPage);
     Hero.add(new UiText(desc, {}, { color: global.UI_COL_TEXT_DIM }));
     
-    // Tabs — Documentation tab is hidden for foundation pages (Colors, Typography)
-    var _isFoundation = (global.UI_DEMO.currentPage == "Colors" || global.UI_DEMO.currentPage == "Typography");
+    // Tabs — Documentation tab is hidden for foundation pages (Colors, Typography, Introduction)
+    var _isFoundation = (global.UI_DEMO.currentPage == "Colors" || global.UI_DEMO.currentPage == "Typography" || global.UI_DEMO.currentPage == "Introduction");
 
     // If a foundation page lands on Documentation tab, redirect to Preview
     if (_isFoundation && global.UI_DEMO.currentTab == "Documentation") {
@@ -149,6 +149,7 @@ function __ui_demo_render_component_example(page, parent) {
 
 function __ui_demo_get_examples_map() {
     static _map = {
+        "Introduction": ui_demo_example_introduction,
         "Colors":      ui_demo_example_colors,
         "Typography":  ui_demo_example_typography,
         "Button":      ui_demo_example_button,

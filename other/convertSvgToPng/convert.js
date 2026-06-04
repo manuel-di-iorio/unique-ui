@@ -3,8 +3,8 @@ const path = require('path');
 const fs = require('fs');
 const files = [
   {
-    input: 'c:/Users/Manuel/GameMakerProjects/UniqueUI/sprites/sprUiIconToast/f37dd78c-639e-4bee-9dca-a771ebae9d4e.svg',
-    output: 'c:/Users/Manuel/GameMakerProjects/UniqueUI/sprites/sprUiIconToast/f37dd78c-639e-4bee-9dca-a771ebae9d4e.png'
+    input: 'c:/Users/Manuel/GameMakerProjects/Unique Engine/sprites/sprUiIconTooltip/a2e9eed2-5ee5-4860-9aa8-8bba0707f295.svg',
+    output: 'c:/Users/Manuel/GameMakerProjects/Unique Engine/sprites/sprUiIconTooltip/a2e9eed2-5ee5-4860-9aa8-8bba0707f295.png'
   }
 ];
 async function convert() {
