@@ -1,4 +1,4 @@
-/// @desc UiBadge — small status indicator with colored background and label.
+/// @desc UiBadge - small status indicator with colored background and label.
 /// Variants: "default", "primary", "success", "warning", "danger", "info"
 function UiBadge(text, style = {}, props = {}): UiNode(style, props) constructor {
     setName(style[$ "name"] ?? "UiBadge");

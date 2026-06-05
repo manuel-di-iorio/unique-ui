@@ -6,9 +6,10 @@ function __ui_demo_render_sidebar() {
     __ui_demo_sidebar_item(parent, "Introduction");
     __ui_demo_sidebar_item(parent, "Colors");
     __ui_demo_sidebar_item(parent, "Typography");
+    __ui_demo_sidebar_item(parent, "Store");
     
     __ui_demo_sidebar_label(parent, "COMPONENTS", 20);
-    var comps = ["Button", "Textbox", "Textarea", "Select", "ColorPicker", "Checkbox", "Radio", "Switch", "Badge", "Alert", "Toast", "Card", "Tabs", "Tooltip", "Slider", "Accordion", "Sprite", "ContextMenu", "Modal", "Treeview"];
+    var comps = ["Button", "Textbox", "Textarea", "Select", "ColorPicker", "Checkbox", "Radio", "Switch", "Badge", "Alert", "Toast", "Card", "Tabs", "Tooltip", "Slider", "Accordion", "Sprite", "ContextMenu", "MenuBar", "Modal", "Treeview"];
     for (var i = 0; i < array_length(comps); i++) {
         __ui_demo_sidebar_item(parent, comps[i]);
     }
@@ -74,6 +75,7 @@ function __ui_demo_sidebar_icon_name(text) {
         case "introduction": return sprUiIconBook;
         case "colors": return sprUiIconPalette;
         case "typography": return sprUiIconTypography;
+        case "store": return sprUiIconState;
         case "textbox": return sprUiIconTextbox;
         case "textarea": return sprUiIconTextarea;
         case "select": return sprUiIconSelect;
@@ -91,6 +93,7 @@ function __ui_demo_sidebar_icon_name(text) {
         case "accordion": return sprUiIconAccordion;
         case "sprite": return sprUiIconSprite;
         case "contextmenu": return sprUiIconMenu;
+        case "menubar": return sprUiIconMenuBar;
         case "modal": return sprUiIconModal;
         case "treeview": return sprUiIconTreeview;
         default: return sprUiIconButton;

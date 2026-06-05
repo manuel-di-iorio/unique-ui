@@ -4,12 +4,12 @@
 
 ui_test_suite("UiBadge", function() {
     
-    ui_test("Create — text property set", function() {
+    ui_test("Create - text property set", function() {
         var b = new UiBadge("Beta", {}, {});
         assert_equal(b.text, "Beta", "text = 'Beta'");
     });
     
-    ui_test("Create — default variant is 'default'", function() {
+    ui_test("Create - default variant is 'default'", function() {
         var b = new UiBadge("New", {}, {});
         assert_equal(b.variant, "default", "variant = default");
     });

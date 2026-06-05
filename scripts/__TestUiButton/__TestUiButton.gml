@@ -4,17 +4,17 @@
 
 ui_test_suite("UiButton", function() {
     
-    ui_test("Create with text — text property set", function() {
+    ui_test("Create with text - text property set", function() {
         var btn = new UiButton("Click Me", {}, {});
         assert_equal(btn.text, "Click Me", "text property");
     });
     
-    ui_test("Create with text — sprite is undefined", function() {
+    ui_test("Create with text - sprite is undefined", function() {
         var btn = new UiButton("Hello", {}, {});
         assert_is_undefined(btn.sprite, "sprite = undefined for text button");
     });
     
-    ui_test("Create with undefined — both text and sprite undefined", function() {
+    ui_test("Create with undefined - both text and sprite undefined", function() {
         var btn = new UiButton(undefined, {}, {});
         assert_is_undefined(btn.text,   "text = undefined");
         assert_is_undefined(btn.sprite, "sprite = undefined");

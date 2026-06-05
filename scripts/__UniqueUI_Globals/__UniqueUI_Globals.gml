@@ -1,6 +1,6 @@
-global.UI_VERSION = "4.1.0";
+global.UI_VERSION = "4.2.0";
 
-// UI Theme — Modern Premium Palette
+// UI Theme - Modern Premium Palette
 global.UI_COL_PRIMARY          = #2F6FEF;
 global.UI_COL_PRIMARY_HOVER    = #215CDA;
 global.UI_COL_BG_SIDEBAR       = #F8FAFC;

@@ -83,7 +83,7 @@ ui_test_suite("DynamicAABBTree2D", function() {
         assert_false(dummy.hit, "element not queryable after remove");
     });
     
-    ui_test("move small — element stays queryable at original position", function() {
+    ui_test("move small - element stays queryable at original position", function() {
         var tree = new DynamicAABBTree2D(16);
         var dummy = { __drawIndex: 0 };
         var _id = tree.insert(dummy, 0, 0, 100, 100);
@@ -93,7 +93,7 @@ ui_test_suite("DynamicAABBTree2D", function() {
         assert_equal(result, dummy, "element still queryable after small move");
     });
     
-    ui_test("move large — element queryable at new position, not old", function() {
+    ui_test("move large - element queryable at new position, not old", function() {
         var tree = new DynamicAABBTree2D(16);
         var dummy = { __drawIndex: 0 };
         var _id = tree.insert(dummy, 0, 0, 100, 100);
@@ -125,7 +125,7 @@ ui_test_suite("DynamicAABBTree2D", function() {
         assert_greater_equal(tree.maxDrawIndex[tree.root], 99, "maxDrawIndex propagated");
     });
     
-    ui_test("dynamic capacity expansion — insert beyond initial capacity", function() {
+    ui_test("dynamic capacity expansion - insert beyond initial capacity", function() {
         var tree = new DynamicAABBTree2D(4);
         var d = { __drawIndex: 0 };
         // Insert 10 items (forces expansion)

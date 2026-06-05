@@ -14,7 +14,7 @@ ui_test_suite("ZIndexAndDrawOrder", function() {
         assert_equal(result, high, "high drawIndex element wins");
     });
     
-    ui_test("Spatial tree: three overlapping — highest drawIndex wins", function() {
+    ui_test("Spatial tree: three overlapping - highest drawIndex wins", function() {
         var tree = new DynamicAABBTree2D(32);
         var a = { __drawIndex: 5  };  
         var b = { __drawIndex: 15 };  
@@ -64,12 +64,12 @@ ui_test_suite("ZIndexAndDrawOrder", function() {
     
     ui_test("Element outside spatial tree (display=false) is not queryable", function() {
         var tree = new DynamicAABBTree2D(32);
-        // Never inserted — simulates a hidden element
+        // Never inserted - simulates a hidden element
         var result = tree.getTopmostAtPoint(50, 50);
         assert_is_undefined(result, "nothing in empty tree");
     });
     
-    ui_test("Move element to new position — old position returns undefined", function() {
+    ui_test("Move element to new position - old position returns undefined", function() {
         var tree = new DynamicAABBTree2D(32);
         var d  = { __drawIndex: 1 };
         var _id = tree.insert(d, 0, 0, 50, 50);

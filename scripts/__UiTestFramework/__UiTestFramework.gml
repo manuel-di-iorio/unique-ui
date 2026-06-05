@@ -22,7 +22,7 @@ function __ui_test_init() {
 
 /// Register a named test suite.
 /// @param {String} name
-/// @param {Function} suite_fn  — function that calls ui_test() inside
+/// @param {Function} suite_fn  - function that calls ui_test() inside
 function ui_test_suite(name, suite_fn) {
     __ui_test_init();
     array_push(global.__ui_test_suites, { name: name, fn: suite_fn });
@@ -185,7 +185,7 @@ function ui_test_run_all() {
     
     show_debug_message("");
     show_debug_message("══════════════════════════════════════════");
-    show_debug_message("  UniqueUI Test Suite — Running...");
+    show_debug_message("  UniqueUI Test Suite - Running...");
     show_debug_message("══════════════════════════════════════════");
     
     var suites = global.__ui_test_suites;

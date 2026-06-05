@@ -4,7 +4,7 @@
 
 ui_test_suite("UiTabs", function() {
     
-    ui_test("Create — selectedIndex defaults to 0", function() {
+    ui_test("Create - selectedIndex defaults to 0", function() {
         var tabs = new UiTabs([{ label: "A" }, { label: "B" }], {}, {});
         assert_equal(tabs.selectedIndex, 0, "selectedIndex = 0");
     });

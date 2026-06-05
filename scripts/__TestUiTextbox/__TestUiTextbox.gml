@@ -234,55 +234,55 @@ ui_test_suite("UiTextbox", function() {
     
     // ── Format validation ────────────────────────────────────
     
-    ui_test("integer format — digit is valid", function() {
+    ui_test("integer format - digit is valid", function() {
         var tb  = __tb({ format: "integer" });
         var inp = tb.Input;
         assert_true(inp.isValidCharacter("5", "", 0), "digit valid for integer");
     });
     
-    ui_test("integer format — letter is invalid", function() {
+    ui_test("integer format - letter is invalid", function() {
         var tb  = __tb({ format: "integer" });
         var inp = tb.Input;
         assert_false(inp.isValidCharacter("a", "", 0), "letter invalid for integer");
     });
     
-    ui_test("integer format — minus valid at pos 0 with negative=true", function() {
+    ui_test("integer format - minus valid at pos 0 with negative=true", function() {
         var tb  = __tb({ format: "integer", negative: true });
         var inp = tb.Input;
         assert_true(inp.isValidCharacter("-", "", 0), "minus valid at pos 0");
     });
     
-    ui_test("integer format — minus invalid at pos 1", function() {
+    ui_test("integer format - minus invalid at pos 1", function() {
         var tb  = __tb({ format: "integer", negative: true });
         var inp = tb.Input;
         assert_false(inp.isValidCharacter("-", "1", 1), "minus invalid at pos 1");
     });
     
-    ui_test("integer format — minus invalid when negative=false", function() {
+    ui_test("integer format - minus invalid when negative=false", function() {
         var tb  = __tb({ format: "integer", negative: false });
         var inp = tb.Input;
         assert_false(inp.isValidCharacter("-", "", 0), "minus invalid when negative=false");
     });
     
-    ui_test("float format — digit is valid", function() {
+    ui_test("float format - digit is valid", function() {
         var tb  = __tb({ format: "float" });
         var inp = tb.Input;
         assert_true(inp.isValidCharacter("3", "", 0), "digit valid for float");
     });
     
-    ui_test("float format — first dot is valid", function() {
+    ui_test("float format - first dot is valid", function() {
         var tb  = __tb({ format: "float" });
         var inp = tb.Input;
         assert_true(inp.isValidCharacter(".", "", 0), "first dot valid");
     });
     
-    ui_test("float format — second dot is invalid", function() {
+    ui_test("float format - second dot is invalid", function() {
         var tb  = __tb({ format: "float" });
         var inp = tb.Input;
         assert_false(inp.isValidCharacter(".", "1.", 1), "second dot invalid");
     });
     
-    ui_test("string format — all printable chars valid", function() {
+    ui_test("string format - all printable chars valid", function() {
         var tb  = __tb({ format: "string" });
         var inp = tb.Input;
         assert_true(inp.isValidCharacter("a", "", 0), "letter valid for string");
@@ -343,7 +343,7 @@ ui_test_suite("UiTextbox", function() {
         assert_false(inp.focused, "focused = false after onBlur");
     });
     
-    ui_test("onBlur for integer format — empty becomes '0'", function() {
+    ui_test("onBlur for integer format - empty becomes '0'", function() {
         var tb  = __tb({ format: "integer" });
         var inp = tb.Input;
         inp.focused  = true;
@@ -352,7 +352,7 @@ ui_test_suite("UiTextbox", function() {
         assert_equal(tb.value, "0", "empty integer → '0'");
     });
     
-    ui_test("onBlur for float format — clamps to max if exceeded", function() {
+    ui_test("onBlur for float format - clamps to max if exceeded", function() {
         var tb  = __tb({ format: "float", max: 10 });
         var inp = tb.Input;
         inp.focused = true;
@@ -361,7 +361,7 @@ ui_test_suite("UiTextbox", function() {
         assert_equal(real(tb.value), 10, "clamped to max=10");
     });
     
-    ui_test("onBlur for float format — clamps to min if below", function() {
+    ui_test("onBlur for float format - clamps to min if below", function() {
         var tb  = __tb({ format: "float", min: 0 });
         var inp = tb.Input;
         inp.focused = true;

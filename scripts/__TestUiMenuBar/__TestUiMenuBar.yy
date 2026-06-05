@@ -1,12 +1,12 @@
 {
   "$GMScript":"v1",
-  "%Name":"UiStore",
+  "%Name":"__TestUiMenuBar",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"UiStore",
+  "name":"__TestUiMenuBar",
   "parent":{
-    "name":"UniqueUI",
-    "path":"folders/UniqueUI.yy",
+    "name":"UniqueUI__Tests",
+    "path":"folders/UniqueUI__Tests.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

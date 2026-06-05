@@ -1,9 +1,9 @@
 {
   "$GMScript":"v1",
-  "%Name":"UiStore",
+  "%Name":"UiMenuBar",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"UiStore",
+  "name":"UiMenuBar",
   "parent":{
     "name":"UniqueUI",
     "path":"folders/UniqueUI.yy",

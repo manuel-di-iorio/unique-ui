@@ -53,7 +53,7 @@ ui_test_suite("UiCheckbox", function() {
     
     ui_test("onChange not called if not provided (no crash)", function() {
         var cb = new UiCheckbox({}, {});
-        // No onChange prop — should not crash
+        // No onChange prop - should not crash
         cb.dispatchEvent(UI_EVENT.click, cb);
         assert_true(cb.value, "toggled without crash");
     });

@@ -1,5 +1,5 @@
 // ============================================================
-//  UniqueUI Test Runner — Entry Point
+//  UniqueUI Test Runner - Entry Point
 //
 //  Call ui_test_run_all() from anywhere (e.g. a room creation
 //  code, an object Create event, or a debug key press) to run

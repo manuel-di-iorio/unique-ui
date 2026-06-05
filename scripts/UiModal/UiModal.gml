@@ -1,4 +1,4 @@
-/// @desc UiModal — an overlay dialog box.
+/// @desc UiModal - an overlay dialog box.
 /// @param {Struct} style
 /// @param {Struct} props
 function UiModal(style = {}, props = {}) : UiNode(style, props) constructor {

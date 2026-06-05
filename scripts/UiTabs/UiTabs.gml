@@ -1,4 +1,4 @@
-/// @desc UiTabs — tab-strip that shows/hides content panels.
+/// @desc UiTabs - tab-strip that shows/hides content panels.
 /// @param {Array} items   Array of structs: { label: string, content: UiNode }
 /// @param {Struct} style  FlexPanel layout style
 /// @param {Struct} props  Props: selectedIndex, onChange
@@ -33,7 +33,7 @@ function UiTabs(items, style = {}, props = {}): UiNode(style, props) constructor
     
     // ── Build tabs ───────────────────────────────────────────────────────────
     // IMPORTANT: Strip children (buttons) are safe to destroy/recreate.
-    // Content panels are owned by the caller — NEVER call destroyChildren on
+    // Content panels are owned by the caller - NEVER call destroyChildren on
     // ContentArea. Content panels are added once (tracked by __addedToTabs)
     // and only shown/hidden on subsequent calls.
     self.__buildTabs = function() {
@@ -115,7 +115,7 @@ function UiTabs(items, style = {}, props = {}): UiNode(style, props) constructor
         global.UI.requestUpdate();
     };
     
-    /// @desc Override add — adds a content UiNode for the given tab index.
+    /// @desc Override add - adds a content UiNode for the given tab index.
     self.add = function(node, tabIndex = -1) {
         if (tabIndex >= 0 && tabIndex < array_length(self.items)) {
             self.items[tabIndex].content = node;

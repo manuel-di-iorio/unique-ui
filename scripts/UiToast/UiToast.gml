@@ -1,4 +1,4 @@
-/// @desc UiToast — notification container that spawns alerts in the top-right corner.
+/// @desc UiToast - notification container that spawns alerts in the top-right corner.
 /// @param {Struct} style
 /// @param {Struct} props
 function UiToast(style = {}, props = {}) : UiNode(style, props) constructor {

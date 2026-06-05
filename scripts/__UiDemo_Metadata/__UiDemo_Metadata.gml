@@ -3,6 +3,9 @@ function __ui_demo_get_component_metadata() {
         "Introduction": {
             desc: "Learn the core concepts of UniqueUI: UiRoot, UiNode, container structures, custom drawing, and event handling."
         },
+        "Store": {
+            desc: "Lightweight reactive state management: subscribe to changes, batch updates with setState, and bind UI components to shared state."
+        },
         "Button": {
             desc: "Allows users to perform an action with a single click.",
             props: [
@@ -173,6 +176,14 @@ function __ui_demo_get_component_metadata() {
                 { name: "x", type: "number", desc: "Initial X position" },
                 { name: "y", type: "number", desc: "Initial Y position" },
                 { name: "addItem", type: "function", desc: "Method to add menu items" }
+            ]
+        },
+        "MenuBar": {
+            desc: "Horizontal application menu bar with dropdown panels, shortcuts, separators, and hover-to-switch behavior.",
+            props: [
+                { name: "menus", type: "array", desc: "Array of { label, items } top-level menu entries" },
+                { name: "itemPadding", type: "number", desc: "Horizontal padding for trigger labels (props)" },
+                { name: "closeAll()", type: "method", desc: "Closes any open dropdown panel" }
             ]
         },
         "Modal": {

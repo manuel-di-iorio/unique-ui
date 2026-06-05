@@ -15,8 +15,8 @@ function __ui_demo_refresh(preserveScroll = false) {
     var desc = (componentData != undefined ? componentData.desc : "Explore the capabilities of the component " + global.UI_DEMO.currentPage);
     Hero.add(new UiText(desc, {}, { color: global.UI_COL_TEXT_DIM }));
     
-    // Tabs — Documentation tab is hidden for foundation pages (Colors, Typography, Introduction)
-    var _isFoundation = (global.UI_DEMO.currentPage == "Colors" || global.UI_DEMO.currentPage == "Typography" || global.UI_DEMO.currentPage == "Introduction");
+    // Tabs - Documentation tab is hidden for foundation pages (Colors, Typography, Introduction)
+    var _isFoundation = (global.UI_DEMO.currentPage == "Colors" || global.UI_DEMO.currentPage == "Typography" || global.UI_DEMO.currentPage == "Store" || global.UI_DEMO.currentPage == "Introduction");
 
     // If a foundation page lands on Documentation tab, redirect to Preview
     if (_isFoundation && global.UI_DEMO.currentTab == "Documentation") {
@@ -152,6 +152,7 @@ function __ui_demo_get_examples_map() {
         "Introduction": ui_demo_example_introduction,
         "Colors":      ui_demo_example_colors,
         "Typography":  ui_demo_example_typography,
+        "Store":       ui_demo_example_store,
         "Button":      ui_demo_example_button,
         "Textbox":     ui_demo_example_textbox,
         "Textarea":    ui_demo_example_textarea,
@@ -169,6 +170,7 @@ function __ui_demo_get_examples_map() {
         "Slider":      ui_demo_example_slider,
         "Sprite":      ui_demo_example_sprite,
         "ContextMenu": ui_demo_example_contextmenu,
+        "MenuBar":     ui_demo_example_menubar,
         "Tooltip":     ui_demo_example_tooltip,
         "Treeview":    ui_demo_example_treeview,
         "Modal":       ui_demo_example_modal

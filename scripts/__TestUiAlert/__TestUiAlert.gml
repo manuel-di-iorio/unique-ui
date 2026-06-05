@@ -4,12 +4,12 @@
 
 ui_test_suite("UiAlert", function() {
     
-    ui_test("Create — message property set", function() {
+    ui_test("Create - message property set", function() {
         var a = new UiAlert("Something happened.", {}, {});
         assert_equal(a.message, "Something happened.", "message stored");
     });
     
-    ui_test("Create — default type is 'info'", function() {
+    ui_test("Create - default type is 'info'", function() {
         var a = new UiAlert("msg", {}, {});
         assert_equal(a.alertType, "info", "alertType = info");
     });

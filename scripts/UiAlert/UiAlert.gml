@@ -1,4 +1,4 @@
-/// @desc UiAlert — contextual feedback banner with type, optional title, and dismiss button.
+/// @desc UiAlert - contextual feedback banner with type, optional title, and dismiss button.
 /// Types: "info", "success", "warning", "error"
 function UiAlert(message, style = {}, props = {}): UiNode(style, props) constructor {
     setName(style[$ "name"] ?? "UiAlert");

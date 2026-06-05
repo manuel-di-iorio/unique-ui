@@ -4,14 +4,14 @@
 
 ui_test_suite("UiToast", function() {
     
-    ui_test("Create — is UiNode with pointerEvents false", function() {
+    ui_test("Create - is UiNode with pointerEvents false", function() {
         var t = new UiToast({}, {});
         assert_true(t.isUiNode, "isUiNode = true");
         assert_false(t.pointerEvents, "pointerEvents = false on container");
         t.destroy();
     });
     
-    ui_test("Show — creates alert and inserts at index 0", function() {
+    ui_test("Show - creates alert and inserts at index 0", function() {
         var t = new UiToast({}, {});
         var a1 = t.show("First toast", "info", undefined, 0);
         

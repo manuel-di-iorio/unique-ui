@@ -6,8 +6,8 @@
   "name":"ui_demo_example_introduction",
   "parent":{
     "name":"Introduction",
-    "path":"folders/Demo/Examples/Introduction.yy"
+    "path":"folders/Demo/Examples/Introduction.yy",
   },
   "resourceType":"GMScript",
-  "resourceVersion":"2.0"
+  "resourceVersion":"2.0",
 }

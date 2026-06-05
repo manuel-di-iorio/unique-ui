@@ -181,18 +181,18 @@ function ui_demo_example_introduction(PreviewCard) {
         { color: global.UI_COL_TEXT_DIM, wrap: true }
     ));
 
-    // --- 7. Interactive Event Demo ---
+    // --- 7. Event Handling & Reactivity ---
     __ui_demo_preview_section(PreviewCard, "Event Handling & Reactivity");
     
     PreviewCard.add(new UiText(
         "Registering handlers for events like mouse clicks or hovers is straightforward. " +
         "Use methods like onClick(callback) or addEventListener(event_type, callback). " +
-        "Try clicking the button below to see the click count update reactively via a valueGetter function.",
+        "UiStore provides push-based reactivity: when you call store.set() or store.setState(), all subscribers fire immediately",
         { width: "100%", marginBottom: 16 },
         { color: global.UI_COL_TEXT_DIM, wrap: true }
     ));
     
-    // Interactive event demo
+    // Interactive event demo - UiStore-powered
     var eventContainer = new UiNode({
         width: "100%",
         flexDirection: "row",
@@ -207,35 +207,49 @@ function ui_demo_example_introduction(PreviewCard) {
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
     
-    var clickState = {
-        count: 0
-    };
-    
-    var eventBtn = new UiButton("Click to Trigger", { marginRight: 16, height: 36 }, { variant: "success" });
-    eventBtn.onClick(method(clickState, function() {
-        self.count += 1;
-    }));
+    // Create a reactive store for this demo
+    var clickStore = new UiStore({ count: 0 });
     
     var counterText = new UiText("Clicks: 0", {}, {
         color: global.UI_COL_TEXT_MAIN,
-        font: fTextBig,
-        valueGetter: method(clickState, function() {
-            return "Clicks: " + string(self.count);
-        })
+        font: fTextBig
     });
+    
+    // Subscribe the label to store changes - fires only when state actually changes
+    clickStore.subscribe(method(counterText, function(state) {
+        self.text = "Clicks: " + string(state.count);
+    }));
+    
+    var eventBtn = new UiButton("Click to Trigger", { marginRight: 16, height: 36 }, { variant: "success" });
+    eventBtn.onClick(method(clickStore, function() {
+        self.set("count", self.get("count") + 1);
+    }));
     
     eventContainer.add(eventBtn);
     eventContainer.add(counterText);
     PreviewCard.add(eventContainer);
     
     return [
-        "// === 1. POINTER EVENTS ===",
+        "// === 1. CONTAINERS & NESTING ===",
+        "var myCard = new UiNode({ width: \"100%\", padding: 16 });",
+        "myCard.add(new UiButton(\"Child Button\", { height: 32 }));",
+        "global.UI.add(myCard);",
+        "",
+        "// === 2. LIFECYCLE (AUTOMATIC VS MANUAL UPDATES) ===",
+        "node.setSize(200, 50); // requestUpdate() + redraw - automatic!",
+        "node.hide();           // requestUpdate() + redraw - automatic!",
+        "",
+        "// Call requestRedraw() manually only for custom onDraw variables:",
+        "node.customColor = #EF4444;",
+        "global.UI.requestRedraw();",
+        "", 
+        "// === 3. POINTER EVENTS ===",
         "// Block input / handle clicks",
         "var node = new UiNode({ width: 100 }, { pointerEvents: true });",
         "// Let clicks pass through",
         "var overlay = new UiNode({ width: 100 }, { pointerEvents: false });",
         "",
-        "// === 2. DRAG & DROP ===",
+        "// === 4. DRAG & DROP ===",
         "var dragNode = new UiNode({ width: 60 }, {",
         "    pointerEvents: true,",
         "    draggable: true",
@@ -245,28 +259,24 @@ function ui_demo_example_introduction(PreviewCard) {
         "    dropzone: true",
         "});",
         "dropTarget.onDrop = function(draggedNode) {",
-        "    show_debug_message(\"Dropped node: \" + string(draggedNode.id));",
+        "    show_debug_message(\"Dropped: \" + string(draggedNode.id));",
         "};",
+        "",   
+        "// === 5. REACTIVE STATE (UiStore) ===",
+        "// Create a store with initial state",
+        "var store = new UiStore({ count: 0 });",
         "",
-        "// === 3. LIFECYCLE (AUTOMATIC VS MANUAL UPDATES) ===",
-        "// Wrapper methods automatically trigger layout updates and repaints internally:",
-        "node.setSize(200, 50); // Calls requestUpdate() + redraws automatically!",
-        "node.hide();           // Calls requestUpdate() + redraws automatically!",
+        "// Subscribe - fires immediately when state changes",
+        "store.subscribe(method(myLabel, function(state) {",
+        "    self.text = \"Clicks: \" + string(state.count);",
+        "}));",
         "",
-        "// Call requestRedraw() manually ONLY when changing custom variables used in custom onDraw():",
-        "node.customColor = #EF4444;",
-        "global.UI.requestRedraw(); // Visual-only repaint, highly optimized!",
+        "// Update state - all subscribers are notified automatically",
+        "myButton.onClick(function() {",
+        "    store.set(\"count\", store.get(\"count\") + 1);",
+        "});",
         "",
-        "// === 4. CONTAINERS & NESTING ===",
-        "var myCard = new UiNode({ width: \"100%\", padding: 16 });",
-        "var button = new UiButton(\"Child Button\", { height: 32 });",
-        "myCard.add(button); // Nest child inside parent container",
-        "global.UI.add(myCard);",
-        "",
-        "// === 5. CUSTOM DRAWING (onDraw) ===",
-        "var customNode = new UiNode({ width: \"100%\", height: 60 });",
-        "customNode.onDraw = method(customNode, function() {",
-        "    draw_rectangle_color(x1, y1, x2, y2, #6366F1, #3B82F6, #3B82F6, #6366F1, false);",
-        "});"
+        "// Batch-update multiple keys in one notification",
+        "store.setState({ count: 0, label: \"Reset\" });",
     ];
 }

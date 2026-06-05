@@ -85,7 +85,7 @@ ui_test_suite("EventSystem", function() {
         assert_false(state.parent_leave, "mouseleave does not bubble to parent");
     });
     
-    ui_test("Multiple listeners on same event — all called in order", function() {
+    ui_test("Multiple listeners on same event - all called in order", function() {
         var n = __node();
         var state = { order: [] };
         n.addEventListener(UI_EVENT.click, method(state, function(t) { array_push(order, 1); return false; }));
@@ -99,7 +99,7 @@ ui_test_suite("EventSystem", function() {
         assert_equal(state.order[2], 3, "third");
     });
     
-    ui_test("Deep hierarchy — bubble traverses all ancestors", function() {
+    ui_test("Deep hierarchy - bubble traverses all ancestors", function() {
         var root  = __node();
         var mid   = __node();
         var child = __node();

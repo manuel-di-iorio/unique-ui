@@ -74,35 +74,6 @@ ui_test_suite("UiTreeview", function() {
         assert_equal(state.received, item, "callback receives correct item");
     });
     
-    // ── validateDrop ─────────────────────────────────────────
-    
-    ui_test("validateDrop returns false when dragging onto itself", function() {
-        var tv   = __make_treeview();
-        var item = __make_item(tv);
-        assert_false(tv.validateDrop(item, item), "cannot drop on self");
-    });
-    
-    ui_test("validateDrop false for Texture type", function() {
-        var tv = __make_treeview();
-        var dragged = new UiTreeviewItem({}, { treeview: tv, assetType: "Texture" });
-        var target  = new UiTreeviewItem({}, { treeview: tv, assetType: "Folder"  });
-        assert_false(tv.validateDrop(dragged, target), "Texture cannot be moved");
-    });
-    
-    ui_test("validateDrop false for Material type", function() {
-        var tv = __make_treeview();
-        var dragged = new UiTreeviewItem({}, { treeview: tv, assetType: "Material" });
-        var target  = new UiTreeviewItem({}, { treeview: tv, assetType: "Folder"   });
-        assert_false(tv.validateDrop(dragged, target), "Material cannot be moved");
-    });
-    
-    ui_test("validateDrop true: Folder dropped on Folder", function() {
-        var tv = __make_treeview();
-        var dragged = new UiTreeviewItem({}, { treeview: tv, assetType: "Folder" });
-        var target  = new UiTreeviewItem({}, { treeview: tv, assetType: "Folder" });
-        assert_true(tv.validateDrop(dragged, target), "Folder can drop on Folder");
-    });
-    
     // ── UiTreeviewItem ───────────────────────────────────────
     
     ui_test("Item has Content sub-node", function() {

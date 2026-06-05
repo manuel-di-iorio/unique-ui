@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ui_demo_example_menubar",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ui_demo_example_menubar",
+  "parent":{
+    "name":"MenuBar",
+    "path":"folders/Demo/Examples/MenuBar.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

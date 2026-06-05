@@ -223,7 +223,7 @@ ui_test_suite("UiNode", function() {
     
     // ── Event listeners ──────────────────────────────────────
     
-    ui_test("addEventListener bubble — callback stored", function() {
+    ui_test("addEventListener bubble - callback stored", function() {
         var n = __make_node();
         var cb = function() {};
         n.addEventListener(UI_EVENT.click, cb);
@@ -232,7 +232,7 @@ ui_test_suite("UiNode", function() {
         assert_equal(array_length(listeners.bubble), 1, "1 bubble listener");
     });
     
-    ui_test("addEventListener capture — callback stored in capture array", function() {
+    ui_test("addEventListener capture - callback stored in capture array", function() {
         var n = __make_node();
         var cb = function() {};
         n.addEventListener(UI_EVENT.click, cb, true);

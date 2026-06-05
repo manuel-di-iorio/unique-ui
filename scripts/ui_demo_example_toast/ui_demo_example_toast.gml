@@ -1,4 +1,4 @@
-/// @desc ui_demo_example_toast — interactive showcase for UiToast.
+/// @desc ui_demo_example_toast - interactive showcase for UiToast.
 /// @param {Struct} PreviewCard The container node to append playground elements to
 /// @return {Array} Code lines preview for the code panel
 function ui_demo_example_toast(PreviewCard) {

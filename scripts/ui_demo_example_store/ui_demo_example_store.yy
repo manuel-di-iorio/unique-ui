@@ -1,12 +1,12 @@
 {
   "$GMScript":"v1",
-  "%Name":"UiStore",
+  "%Name":"ui_demo_example_store",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"UiStore",
+  "name":"ui_demo_example_store",
   "parent":{
-    "name":"UniqueUI",
-    "path":"folders/UniqueUI.yy",
+    "name":"Store",
+    "path":"folders/Demo/Examples/Store.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

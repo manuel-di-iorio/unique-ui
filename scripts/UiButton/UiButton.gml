@@ -86,6 +86,12 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
         self.pointerEvents = enabled;
         global.UI.requestRedraw();
     }
+
+    function click() {
+        if (!self.enabled) return self;
+        global.UI.dispatchEvent(UI_EVENT.click, self);
+        return self;
+    }
     
     function setText(text) {
         self.text = text;
