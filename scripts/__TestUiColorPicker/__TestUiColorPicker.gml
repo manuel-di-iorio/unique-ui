@@ -19,10 +19,10 @@ ui_test_suite("UiColorPicker", function() {
         assert_equal(_cp.label, "Color", "label stored");
     });
     
-    ui_test("Trigger sub-node exists", function() {
+    ui_test("HexField sub-node exists", function() {
         var _cp = new UiColorPicker({}, {});
-        assert_not_undefined(_cp.Trigger, "Trigger exists");
-        assert_true(_cp.Trigger.isUiNode, "Trigger is UiNode");
+        assert_not_undefined(_cp.HexField, "HexField exists");
+        assert_true(_cp.HexField.isUiNode, "HexField is UiNode");
     });
     
     ui_test("Panel undefined before opening", function() {

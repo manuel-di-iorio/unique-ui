@@ -148,6 +148,7 @@
     {"id":{"name":"sprUiIconBook","path":"sprites/sprUiIconBook/sprUiIconBook.yy",},},
     {"id":{"name":"sprUiIconButton","path":"sprites/sprUiIconButton/sprUiIconButton.yy",},},
     {"id":{"name":"sprUiIconCard","path":"sprites/sprUiIconCard/sprUiIconCard.yy",},},
+    {"id":{"name":"sprUiIconCheck","path":"sprites/sprUiIconCheck/sprUiIconCheck.yy",},},
     {"id":{"name":"sprUiIconCheckbox","path":"sprites/sprUiIconCheckbox/sprUiIconCheckbox.yy",},},
     {"id":{"name":"sprUiIconCheckboxUnchecked","path":"sprites/sprUiIconCheckboxUnchecked/sprUiIconCheckboxUnchecked.yy",},},
     {"id":{"name":"sprUiIconCopy","path":"sprites/sprUiIconCopy/sprUiIconCopy.yy",},},

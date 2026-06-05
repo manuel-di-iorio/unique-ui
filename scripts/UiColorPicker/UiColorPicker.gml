@@ -101,18 +101,16 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
     self.__syncLock = false;
     
     self.Panel = undefined;
+    self.__copyCheckTimer = 0;
     
     if (self.label != undefined) {
         self.LabelNode = new UiText(self.label, { marginRight: 15, flexShrink: 0 }, { color: global.UI_COL_TEXT_MAIN });
         self.add(self.LabelNode);
     }
     
-    self.Spacer = new UiNode({ flexGrow: 1, height: 1, flexShrink: 1 }, { pointerEvents: false });
-    self.add(self.Spacer);
-    
     self.HexField = new UiNode({
         name: "UiColorPicker.HexField",
-        width: 168,
+        flexGrow: 1,
         height: 32,
         flexDirection: "row",
         alignItems: "center",
@@ -145,7 +143,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             var _col = self.parent.parent.value;
             var _cx = mean(self.x1, self.x2);
             var _cy = mean(self.y1, self.y2);
-            var _r = min(self.x2 - self.x1, self.y2 - self.y1) * 0.5;
+            var _r = min(self.x2 - self.x1, self.y2 - self.y1) * 0.7;
             
             draw_set_color(_col);
             draw_roundrect_ext(_cx - _r, _cy - _r, _cx + _r, _cy + _r, 5, 5, false);
@@ -260,6 +258,8 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
         self.onMouseLeave(function() { global.UI.requestRedraw(); });
         self.onMouseDown(function() {
             clipboard_set_text(__uui_color_to_hex(self.parent.parent.value));
+            self.parent.parent.__copyCheckTimer = 60;
+            global.UI.requestRedraw();
             return true;
         });
         self.onDraw = function() {
@@ -271,9 +271,11 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             }
             var _cx = mean(self.x1, self.x2);
             var _cy = mean(self.y1, self.y2);
-            var _sw = sprite_get_width(sprUiIconCopy);
-            var _sh = sprite_get_height(sprUiIconCopy);
-            draw_sprite_ext(sprUiIconCopy, 0, _cx, _cy, 16 / _sw, 16 / _sh, 0, global.UI_COL_TEXT_DIM, 1);
+            var _sprite = (self.parent.parent.__copyCheckTimer > 0) ? sprUiIconCheck : sprUiIconCopy;
+            var _sw = sprite_get_width(_sprite);
+            var _sh = sprite_get_height(_sprite);
+            var _color = (self.parent.parent.__copyCheckTimer > 0) ? global.UI_COL_SUCCESS : global.UI_COL_TEXT_DIM;
+            draw_sprite_ext(_sprite, 0, _cx, _cy, 16 / _sw, 16 / _sh, 0, _color, 1);
         };
     }
     
@@ -291,6 +293,9 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             if (_ext != self.value) {
                 self.setColor(_ext, false);
             }
+        }
+        if (self.__copyCheckTimer > 0) {
+            self.__copyCheckTimer -= 1;
         }
     });
     
