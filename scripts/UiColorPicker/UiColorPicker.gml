@@ -103,45 +103,187 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
     self.Panel = undefined;
     
     if (self.label != undefined) {
-        self.LabelNode = new UiText(self.label, { marginRight: 15 }, { color: global.UI_COL_TEXT_MAIN });
+        self.LabelNode = new UiText(self.label, { marginRight: 15, flexShrink: 0 }, { color: global.UI_COL_TEXT_MAIN });
         self.add(self.LabelNode);
     }
     
-    self.Trigger = new UiNode({
-        name: "UiColorPicker.Trigger",
-        width: 40,
-        height: 28,
+    self.Spacer = new UiNode({ flexGrow: 1, height: 1, flexShrink: 1 }, { pointerEvents: false });
+    self.add(self.Spacer);
+    
+    self.HexField = new UiNode({
+        name: "UiColorPicker.HexField",
+        width: 168,
+        height: 32,
+        flexDirection: "row",
+        alignItems: "center",
+        flexShrink: 0,
+        paddingLeft: 8,
+        paddingRight: 2
+    }, { pointerEvents: true, borderRadius: 6 });
+    self.add(self.HexField);
+    
+    self.Swatch = new UiNode({
+        name: "UiColorPicker.Swatch",
+        width: 16,
+        height: 16,
+        marginRight: 8,
         flexShrink: 0
     }, { pointerEvents: true, focusable: true, handpoint: true });
-    self.add(self.Trigger);
+    self.HexField.add(self.Swatch);
     
-    with (self.Trigger) {
+    with (self.Swatch) {
         self.onMouseDown(function() {
-            if (self.parent.Panel != undefined) {
-                self.parent.closePanel();
+            var _picker = self.parent.parent;
+            if (_picker.Panel != undefined) {
+                _picker.closePanel();
             } else {
-                self.parent.openPanel();
+                _picker.openPanel();
             }
         });
         
         self.onDraw = function() {
-            var _radius = 6;
-            var _col = self.parent.value;
+            var _col = self.parent.parent.value;
+            var _cx = mean(self.x1, self.x2);
+            var _cy = mean(self.y1, self.y2);
+            var _r = min(self.x2 - self.x1, self.y2 - self.y1) * 0.5;
             
             draw_set_color(_col);
-            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, _radius, _radius, false);
+            draw_roundrect_ext(_cx - _r, _cy - _r, _cx + _r, _cy + _r, 5, 5, false);
             
             if (self.hovered) {
-                draw_set_alpha(0.15);
+                draw_set_alpha(0.2);
                 draw_set_color(c_white);
-                draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, _radius, _radius, false);
+                draw_roundrect_ext(_cx - _r, _cy - _r, _cx + _r, _cy + _r, 5, 5, false);
+                draw_set_alpha(1);
+            }
+        };
+    }
+    
+    var _Picker = self;
+    self.HexInput = new UiTextbox({ flexGrow: 1, height: "100%", minWidth: 0 }, {
+        value: __uui_color_to_hex(self.value),
+        maxLength: 7,
+        placeholder: "#RRGGBB",
+        onChange: method({ _Picker }, function(_hex, _input) {
+            if (_Picker.__syncLock) return;
+            var _col = __uui_hex_to_color(_hex);
+            if (_col != undefined) {
+                _Picker.setColor(_col);
+            }
+        }),
+        onBlur: method({ _Picker }, function(_hex, _input) {
+            if (_Picker.__syncLock) return;
+            var _col = __uui_hex_to_color(_hex);
+            if (_col != undefined) {
+                _Picker.setColor(_col);
+                _Picker.__syncLock = true;
+                _input.value = __uui_color_to_hex(_col);
+                _Picker.__syncLock = false;
+            } else {
+                _Picker.__syncLock = true;
+                _input.value = __uui_color_to_hex(_Picker.value);
+                _Picker.__syncLock = false;
+            }
+        })
+    });
+    self.HexField.add(self.HexInput);
+    
+    with (self.HexInput.Input) {
+        self.border = false;
+        flexpanel_node_style_set_padding(self.node, flexpanel_edge.left, 0);
+        flexpanel_node_style_set_padding(self.node, flexpanel_edge.right, 4);
+        self.onDraw = function() {
+            var _scissor = gpu_get_scissor();
+            var _ix1 = max(self.x1, _scissor.x);
+            var _iy1 = max(self.y1, _scissor.y);
+            var _ix2 = min(self.x2, _scissor.x + _scissor.w);
+            var _iy2 = min(self.y2, _scissor.y + _scissor.h);
+            __uui_set_scissor(_ix1, _iy1, max(0, _ix2 - _ix1), max(0, _iy2 - _iy1));
+            
+            draw_set_color(global.UI_COL_TEXT_MAIN);
+            draw_set_font(fText);
+            draw_set_halign(fa_left);
+            draw_set_valign(fa_middle);
+            
+            var _text = self.parent.value;
+            var _textX = self.x1 + self.layout.paddingLeft - self.scrollOffset;
+            var _textY = floor(mean(self.y1, self.y2));
+            
+            if (self.focused && self.selectionStart != self.selectionEnd) {
+                var _start = min(self.selectionStart, self.selectionEnd);
+                var _ended = max(self.selectionStart, self.selectionEnd);
+                var _startX = _textX + string_width(string_copy(_text, 1, _start));
+                var _endX = _textX + string_width(string_copy(_text, 1, _ended));
+                draw_set_color(global.UI_COL_SELECTION);
+                draw_set_alpha(0.3);
+                draw_rectangle(_startX, self.y1 + 2, _endX, self.y2 - 2, false);
                 draw_set_alpha(1);
             }
             
-            draw_set_color(global.UI_COL_BORDER);
-            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, _radius, _radius, true);
+            draw_set_color(global.UI_COL_TEXT_MAIN);
+            if (_text == "" && self.parent.placeholder != undefined) {
+                draw_set_alpha(0.5);
+                draw_text(_textX, _textY, self.parent.placeholder);
+                draw_set_alpha(1);
+            } else {
+                draw_text(_textX, _textY, _text);
+            }
+            
+            if (self.focused && self.showCursor && self.selectionStart == self.selectionEnd) {
+                var _cursorX = _textX + string_width(string_copy(_text, 1, self.cursorPos));
+                draw_set_color(global.UI_COL_PRIMARY);
+                draw_line(_cursorX, self.y1 + 5, _cursorX, self.y2 - 5);
+            }
+            
+            gpu_set_scissor(_scissor);
         };
     }
+    
+    self.Divider = new UiNode({ width: 1, height: 18, flexShrink: 0 }, { pointerEvents: false });
+    self.HexField.add(self.Divider);
+    with (self.Divider) {
+        self.onDraw = function() {
+            draw_set_color(global.UI_COL_BORDER);
+            draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
+        };
+    }
+    
+    self.CopyBtn = new UiNode({
+        name: "UiColorPicker.CopyBtn",
+        width: 32,
+        height: "90%",
+        margin: 3
+    }, { pointerEvents: true, handpoint: true });
+    self.HexField.add(self.CopyBtn);
+    with (self.CopyBtn) {
+        self.onMouseEnter(function() { global.UI.requestRedraw(); });
+        self.onMouseLeave(function() { global.UI.requestRedraw(); });
+        self.onMouseDown(function() {
+            clipboard_set_text(__uui_color_to_hex(self.parent.parent.value));
+            return true;
+        });
+        self.onDraw = function() {
+            if (self.hovered) {
+                draw_set_alpha(0.08);
+                draw_set_color(global.UI_COL_TEXT_MAIN);
+                draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
+                draw_set_alpha(1);
+            }
+            var _cx = mean(self.x1, self.x2);
+            var _cy = mean(self.y1, self.y2);
+            var _sw = sprite_get_width(sprUiIconCopy);
+            var _sh = sprite_get_height(sprUiIconCopy);
+            draw_sprite_ext(sprUiIconCopy, 0, _cx, _cy, 16 / _sw, 16 / _sh, 0, global.UI_COL_TEXT_DIM, 1);
+        };
+    }
+    
+    self.HexField.onDraw = function() {
+        var _focused = self.HexInput.Input.focused;
+        draw_set_color(global.UI_COL_BG_CARD);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
+        draw_set_color(_focused ? global.UI_COL_PRIMARY : global.UI_COL_BORDER);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, true);
+    };
     
     self.onStep(function() {
         if (self.valueGetter != undefined && !self.__syncLock) {
@@ -168,12 +310,10 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
         var _changed = (self.value != _col);
         self.value = _col;
         self.syncHsvFromValue();
-        if (self.Panel != undefined) {
-            if (self.Panel.HexInput != undefined) {
-                self.__syncLock = true;
-                self.Panel.HexInput.value = __uui_color_to_hex(self.value);
-                self.__syncLock = false;
-            }
+        if (self.HexInput != undefined) {
+            self.__syncLock = true;
+            self.HexInput.value = __uui_color_to_hex(self.value);
+            self.__syncLock = false;
         }
         if (_fireChange && _changed) self.onChange(self.value, self);
         global.UI.requestRedraw();
@@ -183,12 +323,10 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
         var _newCol = self.colorFromHsv();
         if (_newCol != self.value) {
             self.value = _newCol;
-            if (self.Panel != undefined) {
-                if (self.Panel.HexInput != undefined) {
-                    self.__syncLock = true;
-                    self.Panel.HexInput.value = __uui_color_to_hex(self.value);
-                    self.__syncLock = false;
-                }
+            if (self.HexInput != undefined) {
+                self.__syncLock = true;
+                self.HexInput.value = __uui_color_to_hex(self.value);
+                self.__syncLock = false;
             }
             if (_fireChange) self.onChange(self.value, self);
             global.UI.requestRedraw();
@@ -197,7 +335,6 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
     
     self.openPanel = function() {
         var _Picker = self;
-        var _Trigger = self.Trigger;
         
         self.Panel = new UiNode({
             name: "UiColorPicker.Panel",
@@ -214,17 +351,17 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             
             self.computePosition = function() {
                 var _Picker = self.Picker;
-                if (!_Picker.Trigger.isVisible()) return _Picker.closePanel();
+                if (!_Picker.HexField.isVisible()) return _Picker.closePanel();
                 
                 var _height = self.layout.height;
                 if (!_height) return;
                 
-                var _Trigger = _Picker.Trigger;
-                if (abs(self.x1 - _Trigger.x1) > 1) self.setLeft(_Trigger.x1);
+                var _Anchor = _Picker.HexField;
+                if (abs(self.x1 - _Anchor.x1) > 1) self.setLeft(_Anchor.x1);
                 
-                var _yy = floor(_Trigger.y2 + 6);
+                var _yy = floor(_Anchor.y2 + 6);
                 if (_yy + _height > display_get_gui_height()) {
-                    _yy = floor(_Trigger.y1 - 6 - _height);
+                    _yy = floor(_Anchor.y1 - 6 - _height);
                 }
                 if (abs(self.y1 - _yy) > 1) self.setTop(_yy);
             };
@@ -241,12 +378,10 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
                     }
                     
                     var _Picker = self.Picker;
-                    var _y1 = min(self.y1, _Picker.y1);
-                    var _y2 = max(self.y2, _Picker.y2);
-                    var _x1 = min(self.x1, _Picker.Trigger.x1);
-                    var _x2 = max(self.x2, _Picker.Trigger.x2);
+                    var _inPanel = point_in_rectangle(global.UI.mouseX, global.UI.mouseY, self.x1, self.y1, self.x2, self.y2);
+                    var _inPicker = point_in_rectangle(global.UI.mouseX, global.UI.mouseY, _Picker.x1, _Picker.y1, _Picker.x2, _Picker.y2);
                     
-                    if (!point_in_rectangle(global.UI.mouseX, global.UI.mouseY, _x1, _y1, _x2, _y2)) {
+                    if (!_inPanel && !_inPicker) {
                         _Picker.closePanel();
                     }
                 }
@@ -326,8 +461,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             self.HueBar = new UiNode({
                 name: "UiColorPicker.Panel.HueBar",
                 width: "100%",
-                height: 14,
-                marginBottom: 10
+                height: 14
             }, { pointerEvents: true, handpoint: true });
             self.add(self.HueBar);
             
@@ -379,63 +513,6 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
                     draw_roundrect_ext(_hx - 3, self.y1 - 2, _hx + 3, self.y2 + 2, 2, 2, true);
                 };
             }
-            
-            // Preview swatch + hex field
-            self.Footer = new UiNode({
-                name: "UiColorPicker.Panel.Footer",
-                width: "100%",
-                height: 28,
-                flexDirection: "row",
-                alignItems: "center"
-            });
-            self.add(self.Footer);
-            
-            self.Preview = new UiNode({
-                name: "UiColorPicker.Panel.Preview",
-                width: 28,
-                height: 28,
-                marginRight: 10,
-                flexShrink: 0
-            }, { pointerEvents: false });
-            self.Footer.add(self.Preview);
-            
-            with (self.Preview) {
-                self.onDraw = function() {
-                    var _col = self.parent.parent.Picker.value;
-                    draw_set_color(_col);
-                    draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
-                    draw_set_color(global.UI_COL_BORDER);
-                    draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, true);
-                };
-            }
-            
-            self.HexInput = new UiTextbox({ flexGrow: 1, height: 28 }, {
-                value: __uui_color_to_hex(_Picker.value),
-                maxLength: 7,
-                placeholder: "#RRGGBB",
-                onChange: method({ _Picker }, function(_hex, _input) {
-                    if (_Picker.__syncLock) return;
-                    var _col = __uui_hex_to_color(_hex);
-                    if (_col != undefined) {
-                        _Picker.setColor(_col);
-                    }
-                }),
-                onBlur: method({ _Picker }, function(_hex, _input) {
-                    if (_Picker.__syncLock) return;
-                    var _col = __uui_hex_to_color(_hex);
-                    if (_col != undefined) {
-                        _Picker.setColor(_col);
-                        _Picker.__syncLock = true;
-                        _input.value = __uui_color_to_hex(_col);
-                        _Picker.__syncLock = false;
-                    } else {
-                        _Picker.__syncLock = true;
-                        _input.value = __uui_color_to_hex(_Picker.value);
-                        _Picker.__syncLock = false;
-                    }
-                })
-            });
-            self.Footer.add(self.HexInput);
         }
         
         global.UI.getOverlay().add(self.Panel);
