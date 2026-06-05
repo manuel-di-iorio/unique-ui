@@ -1,4 +1,4 @@
-<img src="other/unique_ui_logo.svg" width="300px" />
+<img src="other/unique_ui_logo_white.svg" width="300px" />
 
 ### A high-performance, UI  Engine for GameMaker.
 

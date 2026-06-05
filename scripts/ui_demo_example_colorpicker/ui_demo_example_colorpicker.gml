@@ -1,12 +1,10 @@
 function ui_demo_example_colorpicker(PreviewCard) {
-    PreviewCard.add(new UiColorPicker({ marginBottom: 16, width: "100%", height: 32 }, {
-        label: "Accent color",
+    PreviewCard.add(new UiColorPicker({ marginBottom: 16, height: 32 }, {
         value: global.UI_COL_PRIMARY
     }));
 
     var _state = { hex: __uui_color_to_hex(global.UI_COL_SUCCESS) };
-    PreviewCard.add(new UiColorPicker({ marginBottom: 24, width: "100%", height: 32 }, {
-        label: "With onChange (live preview)",
+    PreviewCard.add(new UiColorPicker({ marginBottom: 24, height: 32 }, {
         value: global.UI_COL_SUCCESS,
         onChange: method(_state, function(_col) {
             hex = __uui_color_to_hex(_col);
@@ -21,12 +19,10 @@ function ui_demo_example_colorpicker(PreviewCard) {
 
     return [
         "new UiColorPicker({ width: \"100%\", height: 32 }, {",
-        "  label: \"Accent color\",",
         "  value: global.UI_COL_PRIMARY",
         "});",
         "",
         "new UiColorPicker({ width: \"100%\", height: 32 }, {",
-        "  label: \"With onChange (live preview)\",",
         "  value: #23A75A,",
         "  onChange: function(col, picker) {",
         "    show_debug_message(__uui_color_to_hex(col));",

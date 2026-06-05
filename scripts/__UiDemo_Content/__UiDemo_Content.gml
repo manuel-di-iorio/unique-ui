@@ -226,9 +226,7 @@ function __ui_demo_render_overview(area) {
         { label: "Tab Three", content: TabThreeContent }
     ], { width: "100%" }, { selectedIndex: 0 }));
     
-    var CodePanel = __ui_demo_code_panel("Example Code", 704, 372);
-    Body.add(CodePanel);
-    __ui_demo_add_code_lines(CodePanel, [
+    var _codeLines = [
         "new UiButton(\"Primary\", {}, { variant: \"primary\" });",
         "new UiButton(\"Secondary\", {}, { variant: \"secondary\" });",
         "new UiButton(\"Outline\", {}, { variant: \"outline\" });",
@@ -257,7 +255,10 @@ function __ui_demo_render_overview(area) {
         "    { label: \"Tab Two\", content: \"Content for Tab Two.\" },",
         "    { label: \"Tab Three\", content: \"Content for Tab Three.\" }",
         "], {}, { selectedIndex: 0 });"
-    ]);
+    ];
+    var CodePanel = __ui_demo_code_panel("Example Code", 704, __ui_demo_measure_code_panel_width("Example Code", _codeLines));
+    Body.add(CodePanel);
+    __ui_demo_add_code_lines(CodePanel, _codeLines);
 }
 
 function __ui_demo_overview_card(parent, title, layout = {}) {
@@ -363,7 +364,7 @@ function __ui_demo_overview_alert_row(parent, text, bg, border, icon, textCol, m
         var iconCY = ~~mean(self.y1, self.y2);
         var col = self.__icon;
         
-        // Draw vector-like shapes matching Screen 1 mockup
+        // Draw vector-like shapes
         if (string_pos("informational", self.__text) > 0) {
             // Globe icon for info
             draw_set_color(col);
@@ -396,6 +397,20 @@ function __ui_demo_overview_alert_row(parent, text, bg, border, icon, textCol, m
         draw_text(self.x1 + 36, ~~mean(self.y1, self.y2), self.__text);
     });
     parent.add(row);
+}
+
+function __ui_demo_measure_code_panel_width(title, lines) {
+    var _prevFont = draw_get_font();
+    var _longestLineWidth = 0;
+    var _linesLength = array_length(lines);
+    draw_set_font(fTextSmall);
+    for (var i = 0; i < _linesLength; i++) {
+        _longestLineWidth = max(_longestLineWidth, ceil(string_width(lines[i])));
+    }
+    draw_set_font(fText);
+    var _headerWidth = ceil(string_width(title)) + 16 + 74;
+    draw_set_font(_prevFont);
+    return max(160, _longestLineWidth + 6, _headerWidth) + 36;
 }
 
 function __ui_demo_code_panel(title, height, width = undefined) {

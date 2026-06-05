@@ -1,4 +1,4 @@
-/// @description HTML5-style color picker with popup panel, HSV selector and hex input.
+/// @description Color picker with popup panel, HSV selector and hex input.
 
 function __uui_byte_to_hex(_n) {
     _n = clamp(floor(_n), 0, 255);
@@ -87,10 +87,10 @@ function __uui_rgb_to_hsv(_col) {
 function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructor {
     flexpanel_node_style_set_flex_direction(self.node, flexpanel_flex_direction.row);
     flexpanel_node_style_set_align_items(self.node, flexpanel_align.center);
+    flexpanel_node_style_set_justify_content(self.node, flexpanel_justify.start);
     
     setName(props[$ "name"] ?? "UiColorPicker");
     self.value = props[$ "value"] ?? #3B82F6;
-    self.label = props[$ "label"] ?? undefined;
     self.onChange = props[$ "onChange"] ?? function(_color, _picker) {};
     self.valueGetter = props[$ "valueGetter"] ?? undefined;
     
@@ -103,22 +103,37 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
     self.Panel = undefined;
     self.__copyCheckTimer = 0;
     
-    if (self.label != undefined) {
-        self.LabelNode = new UiText(self.label, { marginRight: 15, flexShrink: 0 }, { color: global.UI_COL_TEXT_MAIN });
-        self.add(self.LabelNode);
-    }
+    // Contenitore principale che contiene TUTTO (con bordo)
+    self.Container = new UiNode({
+        name: "UiColorPicker.Container",
+        flexDirection: "row",
+        alignItems: "center",
+        height: 32,
+        paddingLeft: 12,
+        paddingRight: 2
+    }, { pointerEvents: true });
+    self.add(self.Container);
+    flexpanel_node_style_set_flex_shrink(self.Container.node, 0);
+    
+    // Disegna il bordo sul Container (non più sull'HexField)
+    self.Container.onDraw = function() {
+        var _focused = self.HexInput.Input.focused;
+        draw_set_color(global.UI_COL_BG_CARD);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
+        draw_set_color(_focused ? global.UI_COL_PRIMARY : global.UI_COL_BORDER);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, true);
+    };
     
     self.HexField = new UiNode({
         name: "UiColorPicker.HexField",
-        flexGrow: 1,
         height: 32,
         flexDirection: "row",
         alignItems: "center",
-        flexShrink: 0,
-        paddingLeft: 8,
-        paddingRight: 2
-    }, { pointerEvents: true, borderRadius: 6 });
-    self.add(self.HexField);
+        paddingLeft: 0,
+        paddingRight: 0
+    }, { pointerEvents: true });
+    self.Container.add(self.HexField);
+    flexpanel_node_style_set_flex_shrink(self.HexField.node, 0);
     
     self.Swatch = new UiNode({
         name: "UiColorPicker.Swatch",
@@ -131,7 +146,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
     
     with (self.Swatch) {
         self.onMouseDown(function() {
-            var _picker = self.parent.parent;
+            var _picker = self.parent.parent.parent;
             if (_picker.Panel != undefined) {
                 _picker.closePanel();
             } else {
@@ -140,7 +155,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
         });
         
         self.onDraw = function() {
-            var _col = self.parent.parent.value;
+            var _col = self.parent.parent.parent.value;
             var _cx = mean(self.x1, self.x2);
             var _cy = mean(self.y1, self.y2);
             var _r = min(self.x2 - self.x1, self.y2 - self.y1) * 0.7;
@@ -158,7 +173,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
     }
     
     var _Picker = self;
-    self.HexInput = new UiTextbox({ flexGrow: 1, height: "100%", minWidth: 0 }, {
+    self.HexInput = new UiTextbox({ height: "100%", minWidth: 75 }, {
         value: __uui_color_to_hex(self.value),
         maxLength: 7,
         placeholder: "#RRGGBB",
@@ -257,8 +272,8 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
         self.onMouseEnter(function() { global.UI.requestRedraw(); });
         self.onMouseLeave(function() { global.UI.requestRedraw(); });
         self.onMouseDown(function() {
-            clipboard_set_text(__uui_color_to_hex(self.parent.parent.value));
-            self.parent.parent.__copyCheckTimer = 60;
+            clipboard_set_text(__uui_color_to_hex(self.parent.parent.parent.value));
+            self.parent.parent.parent.__copyCheckTimer = 60;
             global.UI.requestRedraw();
             return true;
         });
@@ -271,21 +286,13 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             }
             var _cx = mean(self.x1, self.x2);
             var _cy = mean(self.y1, self.y2);
-            var _sprite = (self.parent.parent.__copyCheckTimer > 0) ? sprUiIconCheck : sprUiIconCopy;
+            var _sprite = (self.parent.parent.parent.__copyCheckTimer > 0) ? sprUiIconCheck : sprUiIconCopy;
             var _sw = sprite_get_width(_sprite);
             var _sh = sprite_get_height(_sprite);
-            var _color = (self.parent.parent.__copyCheckTimer > 0) ? global.UI_COL_SUCCESS : global.UI_COL_TEXT_DIM;
+            var _color = (self.parent.parent.parent.__copyCheckTimer > 0) ? global.UI_COL_SUCCESS : global.UI_COL_TEXT_DIM;
             draw_sprite_ext(_sprite, 0, _cx, _cy, 16 / _sw, 16 / _sh, 0, _color, 1);
         };
     }
-    
-    self.HexField.onDraw = function() {
-        var _focused = self.HexInput.Input.focused;
-        draw_set_color(global.UI_COL_BG_CARD);
-        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
-        draw_set_color(_focused ? global.UI_COL_PRIMARY : global.UI_COL_BORDER);
-        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, true);
-    };
     
     self.onStep(function() {
         if (self.valueGetter != undefined && !self.__syncLock) {
@@ -356,12 +363,12 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             
             self.computePosition = function() {
                 var _Picker = self.Picker;
-                if (!_Picker.HexField.isVisible()) return _Picker.closePanel();
+                if (!_Picker.Container.isVisible()) return _Picker.closePanel();
                 
                 var _height = self.layout.height;
                 if (!_height) return;
                 
-                var _Anchor = _Picker.HexField;
+                var _Anchor = _Picker.Container;
                 if (abs(self.x1 - _Anchor.x1) > 1) self.setLeft(_Anchor.x1);
                 
                 var _yy = floor(_Anchor.y2 + 6);

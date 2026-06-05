@@ -8,6 +8,7 @@ function ui_demo_create() {
     global.UI_DEMO = {
         currentPage: "Introduction",
         currentTab: "Preview",
+        currentTheme: "light",
         ScrollArea: undefined,
         BreadcrumbPage: undefined,
         SidebarItems: undefined
@@ -34,7 +35,8 @@ function ui_demo_create() {
     Sidebar.onDraw = method(Sidebar, function() {
         draw_set_color(global.UI_COL_BG_SIDEBAR);
         draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
-        draw_set_color(#E5EAF3);
+        //draw_set_color(#E5EAF3);
+        draw_set_color(global.UI_COL_BORDER);
         draw_line(self.x2, self.y1, self.x2, self.y2);
     });
     Main.add(Sidebar);
@@ -142,9 +144,11 @@ function __ui_demo_render_logo() {
     var container = global.UI_DEMO.LogoRowContainer;
     container.destroyChildren(true);
     var LogoRow = new UiNode({ flexDirection: "row", alignItems: "center" });
+    var _theme = variable_struct_exists(global.UI_DEMO, "currentTheme") ? global.UI_DEMO.currentTheme : "light";
+    var _logoSprite = (_theme == "dark") ? sprLogoWhite : sprLogo;
     container.add(LogoRow);
     //LogoRow.add(new UiText("Unique UI", { marginRight: 10 }, { color: "main" }));
-    LogoRow.add(new UiSprite(sprLogo, { marginRight: 10 }));
+    LogoRow.add(new UiSprite(_logoSprite, { marginRight: 10 }));
     
     var VersionBadge = new UiNode({ paddingLeft: 7, paddingRight: 7, height: 24, justifyContent: "center" });
     VersionBadge.onDraw = method(VersionBadge, function() {

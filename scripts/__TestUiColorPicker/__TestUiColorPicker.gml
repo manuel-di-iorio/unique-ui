@@ -14,11 +14,6 @@ ui_test_suite("UiColorPicker", function() {
         assert_equal(_cp.value, #3B82F6, "default value");
     });
     
-    ui_test("label stored from props", function() {
-        var _cp = new UiColorPicker({}, { label: "Color" });
-        assert_equal(_cp.label, "Color", "label stored");
-    });
-    
     ui_test("HexField sub-node exists", function() {
         var _cp = new UiColorPicker({}, {});
         assert_not_undefined(_cp.HexField, "HexField exists");
