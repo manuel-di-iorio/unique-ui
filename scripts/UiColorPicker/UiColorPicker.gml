@@ -88,6 +88,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
     flexpanel_node_style_set_flex_direction(self.node, flexpanel_flex_direction.row);
     flexpanel_node_style_set_align_items(self.node, flexpanel_align.center);
     flexpanel_node_style_set_justify_content(self.node, flexpanel_justify.start);
+    flexpanel_node_style_set_align_self(self.node, flexpanel_align.flex_start);
     
     setName(props[$ "name"] ?? "UiColorPicker");
     self.value = props[$ "value"] ?? #3B82F6;
@@ -113,7 +114,6 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
         paddingRight: 2
     }, { pointerEvents: true });
     self.add(self.Container);
-    flexpanel_node_style_set_flex_shrink(self.Container.node, 0);
     
     // Disegna il bordo sul Container (non più sull'HexField)
     self.Container.onDraw = function() {
@@ -133,7 +133,6 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
         paddingRight: 0
     }, { pointerEvents: true });
     self.Container.add(self.HexField);
-    flexpanel_node_style_set_flex_shrink(self.HexField.node, 0);
     
     self.Swatch = new UiNode({
         name: "UiColorPicker.Swatch",

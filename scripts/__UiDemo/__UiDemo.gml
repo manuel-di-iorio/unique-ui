@@ -35,7 +35,6 @@ function ui_demo_create() {
     Sidebar.onDraw = method(Sidebar, function() {
         draw_set_color(global.UI_COL_BG_SIDEBAR);
         draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
-        //draw_set_color(#E5EAF3);
         draw_set_color(global.UI_COL_BORDER);
         draw_line(self.x2, self.y1, self.x2, self.y2);
     });
