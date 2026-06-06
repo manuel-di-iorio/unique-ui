@@ -218,7 +218,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         // Assign draw index (matches render order)
         elem.__drawIndex = self.__layoutDrawIndex++;
 
-        // Update element in the spatial partition tree (incremental - no clear!)
+        // Update element in the spatial partition tree
         if (_isVisible && elem.pointerEvents) {
             // Clip bounds to scroll parent's visible area so partially-scrolled-out
             // elements cannot be clicked in their invisible overflow region.
@@ -709,9 +709,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             if (surface_get_width(self.surface) != self.width || surface_get_height(self.surface) != self.height) {
                 surface_free(self.surface);
             }
-        }
-        
-        if (!surface_exists(self.surface)) {
+        } else {
             self.surface = surface_create(self.width, self.height);
             self.requestRedraw();
         }
