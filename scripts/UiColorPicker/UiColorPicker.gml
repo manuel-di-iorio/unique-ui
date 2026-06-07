@@ -213,7 +213,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             __uui_set_scissor(_ix1, _iy1, max(0, _ix2 - _ix1), max(0, _iy2 - _iy1));
             
             draw_set_color(global.UI_COL_TEXT_MAIN);
-            draw_set_font(fText);
+            draw_set_font(global.UI_FONTS.standard);
             draw_set_halign(fa_left);
             draw_set_valign(fa_middle);
             
@@ -289,7 +289,8 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             var _sw = sprite_get_width(_sprite);
             var _sh = sprite_get_height(_sprite);
             var _color = (self.parent.parent.parent.__copyCheckTimer > 0) ? global.UI_COL_SUCCESS : global.UI_COL_TEXT_DIM;
-            draw_sprite_ext(_sprite, 0, _cx, _cy, 16 / _sw, 16 / _sh, 0, _color, 1);
+            var _iconSize = 16 * global.UI_ZOOM;
+            draw_sprite_ext(_sprite, 0, _cx, _cy, _iconSize / _sw, _iconSize / _sh, 0, _color, 1);
         };
     }
     

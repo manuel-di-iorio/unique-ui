@@ -30,7 +30,7 @@ function ui_demo_example_menubar(PreviewCard) {
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
         draw_set_color(global.UI_COL_BORDER);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, true);
-        draw_set_font(fTextSmall);
+        draw_set_font(global.UI_FONTS.small);
         draw_set_color(global.UI_COL_TEXT_DIM);
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
@@ -111,7 +111,7 @@ function ui_demo_example_menubar(PreviewCard) {
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
         draw_set_color(global.UI_COL_BORDER);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, true);
-        draw_set_font(fTextSmall);
+        draw_set_font(global.UI_FONTS.small);
         draw_set_color(global.UI_COL_TEXT_DIM);
         draw_set_halign(fa_center); draw_set_valign(fa_middle);
         draw_text(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2),

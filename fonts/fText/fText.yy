@@ -900,8 +900,8 @@
   "maintainGms1Font":false,
   "name":"fText",
   "parent":{
-    "name":"Fonts",
-    "path":"folders/Demo/Fonts.yy",
+    "name":"HD",
+    "path":"folders/UniqueUI/Fonts/HD.yy",
   },
   "pointRounding":0,
   "ranges":[

@@ -175,7 +175,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
                 var _items = _Dropdown.items;
         
                 if (!array_length(_items)) {
-                    self.Items.add(new UiText("No items found", { marginLeft: 5 }, { color: #CBD5E1, font: fTextItalic }));
+                    self.Items.add(new UiText("No items found", { marginLeft: 5 }, { color: #CBD5E1, font: global.UI_FONTS.italic }));
                 }
         
                 // Add the items

@@ -8,7 +8,7 @@ function __ui_demo_refresh(preserveScroll = false) {
     // Title Section
     var Hero = new UiNode({ width: "100%", flexDirection: "column", marginBottom: 22 });
     area.add(Hero);
-    Hero.add(new UiText(global.UI_DEMO.currentPage, { marginBottom: 8, height: 36 }, { color: global.UI_COL_TEXT_MAIN, font: fTextBig })); 
+    Hero.add(new UiText(global.UI_DEMO.currentPage, { marginBottom: 8, height: 36 }, { color: global.UI_COL_TEXT_MAIN, font: global.UI_FONTS.big })); 
     
     var metadata = __ui_demo_get_component_metadata();
     var componentData = metadata[$ global.UI_DEMO.currentPage];
@@ -380,7 +380,7 @@ function __ui_demo_overview_alert_row(parent, text, bg, border, icon, textCol, m
         } else if (string_pos("warning", self.__text) > 0) {
             // Warning triangle for warning
             if (sprite_exists(sprUiIconAlert)) {
-                var target_size = 14;
+                var target_size = 14 * global.UI_ZOOM;
                 var spr_w = sprite_get_width(sprUiIconAlert);
                 var spr_h = sprite_get_height(sprUiIconAlert);
                 draw_sprite_ext(sprUiIconAlert, 0, iconCX, iconCY, target_size / spr_w, target_size / spr_h, 0, col, 1);
@@ -390,7 +390,7 @@ function __ui_demo_overview_alert_row(parent, text, bg, border, icon, textCol, m
             }
         }
         
-        draw_set_font(fTextSmall);
+        draw_set_font(global.UI_FONTS.small);
         draw_set_color(self.__textCol);
         draw_set_halign(fa_left);
         draw_set_valign(fa_middle);
@@ -403,11 +403,11 @@ function __ui_demo_measure_code_panel_width(title, lines) {
     var _prevFont = draw_get_font();
     var _longestLineWidth = 0;
     var _linesLength = array_length(lines);
-    draw_set_font(fTextSmall);
+    draw_set_font(global.UI_FONTS.small);
     for (var i = 0; i < _linesLength; i++) {
         _longestLineWidth = max(_longestLineWidth, ceil(string_width(lines[i])));
     }
-    draw_set_font(fText);
+    draw_set_font(global.UI_FONTS.standard);
     var _headerWidth = ceil(string_width(title)) + 16 + 74;
     draw_set_font(_prevFont);
     return max(160, _longestLineWidth + 6, _headerWidth) + 36;
@@ -443,7 +443,7 @@ function __ui_demo_code_panel(title, height, width = undefined) {
         draw_set_color(#DDE7F7);
         draw_rectangle(self.x1 + 13, self.y1 + 8, self.x1 + 21, self.y1 + 18, true);
         draw_rectangle(self.x1 + 16, self.y1 + 6, self.x1 + 24, self.y1 + 16, true);
-        draw_set_font(fTextSmall);
+        draw_set_font(global.UI_FONTS.small);
         draw_set_halign(fa_left);
         draw_set_valign(fa_middle);
         draw_text(self.x1 + 32, ~~mean(self.y1, self.y2), "Copy");
@@ -469,6 +469,6 @@ function __ui_demo_add_code_lines(parent, lines) {
 
         var col = #8AB4FF;
         if (string_pos("//", lines[i]) == 1) col = #6B7C99;
-        parent.add(new UiText(lines[i], { marginBottom: 7, width: "100%" }, { color: col, font: fTextSmall, wrap: true }));
+        parent.add(new UiText(lines[i], { marginBottom: 7, width: "100%" }, { color: col, font: global.UI_FONTS.small, wrap: true }));
     }
 }

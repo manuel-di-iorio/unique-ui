@@ -35,7 +35,7 @@ function UiMenuBar(menus = [], style = {}, props = {}) : UiNode(style, props) co
     self.__triggerInsetH   = 2;
     self.__triggerRadius    = 5;
 
-    draw_set_font(fText);
+    draw_set_font(global.UI_FONTS.standard);
 
     self.onDraw = function() {
         // Slightly recessed fill (theme-aware, no hardcoded white)
@@ -107,7 +107,7 @@ function UiMenuBar(menus = [], style = {}, props = {}) : UiNode(style, props) co
                     draw_roundrect_ext(_ix1, _iy1, _ix2, _iy2, _rad, _rad, true);
                 }
 
-                draw_set_font(fText);
+                draw_set_font(global.UI_FONTS.standard);
                 draw_set_color(_isOpen ? c_white : global.UI_COL_TEXT_MAIN);
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_middle);
@@ -129,15 +129,15 @@ function UiMenuBar(menus = [], style = {}, props = {}) : UiNode(style, props) co
     }
 
     function __measureDropdownWidth(items) {
-        draw_set_font(fText);
+        draw_set_font(global.UI_FONTS.standard);
         var _minW = self.__minDropdownWidth;
         for (var j = 0; j < array_length(items); j++) {
             var _it = items[j];
             if (_it[$ "separator"]) continue;
             var _lw = string_width(_it.label);
-            draw_set_font(fTextSmall);
+            draw_set_font(global.UI_FONTS.small);
             var _sw = (_it[$ "shortcut"] != undefined) ? string_width(_it[$ "shortcut"]) : 0;
-            draw_set_font(fText);
+            draw_set_font(global.UI_FONTS.standard);
             var _rowW = 36 + _lw + (_sw > 0 ? _sw + 28 : 0);
             if (_rowW > _minW) _minW = _rowW;
         }
@@ -279,7 +279,7 @@ function UiMenuBar(menus = [], style = {}, props = {}) : UiNode(style, props) co
                         var _xx = self.x1 + 12;
                         var _yy = ~~mean(self.y1, self.y2);
 
-                        draw_set_font(fText);
+                        draw_set_font(global.UI_FONTS.standard);
                         if (self.__disabled) {
                             draw_set_color(#64748B);
                         } else if (self.hovered) {
@@ -292,7 +292,7 @@ function UiMenuBar(menus = [], style = {}, props = {}) : UiNode(style, props) co
                         draw_text(_xx, _yy, self.__label);
 
                         if (self.__shortcut != undefined) {
-                            draw_set_font(fTextSmall);
+                            draw_set_font(global.UI_FONTS.small);
                             if (self.__disabled) {
                                 draw_set_color(#475569);
                             } else if (self.hovered) {
@@ -303,7 +303,7 @@ function UiMenuBar(menus = [], style = {}, props = {}) : UiNode(style, props) co
                             draw_set_halign(fa_right);
                             draw_text(self.x2 - 12, _yy, self.__shortcut);
                             draw_set_halign(fa_left);
-                            draw_set_font(fText);
+                            draw_set_font(global.UI_FONTS.standard);
                         }
                     });
                 }

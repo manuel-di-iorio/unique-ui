@@ -91,3 +91,40 @@ function ui_set_theme(themeName) {
         global.UI.requestRedraw();
     }
 }
+
+// ── Font Management & Zoom ─────────────────────────────────────────────────
+global.UI_ZOOM = 1;
+
+/// @desc Initializes UI_FONTS based on display resolution and sets UI_ZOOM.
+function __uui_init_fonts() {
+    var _w = display_get_width();
+    var _h = display_get_height();
+
+    if (_w >= 3840 || _h >= 2160) {
+        global.UI_FONTS = {
+            standard: fText_4K,
+            big:     fTextBig_4K,
+            small:   fTextSmall_4K,
+            italic:  fTextItalic_4K
+        };
+        global.UI_ZOOM = 1.5;
+    } else if (_w >= 2560 || _h >= 1440) {
+        global.UI_FONTS = {
+            standard: fText_2K,
+            big:     fTextBig_2K,
+            small:   fTextSmall_2K,
+            italic:  fTextItalic_2K
+        };
+        global.UI_ZOOM = 1.25;
+    } else {
+        global.UI_FONTS = {
+            standard: fText,
+            big:     fTextBig,
+            small:   fTextSmall,
+            italic:  fTextItalic
+        };
+        global.UI_ZOOM = 1;
+    }
+}
+
+__uui_init_fonts();

@@ -13,7 +13,7 @@ function UiTooltip(): UiNode({
     self.borderColor = #44475a;
     self.borderRadius = 4;
 
-    self.textNode = new UiText("", {}, { color: #f8f8f2, font: fTextSmall });
+    self.textNode = new UiText("", {}, { color: #f8f8f2, font: global.UI_FONTS.small });
     self.add(self.textNode);
     
     self.target = undefined;

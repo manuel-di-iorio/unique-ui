@@ -8,7 +8,7 @@ function UiText(text = "", style = {}, props = {}): UiNode(style, props) constru
     self.valueGetter = props[$ "valueGetter"];
     self.icon = props[$ "icon"];
     self.color = props[$ "color"] ?? c_white;
-    self.font = props[$ "font"] ?? fText;
+    self.font = props[$ "font"] ?? global.UI_FONTS.standard;
     self.wrap = props[$ "wrap"] ?? (style[$ "width"] != undefined);
     self.sep = props[$ "sep"] ?? -1;
     self.__lastWrapWidth = 0;

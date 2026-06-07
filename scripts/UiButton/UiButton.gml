@@ -54,11 +54,11 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
         var actualSpriteHeight = self.spriteHeight != undefined ? self.spriteHeight : (self.sprite != undefined ? sprite_get_height(self.sprite) : 0);
         
         if (self.text != undefined) {
-            draw_set_font(fText);
+            draw_set_font(global.UI_FONTS.standard);
             _w = string_width(self.text) + 24;
             _h = string_height(self.text) + 12;
         } else if (self.sprite != undefined && self.label != undefined) {
-            draw_set_font(fText);
+            draw_set_font(global.UI_FONTS.standard);
             _w = actualSpriteWidth + string_width(self.label) + 30;
             _h = max(actualSpriteHeight, string_height(self.label)) + 12;
         } else if (self.sprite != undefined) {
@@ -191,7 +191,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
         var ym = ~~mean(self.y1, self.y2);
         
         if (self.text != undefined) {
-            draw_set_font(fText); draw_set_color(text_color); draw_set_halign(self.halign); draw_set_valign(fa_middle);
+            draw_set_font(global.UI_FONTS.standard); draw_set_color(text_color); draw_set_halign(self.halign); draw_set_valign(fa_middle);
             draw_text(xm, ym, self.text);
         } else if (self.sprite != undefined && self.label != undefined) {
             // Calculate actual sprite dimensions and scale
@@ -205,7 +205,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
             var totalWidth = actualSpriteW + string_width(self.label) + 8;
             var startX = self.x1 + (self.x2 - self.x1 - totalWidth) / 2;
             draw_sprite_ext(self.sprite, self.hovered ? 1 : 0, startX + actualSpriteW / 2, ym, xscale, yscale, 0, text_color, 1);
-            draw_set_font(fText); draw_set_color(text_color); draw_set_halign(fa_left); draw_set_valign(fa_middle);
+            draw_set_font(global.UI_FONTS.standard); draw_set_color(text_color); draw_set_halign(fa_left); draw_set_valign(fa_middle);
             draw_text(startX + actualSpriteW + 8, ym, self.label);
         } else if (self.sprite) {
             // Calculate actual sprite dimensions and scale

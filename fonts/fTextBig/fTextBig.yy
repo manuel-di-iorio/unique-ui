@@ -1269,8 +1269,8 @@
   "maintainGms1Font":false,
   "name":"fTextBig",
   "parent":{
-    "name":"Fonts",
-    "path":"folders/Demo/Fonts.yy",
+    "name":"HD",
+    "path":"folders/UniqueUI/Fonts/HD.yy",
   },
   "pointRounding":0,
   "ranges":[

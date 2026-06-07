@@ -175,7 +175,7 @@ function __ui_demo_icon_button(iconName, size = 36) {
 }
 
 function __ui_demo_draw_icon(spr, cx, cy, col, scale = 1) {
-    var target_size = 24 * scale;
+    var target_size = 24 * scale * global.UI_ZOOM;
     var spr_w = sprite_get_width(spr);
     var spr_h = sprite_get_height(spr);
     var factor_x = target_size / spr_w;

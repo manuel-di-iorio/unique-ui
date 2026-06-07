@@ -119,7 +119,7 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
             var line = lines[lineIndex];
             var col = clamp(pos - line.start, 0, line.length);
             var before = string_copy(line.text, 1, col);
-            draw_set_font(fText);
+            draw_set_font(global.UI_FONTS.standard);
             return {
                 line: lineIndex,
                 col: col,
@@ -134,7 +134,7 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
             var line = lines[lineIndex];
             var relativeX = max(0, x);
             
-            draw_set_font(fText);
+            draw_set_font(global.UI_FONTS.standard);
             if (relativeX >= string_width(line.text)) return line.start + line.length;
             
             var currentX = 0;
@@ -165,7 +165,7 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
         self.getMaxScrollLeft = function() {
             var lines = self.getLines();
             var maxWidth = 0;
-            draw_set_font(fText);
+            draw_set_font(global.UI_FONTS.standard);
             for (var i = 0; i < array_length(lines); i++) {
                 maxWidth = max(maxWidth, string_width(lines[i].text));
             }
@@ -645,7 +645,7 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
             var _iy2 = min(sy + sh, _scissor.y + _scissor.h);
             __uui_set_scissor(_ix1, _iy1, max(0, _ix2 - _ix1), max(0, _iy2 - _iy1));
             
-            draw_set_font(fText);
+            draw_set_font(global.UI_FONTS.standard);
             draw_set_halign(fa_left);
             draw_set_valign(fa_top);
             

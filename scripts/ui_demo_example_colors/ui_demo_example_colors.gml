@@ -34,8 +34,8 @@ function ui_demo_example_colors(PreviewCard) {
                 draw_roundrect_ext(self.x1, self.y1, self.x2, self.y1 + 80, 8, 8, true);
             }
         });
-        box.add(new UiText(c.name, { marginTop: 85, height: 20 }, { color: global.UI_COL_TEXT_MAIN, font: fTextSmall }));
-        box.add(new UiText(c.hex, { height: 20 }, { color: global.UI_COL_TEXT_DIM, font: fTextSmall }));
+        box.add(new UiText(c.name, { marginTop: 85, height: 20 }, { color: global.UI_COL_TEXT_MAIN, font: global.UI_FONTS.small }));
+        box.add(new UiText(c.hex, { height: 20 }, { color: global.UI_COL_TEXT_DIM, font: global.UI_FONTS.small }));
         grid.add(box);
     }
     

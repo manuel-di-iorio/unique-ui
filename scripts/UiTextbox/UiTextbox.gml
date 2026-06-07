@@ -10,7 +10,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
     self.valueGetter = props[$ "valueGetter"] ?? undefined;
     self.onChange = props[$ "onChange"] ?? function(value, input) {};
     self.maxLength = props[$ "maxLength"] ?? 255;
-    draw_set_font(fText);
+    draw_set_font(global.UI_FONTS.standard);
     var marginLeft = self.label == undefined ? 0 : string_width(self.label) + 15;
     self.onBlur = props[$ "onBlur"] ?? function(value, input) {};
     self.format = props[$ "format"] ?? "string"; // string, float, integer
@@ -99,7 +99,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
         self.doubleClickThreshold = 300;
         
         // Font metrics calculation
-        draw_set_font(fText);
+        draw_set_font(global.UI_FONTS.standard);
         self.charWidth = string_width("W");
         self.textHeight = string_height("W");
         
@@ -211,7 +211,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             // If mouse is to the left of the text start
             if (relativeX < 0) return 0;
         
-            draw_set_font(fText);
+            draw_set_font(global.UI_FONTS.standard);
             
             // Optimization: if relativeX is beyond the total width, return length immediately
             // This avoids the loop for clicks clearly at the end
@@ -311,7 +311,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             var text = self.parent.value;
             
             // Use substring width for proper kerning support
-            draw_set_font(fText);
+            draw_set_font(global.UI_FONTS.standard);
             var cursorX = string_width(string_copy(text, 1, self.cursorPos));
             
             var textboxWidth = self.x2 - self.x1 - 10; // Margini più stretti
@@ -686,7 +686,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             if (shouldScrollLeft) {
                 self.scrollOffset = max(0, self.scrollOffset - scrollSpeed);
             } else if (shouldScrollRight) {
-                draw_set_font(fText);
+                draw_set_font(global.UI_FONTS.standard);
                 var text = self.parent.value;
                 var totalWidth = string_width(text);
                 var textboxWidth = self.x2 - self.x1 - 10; // Margine interno ridotto
@@ -796,7 +796,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             
             // Text drawing settings
             draw_set_color(global.UI_COL_TEXT_MAIN);
-            draw_set_font(fText);
+            draw_set_font(global.UI_FONTS.standard);
             draw_set_halign(fa_left);
             draw_set_valign(fa_middle);
             

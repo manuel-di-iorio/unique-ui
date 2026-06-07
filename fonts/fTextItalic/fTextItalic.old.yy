@@ -495,8 +495,8 @@
   "maintainGms1Font":false,
   "name":"fTextItalic",
   "parent":{
-    "name":"Demo",
-    "path":"folders/Demo.yy",
+    "name":"HD",
+    "path":"folders/UniqueUI/Fonts/HD.yy",
   },
   "pointRounding":0,
   "ranges":[

@@ -27,7 +27,7 @@ function ui_demo_example_store(PreviewCard) {
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
 
-    var counterLabel = new UiText("Count: 0", { marginRight: 16 }, { color: global.UI_COL_TEXT_MAIN, font: fTextBig });
+    var counterLabel = new UiText("Count: 0", { marginRight: 16 }, { color: global.UI_COL_TEXT_MAIN, font: global.UI_FONTS.big });
     counterStore.subscribe(method(counterLabel, function(state) {
         self.text = "Count: " + string(state.count);
     }));

@@ -16,7 +16,7 @@ function ui_demo_example_toast(PreviewCard) {
     }
     
     // Playground title input
-    PreviewCard.add(new UiText("Toast Title (Optional):", { marginBottom: 6 }, { color: global.UI_COL_TEXT_DIM, font: fTextSmall }));
+    PreviewCard.add(new UiText("Toast Title (Optional):", { marginBottom: 6 }, { color: global.UI_COL_TEXT_DIM, font: global.UI_FONTS.small }));
     var inputTitle = new UiTextbox({ width: "100%", height: 38, marginBottom: 12 }, {
         placeholder: "Enter title...",
         value: global.UI_DEMO.toastTitle,
@@ -28,7 +28,7 @@ function ui_demo_example_toast(PreviewCard) {
     PreviewCard.add(inputTitle);
     
     // Playground message input
-    PreviewCard.add(new UiText("Toast Message:", { marginBottom: 6 }, { color: global.UI_COL_TEXT_DIM, font: fTextSmall }));
+    PreviewCard.add(new UiText("Toast Message:", { marginBottom: 6 }, { color: global.UI_COL_TEXT_DIM, font: global.UI_FONTS.small }));
     var inputMessage = new UiTextbox({ width: "100%", height: 38, marginBottom: 12 }, {
         placeholder: "Enter message...",
         value: global.UI_DEMO.toastMessage,
@@ -40,7 +40,7 @@ function ui_demo_example_toast(PreviewCard) {
     PreviewCard.add(inputMessage);
     
     // Playground duration input
-    PreviewCard.add(new UiText("Duration (ms, 0 for infinite):", { marginBottom: 6 }, { color: global.UI_COL_TEXT_DIM, font: fTextSmall }));
+    PreviewCard.add(new UiText("Duration (ms, 0 for infinite):", { marginBottom: 6 }, { color: global.UI_COL_TEXT_DIM, font: global.UI_FONTS.small }));
     var inputDuration = new UiTextbox({ width: "100%", height: 38, marginBottom: 20 }, {
         placeholder: "e.g. 4000",
         value: global.UI_DEMO.toastDuration,

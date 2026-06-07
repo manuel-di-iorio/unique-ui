@@ -41,7 +41,7 @@ function ui_demo_example_introduction(PreviewCard) {
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
     
-    demoContainer.add(new UiText("Parent Container (UiNode)", { marginBottom: 12 }, { color: global.UI_COL_TEXT_MAIN, font: fTextBig }));
+    demoContainer.add(new UiText("Parent Container (UiNode)", { marginBottom: 12 }, { color: global.UI_COL_TEXT_MAIN, font: global.UI_FONTS.big }));
     
     var rowContainer = new UiNode({
         flexDirection: "row",
@@ -98,7 +98,7 @@ function ui_demo_example_introduction(PreviewCard) {
         draw_rectangle(self.x1 + 3, self.y1 + 3, self.x2 - 3, self.y2 - 3, true);
         draw_set_alpha(1.0);
     });
-    customDrawNode.add(new UiText("Custom Gradient drawn inside onDraw", {}, { color: c_white, font: fTextSmall }));
+    customDrawNode.add(new UiText("Custom Gradient drawn inside onDraw", {}, { color: c_white, font: global.UI_FONTS.small }));
     PreviewCard.add(customDrawNode);
     
     // --- 5. Drag & Drop ---
@@ -133,7 +133,7 @@ function ui_demo_example_introduction(PreviewCard) {
     dragNode1.onDraw = method(dragNode1, function() {
         draw_set_color(self.dragging ? #818CF8 : #3B82F6);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
-        draw_set_color(c_white); draw_set_font(fTextSmall); draw_set_halign(fa_center); draw_set_valign(fa_middle);
+        draw_set_color(c_white); draw_set_font(global.UI_FONTS.small); draw_set_halign(fa_center); draw_set_valign(fa_middle);
         draw_text(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), self.dragging ? "Dragging" : "Drag Me A");
     });
 
@@ -141,7 +141,7 @@ function ui_demo_example_introduction(PreviewCard) {
     dragNode2.onDraw = method(dragNode2, function() {
         draw_set_color(self.dragging ? #818CF8 : #3B82F6);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
-        draw_set_color(c_white); draw_set_font(fTextSmall); draw_set_halign(fa_center); draw_set_valign(fa_middle);
+        draw_set_color(c_white); draw_set_font(global.UI_FONTS.small); draw_set_halign(fa_center); draw_set_valign(fa_middle);
         draw_text(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), self.dragging ? "Dragging" : "Drag Me B");
     });
 
@@ -160,7 +160,7 @@ function ui_demo_example_introduction(PreviewCard) {
     dropZoneNode.onDraw = method(dropZoneNode, function() {
         draw_set_color(#10B981);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
-        draw_set_color(c_white); draw_set_font(fTextSmall); draw_set_halign(fa_center); draw_set_valign(fa_middle);
+        draw_set_color(c_white); draw_set_font(global.UI_FONTS.small); draw_set_halign(fa_center); draw_set_valign(fa_middle);
         draw_text(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), self.__statusText);
     });
 
@@ -212,7 +212,7 @@ function ui_demo_example_introduction(PreviewCard) {
     
     var counterText = new UiText("Clicks: 0", {}, {
         color: global.UI_COL_TEXT_MAIN,
-        font: fTextBig
+        font: global.UI_FONTS.big
     });
     
     // Subscribe the label to store changes - fires only when state actually changes
@@ -263,7 +263,7 @@ function ui_demo_example_introduction(PreviewCard) {
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 4, 4, false);
             draw_set_alpha(1);
             draw_set_color(global.UI_COL_TEXT_DIM);
-            draw_set_font(fTextSmall);
+            draw_set_font(global.UI_FONTS.small);
             draw_set_halign(fa_left);
             draw_set_valign(fa_middle);
             draw_text(self.x1 + 8, ~~mean(self.y1, self.y2), self.__label);

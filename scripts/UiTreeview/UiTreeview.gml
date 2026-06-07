@@ -198,7 +198,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     self.Content.add(self.Icon);
 
     // Label
-    self.Label = new UiText(self.name, { flex: 1 }, { color: function() { return global.UI_COL_TEXT_MAIN; }, font: fTextSmall });
+    self.Label = new UiText(self.name, { flex: 1 }, { color: function() { return global.UI_COL_TEXT_MAIN; }, font: global.UI_FONTS.small });
     self.Content.add(self.Label);
 
     // Handle selection

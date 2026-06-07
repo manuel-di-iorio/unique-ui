@@ -68,7 +68,7 @@ function UiAccordion(text, style = {}, data = {}) : UiNode(style, data) construc
     // Label
     self.Label = new UiText(self.text, { height: 20 }, { 
         color: global.UI_COL_TEXT_MAIN,
-        font: fText
+        font: global.UI_FONTS.standard
     });
     
     self.Header.add(self.Arrow, self.Label);

@@ -173,7 +173,7 @@ function UiContextMenu(x, y, items = []) constructor {
                         draw_set_color(labelCol);
                         draw_set_halign(fa_left);
                         draw_set_valign(fa_middle);
-                        draw_set_font(fText);
+                        draw_set_font(global.UI_FONTS.standard);
                         draw_text(xx, yy, self.label);
 
                         // Draw shortcut

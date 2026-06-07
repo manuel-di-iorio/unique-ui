@@ -51,7 +51,7 @@ function __ui_demo_sidebar_item(parent, text) {
         
         var col = self.__selected ? global.UI_COL_PRIMARY : global.UI_COL_TEXT_MAIN;
         __ui_demo_draw_icon(self.__icon, self.x1 + 18, ~~mean(self.y1, self.y2), col, 0.78);
-        draw_set_font(fText);
+        draw_set_font(global.UI_FONTS.standard);
         draw_set_color(col);
         draw_set_halign(fa_left);
         draw_set_valign(fa_middle);
@@ -67,7 +67,7 @@ function __ui_demo_sidebar_item(parent, text) {
 }
 
 function __ui_demo_sidebar_label(parent, text, mt = 0) {
-    parent.add(new UiText(text, { marginTop: mt, marginBottom: 12, marginLeft: 12 }, { color: global.UI_COL_TEXT_DIM, font: fTextSmall }));
+    parent.add(new UiText(text, { marginTop: mt, marginBottom: 12, marginLeft: 12 }, { color: global.UI_COL_TEXT_DIM, font: global.UI_FONTS.small }));
 }
 
 function __ui_demo_sidebar_icon_name(text) {

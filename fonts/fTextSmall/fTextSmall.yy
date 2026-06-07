@@ -203,7 +203,7 @@
     "253":{"character":253,"h":20,"offset":0,"shift":7,"w":8,"x":132,"y":46,},
     "254":{"character":254,"h":20,"offset":1,"shift":9,"w":8,"x":142,"y":46,},
     "255":{"character":255,"h":20,"offset":0,"shift":7,"w":8,"x":22,"y":156,},
-    "9647":{"character":9647,"h":20,"offset":3,"shift":15,"w":9,"x":32,"y":156,},
+    "9647":{"character":9647,"h":20,"offset":4,"shift":15,"w":9,"x":32,"y":156,},
   },
   "hinting":0,
   "includeTTF":false,
@@ -771,8 +771,8 @@
   "maintainGms1Font":false,
   "name":"fTextSmall",
   "parent":{
-    "name":"Fonts",
-    "path":"folders/Demo/Fonts.yy",
+    "name":"HD",
+    "path":"folders/UniqueUI/Fonts/HD.yy",
   },
   "pointRounding":0,
   "ranges":[

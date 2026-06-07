@@ -9,7 +9,7 @@ function UiBadge(text, style = {}, props = {}): UiNode(style, props) constructor
     // Size defaults if not specified
     if (style[$ "height"] == undefined) self.setHeight(self.dot ? 10 : 26);
     if (!self.dot && style[$ "width"] == undefined) {
-        draw_set_font(fTextSmall);
+        draw_set_font(global.UI_FONTS.small);
         self.setWidth(string_width(text) + 24);
     } else if (self.dot) {
         self.setWidth(10);
@@ -54,7 +54,7 @@ function UiBadge(text, style = {}, props = {}): UiNode(style, props) constructor
         }
         
         if (!self.dot && self.text != undefined && self.text != "") {
-            draw_set_font(fTextSmall);
+            draw_set_font(global.UI_FONTS.small);
             draw_set_color(cols.text);
             draw_set_halign(fa_center);
             draw_set_valign(fa_middle);
@@ -66,7 +66,7 @@ function UiBadge(text, style = {}, props = {}): UiNode(style, props) constructor
     function setText(_text) {
         self.text = _text;
         if (!self.dot) {
-            draw_set_font(fTextSmall);
+            draw_set_font(global.UI_FONTS.small);
             self.setWidth(string_width(_text) + 24);
         }
         global.UI.requestRedraw();

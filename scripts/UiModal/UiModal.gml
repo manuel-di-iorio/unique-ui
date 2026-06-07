@@ -105,7 +105,7 @@ function UiModal(style = {}, props = {}) : UiNode(style, props) constructor {
         self.Panel.add(self.Header);
         
         if (self.title != undefined) {
-            self.Header.add(new UiText(self.title, {}, { color: global.UI_COL_TEXT_MAIN, font: fText }));
+            self.Header.add(new UiText(self.title, {}, { color: global.UI_COL_TEXT_MAIN, font: global.UI_FONTS.standard }));
         }
         
         if (self.showCloseButton) {
