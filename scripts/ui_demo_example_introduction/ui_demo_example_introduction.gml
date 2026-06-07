@@ -198,7 +198,7 @@ function ui_demo_example_introduction(PreviewCard) {
         flexDirection: "row",
         alignItems: "center",
         padding: 16,
-        marginBottom: 12
+        marginBottom: 28
     });
     eventContainer.onDraw = method(eventContainer, function() {
         draw_set_color(global.UI_COL_BG_MAIN);
@@ -228,6 +228,51 @@ function ui_demo_example_introduction(PreviewCard) {
     eventContainer.add(eventBtn);
     eventContainer.add(counterText);
     PreviewCard.add(eventContainer);
+    
+    // --- 8. Scrollable Container ---
+    __ui_demo_preview_section(PreviewCard, "Scrollable Container");
+    
+    PreviewCard.add(new UiText(
+        "When content overflows a container, you can enable vertical (and horizontal) scrollbars. " +
+        "The scrollbar automatically appears when content exceeds the container bounds " +
+        "and supports mouse wheel scrolling and thumb dragging.",
+        { width: "100%", marginBottom: 16 },
+        { color: global.UI_COL_TEXT_DIM, wrap: true }
+    ));
+    
+    var scrollDemo = new UiNode({
+        width: "100%",
+        height: 200,
+        flexDirection: "column",
+        padding: 8,
+        marginBottom: 12
+    });
+    scrollDemo.enableScrollbar(global.UI_COL_SCROLLBAR_THUMB);
+    scrollDemo.onDraw = method(scrollDemo, function() {
+        draw_set_color(global.UI_COL_BG_CARD);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
+        draw_set_color(global.UI_COL_BORDER);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
+    });
+    
+    for (var i = 1; i <= 20; i++) {
+        var row = new UiNode({ width: "100%", height: 24, marginBottom: 2, paddingLeft: 12, justifyContent: "center" });
+        row.onDraw = method(row, function() {
+            draw_set_color(c_white);
+            draw_set_alpha(0.06);
+            draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 4, 4, false);
+            draw_set_alpha(1);
+            draw_set_color(global.UI_COL_TEXT_DIM);
+            draw_set_font(fTextSmall);
+            draw_set_halign(fa_left);
+            draw_set_valign(fa_middle);
+            draw_text(self.x1 + 8, ~~mean(self.y1, self.y2), self.__label);
+        });
+        row.__label = "Item #" + string(i);
+        scrollDemo.add(row);
+    }
+    
+    PreviewCard.add(scrollDemo);
     
     return [
         "// === 1. CONTAINERS & NESTING ===",
@@ -278,5 +323,13 @@ function ui_demo_example_introduction(PreviewCard) {
         "",
         "// Batch-update multiple keys in one notification",
         "store.setState({ count: 0, label: \"Reset\" });",
+        "",
+        "// === 6. SCROLLABLE CONTAINER ===",
+        "var container = new UiNode({ width: \"100%\", height: 200, flexDirection: \"column\" });",
+        "container.enableScrollbar(global.UI_COL_SCROLLBAR_THUMB);",
+        "for (var i = 0; i < 20; i++) {",
+        "    container.add(new UiText(\"Item \" + string(i)));",
+        "}",
+        "parent.add(container);",
     ];
 }

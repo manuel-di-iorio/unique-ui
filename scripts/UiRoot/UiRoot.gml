@@ -190,21 +190,19 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
     } 
     
     /** Update */
-    function __updateElemLayout(elem, _inheritedScrollableParent = undefined, _inheritedVisibility = true) {
+    function __updateElemLayout(elem, _inheritedScrollableParent = undefined, _inheritedVisibility = true, _cumScrollTop = 0, _cumScrollLeft = 0) {
         gml_pragma("forceinline");
 
         // Optimization: Resolve ancestor scrollable parent down the tree
         var _scrollableParent = _inheritedScrollableParent;
-        if (!elem.isScrollbar) {
-            elem.scrollableParent = _scrollableParent;
-        }
+        elem.scrollableParent = _scrollableParent;
         
         // Store the layout position data of this element
         elem.layout = flexpanel_node_layout_get_position(elem.node, false);
         elem.width = elem.layout.width;
         elem.height = elem.layout.height;
-        elem.x1 = elem.layout.left - (elem.scrollableParent ? elem.scrollableParent.scrollLeft : 0); 
-        elem.y1 = elem.layout.top - (elem.scrollableParent ? elem.scrollableParent.scrollTop : 0);
+        elem.x1 = elem.layout.left - _cumScrollLeft; 
+        elem.y1 = elem.layout.top - _cumScrollTop;
         elem.x2 = elem.x1 + elem.width; 
         elem.y2 = elem.y1 + elem.height;
         elem.xp1 = elem.x1 + elem.layout.paddingLeft;
@@ -265,10 +263,14 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             if (elem.onMount != undefined) elem.onMount();
         }
         
-        // Determine next scrollable parent to pass to children
+        // Determine next scrollable parent and cumulative scroll to pass to children
         var _nextScrollableParent = _scrollableParent;
+        var _nextCumScrollTop = _cumScrollTop;
+        var _nextCumScrollLeft = _cumScrollLeft;
         if (elem.__UiScrollbar != undefined || elem.__UiScrollbarH != undefined) {
             _nextScrollableParent = elem;
+            _nextCumScrollTop += elem.scrollTop;
+            _nextCumScrollLeft += elem.scrollLeft;
         }
         
         // Run the update on the children
@@ -277,26 +279,27 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         for (var i = 0; i < _len; i++) {
             var child = _children[i];
             if (elem.root && (child == elem.Overlay || child == elem.Tooltip)) continue;
-            self.__updateElemLayout(child, _nextScrollableParent, _isVisible);
+            self.__updateElemLayout(child, _nextScrollableParent, _isVisible, _nextCumScrollTop, _nextCumScrollLeft);
         }
         
         // Special case for scrollbars: they are drawn after children
+        // Scrollbars stay fixed (not scrolled with content), so they use the parent's cumulative scroll
         if (elem.__UiScrollbar != undefined) {
-            self.__updateElemLayout(elem.__UiScrollbar, _nextScrollableParent, _isVisible);
+            self.__updateElemLayout(elem.__UiScrollbar, _scrollableParent, _isVisible, _cumScrollTop, _cumScrollLeft);
             elem.__UiScrollbar.Thumb.__drawIndex = self.__layoutDrawIndex++;
         }
         if (elem.__UiScrollbarH != undefined) {
-            self.__updateElemLayout(elem.__UiScrollbarH, _nextScrollableParent, _isVisible);
+            self.__updateElemLayout(elem.__UiScrollbarH, _scrollableParent, _isVisible, _cumScrollTop, _cumScrollLeft);
             elem.__UiScrollbarH.Thumb.__drawIndex = self.__layoutDrawIndex++;
         }
 
         // Run layout updates on Overlay and Tooltip last if this is root
         if (elem.root) {
             if (elem.Overlay != undefined) {
-                self.__updateElemLayout(elem.Overlay, _nextScrollableParent, _isVisible);
+                self.__updateElemLayout(elem.Overlay, _nextScrollableParent, _isVisible, _nextCumScrollTop, _nextCumScrollLeft);
             }
             if (elem.Tooltip != undefined) {
-                self.__updateElemLayout(elem.Tooltip, _nextScrollableParent, _isVisible);
+                self.__updateElemLayout(elem.Tooltip, _nextScrollableParent, _isVisible, _nextCumScrollTop, _nextCumScrollLeft);
             }
         }
     }
