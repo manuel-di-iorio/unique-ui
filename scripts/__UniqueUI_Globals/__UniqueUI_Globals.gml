@@ -128,3 +128,8 @@ function __uui_init_fonts() {
 }
 
 __uui_init_fonts();
+
+// Full browser size on GX export
+if (os_type == os_gxgames) {
+    window_set_size(browser_width, browser_height);
+}
