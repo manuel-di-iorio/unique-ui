@@ -21,10 +21,10 @@ function ui_demo_example_menubar(PreviewCard) {
         alignItems: "center"
     });
     statusNode.__msg = "Click a menu item to see it here";
-    statusNode.setMsg = function(msg) {
+    statusNode.setMsg = method(statusNode, function(msg) {
         self.__msg = msg;
         global.UI.requestRedraw();
-    };
+    });
     statusNode.onDraw = method(statusNode, function() {
         draw_set_color(global.UI_COL_SURFACE_2);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
@@ -41,47 +41,47 @@ function ui_demo_example_menubar(PreviewCard) {
         {
             label: "File",
             items: [
-                { label: "New File",    onClick: method(statusNode, function() { self.setMsg("File → New File"); }),    shortcut: "Ctrl+N" },
-                { label: "Open...",       onClick: method(statusNode, function() { self.setMsg("File → Open…"); }),       shortcut: "Ctrl+O" },
-                { label: "Save",        onClick: method(statusNode, function() { self.setMsg("File → Save"); }),        shortcut: "Ctrl+S" },
-                { label: "Save As...",    onClick: method(statusNode, function() { self.setMsg("File → Save As…"); }),   shortcut: "Ctrl+Shift+S" },
+                { label: "New File",    onClick: method(statusNode, function() { self.setMsg("File > New File"); }),    shortcut: "Ctrl+N" },
+                { label: "Open...",       onClick: method(statusNode, function() { self.setMsg("File > Open…"); }),       shortcut: "Ctrl+O" },
+                { label: "Save",        onClick: method(statusNode, function() { self.setMsg("File > Save"); }),        shortcut: "Ctrl+S" },
+                { label: "Save As...",    onClick: method(statusNode, function() { self.setMsg("File > Save As…"); }),   shortcut: "Ctrl+Shift+S" },
                 { separator: true },
-                { label: "Export",      onClick: method(statusNode, function() { self.setMsg("File → Export"); }) },
+                { label: "Export",      onClick: method(statusNode, function() { self.setMsg("File > Export"); }) },
                 { separator: true },
-                { label: "Exit",        onClick: method(statusNode, function() { self.setMsg("File → Exit"); }),       shortcut: "Alt+F4", disabled: false }
+                { label: "Exit",        onClick: method(statusNode, function() { self.setMsg("File > Exit"); }),       shortcut: "Alt+F4", disabled: false }
             ]
         },
         {
             label: "Edit",
             items: [
-                { label: "Undo",   onClick: method(statusNode, function() { self.setMsg("Edit → Undo"); }),   shortcut: "Ctrl+Z" },
-                { label: "Redo",   onClick: method(statusNode, function() { self.setMsg("Edit → Redo"); }),   shortcut: "Ctrl+Y" },
+                { label: "Undo",   onClick: method(statusNode, function() { self.setMsg("Edit > Undo"); }),   shortcut: "Ctrl+Z" },
+                { label: "Redo",   onClick: method(statusNode, function() { self.setMsg("Edit > Redo"); }),   shortcut: "Ctrl+Y" },
                 { separator: true },
-                { label: "Cut",    onClick: method(statusNode, function() { self.setMsg("Edit → Cut"); }),    shortcut: "Ctrl+X" },
-                { label: "Copy",   onClick: method(statusNode, function() { self.setMsg("Edit → Copy"); }),   shortcut: "Ctrl+C" },
-                { label: "Paste",  onClick: method(statusNode, function() { self.setMsg("Edit → Paste"); }),  shortcut: "Ctrl+V" },
+                { label: "Cut",    onClick: method(statusNode, function() { self.setMsg("Edit > Cut"); }),    shortcut: "Ctrl+X" },
+                { label: "Copy",   onClick: method(statusNode, function() { self.setMsg("Edit > Copy"); }),   shortcut: "Ctrl+C" },
+                { label: "Paste",  onClick: method(statusNode, function() { self.setMsg("Edit > Paste"); }),  shortcut: "Ctrl+V" },
                 { separator: true },
-                { label: "Select All", onClick: method(statusNode, function() { self.setMsg("Edit → Select All"); }), shortcut: "Ctrl+A" }
+                { label: "Select All", onClick: method(statusNode, function() { self.setMsg("Edit > Select All"); }), shortcut: "Ctrl+A" }
             ]
         },
         {
             label: "View",
             items: [
-                { label: "Zoom In",     onClick: method(statusNode, function() { self.setMsg("View → Zoom In"); }),   shortcut: "Ctrl+=" },
-                { label: "Zoom Out",    onClick: method(statusNode, function() { self.setMsg("View → Zoom Out"); }),  shortcut: "Ctrl+-" },
-                { label: "Reset Zoom",  onClick: method(statusNode, function() { self.setMsg("View → Reset Zoom"); }),shortcut: "Ctrl+0" },
+                { label: "Zoom In",     onClick: method(statusNode, function() { self.setMsg("View > Zoom In"); }),   shortcut: "Ctrl+=" },
+                { label: "Zoom Out",    onClick: method(statusNode, function() { self.setMsg("View > Zoom Out"); }),  shortcut: "Ctrl+-" },
+                { label: "Reset Zoom",  onClick: method(statusNode, function() { self.setMsg("View > Reset Zoom"); }),shortcut: "Ctrl+0" },
                 { separator: true },
-                { label: "Fullscreen",  onClick: method(statusNode, function() { self.setMsg("View → Fullscreen"); }), shortcut: "F11" },
+                { label: "Fullscreen",  onClick: method(statusNode, function() { self.setMsg("View > Fullscreen"); }), shortcut: "F11" },
                 { label: "Inspector (Unavailable)", onClick: undefined, disabled: true }
             ]
         },
         {
             label: "Help",
             items: [
-                { label: "Documentation", onClick: method(statusNode, function() { self.setMsg("Help → Documentation"); }) },
-                { label: "Release Notes", onClick: method(statusNode, function() { self.setMsg("Help → Release Notes"); }) },
+                { label: "Documentation", onClick: method(statusNode, function() { self.setMsg("Help > Documentation"); }) },
+                { label: "Release Notes", onClick: method(statusNode, function() { self.setMsg("Help > Release Notes"); }) },
                 { separator: true },
-                { label: "About UniqueUI", onClick: method(statusNode, function() { self.setMsg("Help → About UniqueUI"); }) }
+                { label: "About UniqueUI", onClick: method(statusNode, function() { self.setMsg("Help > About UniqueUI"); }) }
             ]
         }
     ], { width: "100%", height: 34 }, {});
