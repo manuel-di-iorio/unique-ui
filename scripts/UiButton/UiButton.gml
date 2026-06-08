@@ -50,8 +50,8 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     function resize() {
         var _w = 0, _h = 0;
         // Calculate actual sprite dimensions
-        var actualSpriteWidth = self.spriteWidth != undefined ? self.spriteWidth : (self.sprite != undefined ? sprite_get_width(self.sprite) : 0);
-        var actualSpriteHeight = self.spriteHeight != undefined ? self.spriteHeight : (self.sprite != undefined ? sprite_get_height(self.sprite) : 0);
+        var actualSpriteWidth = self.spriteWidth != undefined ? self.spriteWidth * global.UI_ZOOM : (self.sprite != undefined ? sprite_get_width(self.sprite) : 0);
+        var actualSpriteHeight = self.spriteHeight != undefined ? self.spriteHeight * global.UI_ZOOM : (self.sprite != undefined ? sprite_get_height(self.sprite) : 0);
         
         if (self.text != undefined) {
             draw_set_font(global.UI_FONTS.standard);
@@ -194,11 +194,10 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
             draw_set_font(global.UI_FONTS.standard); draw_set_color(text_color); draw_set_halign(self.halign); draw_set_valign(fa_middle);
             draw_text(xm, ym, self.text);
         } else if (self.sprite != undefined && self.label != undefined) {
-            // Calculate actual sprite dimensions and scale
             var originalSpriteW = sprite_get_width(self.sprite);
             var originalSpriteH = sprite_get_height(self.sprite);
-            var actualSpriteW = self.spriteWidth != undefined ? self.spriteWidth : originalSpriteW;
-            var actualSpriteH = self.spriteHeight != undefined ? self.spriteHeight : originalSpriteH;
+            var actualSpriteW = self.spriteWidth != undefined ? self.spriteWidth * global.UI_ZOOM : originalSpriteW;
+            var actualSpriteH = self.spriteHeight != undefined ? self.spriteHeight * global.UI_ZOOM : originalSpriteH;
             var xscale = actualSpriteW / originalSpriteW;
             var yscale = actualSpriteH / originalSpriteH;
             
@@ -208,11 +207,12 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
             draw_set_font(global.UI_FONTS.standard); draw_set_color(text_color); draw_set_halign(fa_left); draw_set_valign(fa_middle);
             draw_text(startX + actualSpriteW + 8, ym, self.label);
         } else if (self.sprite) {
-            // Calculate actual sprite dimensions and scale
             var originalSpriteW = sprite_get_width(self.sprite);
             var originalSpriteH = sprite_get_height(self.sprite);
-            var xscale = self.spriteWidth != undefined ? (self.spriteWidth / originalSpriteW) : 1;
-            var yscale = self.spriteHeight != undefined ? (self.spriteHeight / originalSpriteH) : 1;
+            var sw = self.spriteWidth != undefined ? self.spriteWidth * global.UI_ZOOM : originalSpriteW;
+            var sh = self.spriteHeight != undefined ? self.spriteHeight * global.UI_ZOOM : originalSpriteH;
+            var xscale = sw / originalSpriteW;
+            var yscale = sh / originalSpriteH;
             
             draw_sprite_ext(self.sprite, self.hovered ? 1 : 0, xm, ym, xscale, yscale, 0, text_color, 1);
         }

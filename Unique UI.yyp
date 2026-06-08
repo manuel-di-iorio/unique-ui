@@ -46,7 +46,9 @@
     {"$GMFolder":"","%Name":"HD","folderPath":"folders/UniqueUI/Fonts/HD.yy","name":"HD","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Icons","folderPath":"folders/UniqueUI/Icons.yy","name":"Icons","resourceType":"GMFolder","resourceVersion":"2.0",},
   ],
-  "ForcedPrefabProjectReferences":[],
+  "ForcedPrefabProjectReferences":[
+    {"link":"io.gamemaker.sdfshaders-1.0.0","name":"io.gamemaker.sdfshaders-1.0.0","path":"io.gamemaker.sdfshaders-1.0.0.yyp",},
+  ],
   "IncludedFiles":[],
   "isEcma":false,
   "LibraryEmitters":[],
@@ -163,6 +165,7 @@
     {"id":{"name":"sprUiIconCheck","path":"sprites/sprUiIconCheck/sprUiIconCheck.yy",},},
     {"id":{"name":"sprUiIconCheckbox","path":"sprites/sprUiIconCheckbox/sprUiIconCheckbox.yy",},},
     {"id":{"name":"sprUiIconCheckboxUnchecked","path":"sprites/sprUiIconCheckboxUnchecked/sprUiIconCheckboxUnchecked.yy",},},
+    {"id":{"name":"sprUiIconClose","path":"sprites/sprUiIconClose/sprUiIconClose.yy",},},
     {"id":{"name":"sprUiIconCopy","path":"sprites/sprUiIconCopy/sprUiIconCopy.yy",},},
     {"id":{"name":"sprUiIconLogoMark","path":"sprites/sprUiIconLogoMark/sprUiIconLogoMark.yy",},},
     {"id":{"name":"sprUiIconMenu","path":"sprites/sprUiIconMenu/sprUiIconMenu.yy",},},

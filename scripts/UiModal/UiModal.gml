@@ -109,7 +109,7 @@ function UiModal(style = {}, props = {}) : UiNode(style, props) constructor {
         }
         
         if (self.showCloseButton) {
-            var _closeBtn = new UiButton("×", { width: 28, height: 28 }, { variant: "ghost" });
+            var _closeBtn = new UiButton(sprUiIconClose, { width: 28, height: 28 }, { variant: "ghost", spriteWidth: 20, spriteHeight: 20 });
             _closeBtn.onClick(method(self, function() {
                 self.close();
             }));

@@ -6,7 +6,7 @@ function UiSprite(sprite, style = {}, props = {}): UiNode(style, props) construc
     self.color = props[$ "color"] ?? c_white;
     self.alpha = props[$ "alpha"] ?? 1.0;
     
-    if (self.autoResize && sprite_exists(sprite)) setSize(sprite_get_width(sprite), sprite_get_height(sprite));
+    if (self.autoResize && sprite_exists(sprite)) setSize(sprite_get_width(sprite) * global.UI_ZOOM, sprite_get_height(sprite) * global.UI_ZOOM);
     
     function onDraw() {
         if (sprite_exists(self.sprite)) {
