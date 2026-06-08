@@ -3,17 +3,9 @@ const path = require('path');
 const fs = require('fs');
 const files = [
   {
-    input: 'c:/Users/Manuel/GameMakerProjects/UniqueUI/sprites/sprUiIconCheck/ae378caf-317b-452e-b391-ea1be2aa48ea.svg',
-    output: 'c:/Users/Manuel/GameMakerProjects/UniqueUI/sprites/sprUiIconCheck/ae378caf-317b-452e-b391-ea1be2aa48ea.png'
+    input: 'c:/Users/Manuel/GameMakerProjects/UniqueUI/sprites/sprUiIconClose/eb9cb3c2-a43c-42c5-9f7e-d0b18411629f.svg',
+    output: 'c:/Users/Manuel/GameMakerProjects/UniqueUI/sprites/sprUiIconClose/eb9cb3c2-a43c-42c5-9f7e-d0b18411629f.png'
   },
-  {
-    input: 'c:/Users/Manuel/GameMakerProjects/UniqueUI/sprites/sprUiIconMenuBar/95f80fd5-f710-4410-8aa0-bcaafc3d089f.svg',
-    output: 'c:/Users/Manuel/GameMakerProjects/UniqueUI/sprites/sprUiIconMenuBar/95f80fd5-f710-4410-8aa0-bcaafc3d089f.png'
-  },
-  {
-    input: 'c:/Users/Manuel/GameMakerProjects/UniqueUI/sprites/sprUiIconState/1089d7a4-e380-45e7-a174-aa1857efe609.svg',
-    output: 'c:/Users/Manuel/GameMakerProjects/UniqueUI/sprites/sprUiIconState/1089d7a4-e380-45e7-a174-aa1857efe609.png'
-  }
 ];
 async function convert() {
   for (const file of files) {
