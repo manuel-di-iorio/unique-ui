@@ -4,16 +4,21 @@
 
 ui_test_suite("UiTreeview", function() {
     
+    var __cleanup = [];
     function __make_treeview() {
-        return new UiTreeview({}, {});
+        var tv = new UiTreeview({}, {});
+        array_push(__cleanup, tv);
+        return tv;
     }
     
     function __make_item(tv) {
-        return new UiTreeviewItem({}, {
+        var item = new UiTreeviewItem({}, {
             treeview:  tv,
             assetType: "Folder",
             name:      "Item"
         });
+        array_push(__cleanup, item);
+        return item;
     }
     
     // ── UiTreeview creation ──────────────────────────────────
@@ -186,6 +191,7 @@ ui_test_suite("UiTreeview", function() {
         var tv = __make_treeview();
         var a  = new UiTreeviewItem({}, { treeview: tv, name: "Alpha" });
         var b  = new UiTreeviewItem({}, { treeview: tv, name: "Beta"  });
+        array_push(__cleanup, a, b);
         tv.Items.add(a, b);
         // Ensure both have display = false first
         a.hide(); b.hide();
@@ -198,10 +204,15 @@ ui_test_suite("UiTreeview", function() {
         var tv = __make_treeview();
         var a  = new UiTreeviewItem({}, { treeview: tv, name: "Alpha" });
         var b  = new UiTreeviewItem({}, { treeview: tv, name: "Beta"  });
+        array_push(__cleanup, a, b);
         tv.Items.add(a, b);
         tv.filter("alpha");
         assert_true(a.display,  "Alpha visible");
         assert_false(b.display, "Beta hidden");
     });
     
+    // Cleanup
+    for (var i = 0; i < array_length(__cleanup); i++) {
+        __cleanup[i].destroy();
+    }
 });

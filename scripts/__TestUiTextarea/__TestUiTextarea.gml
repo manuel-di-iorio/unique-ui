@@ -4,8 +4,11 @@
 
 ui_test_suite("UiTextarea", function() {
     
+    var __cleanup = [];
     function __ta(props = {}) {
-        return new UiTextarea({}, props);
+        var ta = new UiTextarea({}, props);
+        array_push(__cleanup, ta);
+        return ta;
     }
     
     ui_test("value defaults to empty string", function() {
@@ -144,4 +147,9 @@ ui_test_suite("UiTextarea", function() {
         assert_equal(state.value, "Done", "onBlur value");
         assert_false(ta.Input.focused, "focused false after blur");
     });
+    
+    // Cleanup: destroy all test textareas to prevent orphaned step handlers
+    for (var i = 0; i < array_length(__cleanup); i++) {
+        __cleanup[i].destroy();
+    }
 });

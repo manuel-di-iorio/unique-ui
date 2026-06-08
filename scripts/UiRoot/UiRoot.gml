@@ -11,7 +11,36 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
     self.isScrolling = false;
     self.Overlay = undefined;
     self.Tooltip = undefined;
+    self.__debugViewCreated = false;
 
+    // Debug counters
+    self.__debugUpdateCount = 0;
+    self.__debugRedrawCount = 0;
+    self.__debugLastUpdateElem = "";
+    self.__debugLastRedrawElem = "";
+    
+    /** Enable the custom UI Debug View in the GameMaker Debug Overlay */
+    function enableDebugView() {
+        if (self.__debugViewCreated) return; 
+        
+        self.__debugViewCreated = true;
+        dbg_view("UI Debug", true, 100, 100, 300, 150);
+        dbg_section("Counters");
+        dbg_text("Updates:");
+        dbg_same_line();
+        dbg_text(ref_create(self, "__debugUpdateCount"));
+        dbg_text("Redraws:");
+        dbg_same_line();
+        dbg_text(ref_create(self, "__debugRedrawCount"));
+        dbg_section("Last Request");
+        dbg_text("Last updated:");
+        dbg_same_line();
+        dbg_text(ref_create(self, "__debugLastUpdateElem"));
+        dbg_text("Last redrawn:");
+        dbg_same_line();
+        dbg_text(ref_create(self, "__debugLastRedrawElem"));
+    }
+    
     self.getOverlay = function() {
         if (self.Overlay == undefined) {
             self.Overlay = new UiNode({ name: "Overlay", position: "absolute", left: 0, top: 0, width: "100%", height: "100%" }, { pointerEvents: false });
@@ -36,13 +65,21 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
     function requestRedraw(element = undefined) {
         gml_pragma("forceinline");
         self.needsRedraw = true;
-        if (element != undefined) array_push(self.redrawElements, element);
+        if (element != undefined) {
+            array_push(self.redrawElements, element);
+            self.__debugLastRedrawElem = flexpanel_node_get_name(element.node);
+        } else {
+            self.__debugLastRedrawElem = self.__debugStepOwner != undefined ? self.__debugStepOwner : "(no element)";
+        }
     }
 
     function requestUpdate(element = undefined) {
         gml_pragma("forceinline");
         self.needsUpdate = true;
-        if (element != undefined) array_push(self.dirtyElements, element);
+        if (element != undefined) {
+            array_push(self.dirtyElements, element);
+            self.__debugLastUpdateElem = flexpanel_node_get_name(element.node);
+        }
     }
     
     function setCursor(cursor) {
@@ -362,6 +399,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         self.getTooltip();
         
         if (self.needsUpdate) {
+            self.__debugUpdateCount++;
             self.__processLayout();
         }
         
@@ -389,7 +427,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
                     self.dispatchEvent(UI_EVENT.mouseleave, _currentlyHovered); 
                     self.dispatchEvent(UI_EVENT.mouseout, _currentlyHovered);
                     self.previousTarget = undefined;
-                    self.requestRedraw();
+                    self.requestRedraw(self);
                 }
                 
                 // Set hover on new element (only dispatch events if it's a new hover target)
@@ -402,7 +440,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
                     if (!_wasAlreadyHovered) {
                         self.dispatchEvent(UI_EVENT.mouseenter, _elem); 
                         self.dispatchEvent(UI_EVENT.mouseover, _elem);
-                        self.requestRedraw();
+                        self.requestRedraw(self);
                     }
                     
                     if (_elem.handpoint && self.currentCursor == cr_default && self.draggedElement == undefined) {
@@ -585,6 +623,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         // Final layout pass: if event handlers (like onClick) modified the UI structure,
         // recalculate layout immediately to avoid a blank frame (flash) in the Draw event.
         if (self.needsUpdate) {
+            self.__debugUpdateCount++;
             self.__processLayout();
         }
 
@@ -600,8 +639,10 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             var _owner = _entry[1];
             if (_owner != undefined && (_owner.destroyed || _owner.hasStepEvent != true)) continue;
 
+            self.__debugStepOwner = _owner != undefined ? _owner.getName() : "?";
             _entry[0](self.layoutUpdated);
         }
+        self.__debugStepOwner = undefined;
         
         self.mouseXPrev = self.mouseX;
         self.mouseYPrev = self.mouseY;
@@ -714,7 +755,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             }
         } else {
             self.surface = surface_create(self.width, self.height);
-            self.requestRedraw();
+            self.requestRedraw(self);
         }
         
         self.rootDrawIndex = 0; 
@@ -725,6 +766,7 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         }
 
         if (self.layoutUpdated || self.needsRedraw) {
+            self.__debugRedrawCount++;
             self.needsRedraw = false;
             var currentBlendMode = gpu_get_blendmode_ext_sepalpha();
             gpu_set_blendmode_ext_sepalpha(bm_src_alpha, bm_inv_src_alpha, bm_inv_dest_alpha, bm_one);

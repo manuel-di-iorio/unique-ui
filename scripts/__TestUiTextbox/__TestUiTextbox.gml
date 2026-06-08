@@ -4,9 +4,14 @@
 
 ui_test_suite("UiTextbox", function() {
     
+    /// Track created textboxes for cleanup
+    var __cleanup = [];
+    
     /// Helper to create a textbox and get its Input child
     function __tb(props = {}) {
-        return new UiTextbox({}, props);
+        var tb = new UiTextbox({}, props);
+        array_push(__cleanup, tb);
+        return tb;
     }
     
     // ── Creation ────────────────────────────────────────────
@@ -379,4 +384,9 @@ ui_test_suite("UiTextbox", function() {
         assert_equal(tb.value, "3", "trailing dot removed");
     });
     
+    // Cleanup: destroy all test textboxes to prevent orphaned step handlers
+    // from continuing to run (e.g. cursor blink calling requestRedraw).
+    for (var i = 0; i < array_length(__cleanup); i++) {
+        __cleanup[i].destroy();
+    }
 });
