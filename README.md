@@ -6,6 +6,8 @@ UniqueUI is a state-of-the-art UI system designed for GameMaker, bridging the ga
 
 <img src="other/screen0.png" width="800px">
 
+[Try the online demo (GX Export)](https://manuel-di-iorio.github.io/unique-ui/demo)
+
 ---
 
 ## CORE PILLARS

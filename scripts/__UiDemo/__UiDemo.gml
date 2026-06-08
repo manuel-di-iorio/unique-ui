@@ -4,6 +4,8 @@ function ui_demo_create() {
     display_reset(display_aa >= 8 ? 8 : (display_aa >= 4 ? 4 : (display_aa >= 2 ? 2 : 1)), true);
     display_set_gui_size(W, H);
     device_mouse_dbclick_enable(false);
+    draw_enable_svg_aa(true);
+    draw_set_svg_aa_level(.5);
     
     global.UI_DEMO = {
         currentPage: "Introduction",
