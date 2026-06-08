@@ -75,7 +75,7 @@ root.add(tree);
 
 - sprUiTreeviewArrowDown / sprUiTreeviewArrowRight
 
-- Background rendering for non-collapsed entities (global.UI_COL_BG_SIDEBAR)
+- Background rendering for non-collapsed entities (global.UI_COL_SURFACE_1)
 
 **Structure & Nodes**
 
@@ -126,7 +126,7 @@ root.add(tree);
 
 **Rendering Notes**
 
-- The item's `onDraw` draws hover highlight (`global.UI_COL_BTN_HOVER`), selected highlight (`global.UI_COL_PRIMARY`) and item background when expanded (`global.UI_COL_BG_SIDEBAR`).
+- The item's `onDraw` draws hover highlight (`global.UI_COL_HOVER`), selected highlight (`global.UI_COL_PRIMARY`) and item background when expanded (`global.UI_COL_SURFACE_1`).
 
 **Example with drop handler and context menu**
 

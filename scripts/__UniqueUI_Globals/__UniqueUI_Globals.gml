@@ -1,22 +1,38 @@
-global.UI_VERSION = "4.2.2";
+global.UI_VERSION = "5.0.0";
 
-// UI Theme - Modern Premium Palette
-global.UI_COL_PRIMARY          = #2F6FEF;
-global.UI_COL_PRIMARY_HOVER    = #215CDA;
-global.UI_COL_BG_SIDEBAR       = #F8FAFC;
-global.UI_COL_BG_MAIN          = #FBFCFF;
-global.UI_COL_BG_CARD          = #FFFFFF;
-global.UI_COL_TEXT_MAIN        = #13213A;
-global.UI_COL_TEXT_DIM         = #60708D;
-global.UI_COL_BORDER           = #DDE5F0;
-global.UI_COL_BTN_HOVER        = #EDF3FF;
-global.UI_COL_DROPDOWN_LIST_BG = #172338;
-global.UI_COL_INSPECTOR_BG     = #EEF3FA;
-global.UI_COL_SELECTION        = #3B82F6;
-global.UI_COL_SUCCESS          = #23A75A;
-global.UI_COL_WARNING          = #F59E0B;
-global.UI_COL_DANGER           = #EF4444;
-global.UI_COL_SCROLLBAR_THUMB  = #CBD5E1;
+/** Colors */
+
+// Brand
+global.UI_COL_PRIMARY         = #2F6FEF;
+global.UI_COL_PRIMARY_HOVER         = #215CDA;
+
+// Surface
+global.UI_COL_SURFACE_0         = #FBFCFF;
+global.UI_COL_SURFACE_1         = #F8FAFC;
+global.UI_COL_SURFACE_2         = #EEF3FA;
+global.UI_COL_SURFACE_3         = #FFFFFF;
+
+// Text
+global.UI_COL_TEXT_1            = #13213A;
+global.UI_COL_TEXT_2            = #60708D;
+
+// Border
+global.UI_COL_BORDER_1          = #DDE5F0;
+
+// States
+global.UI_COL_HOVER             = #EDF3FF;
+global.UI_COL_SELECTED          = #3B82F6;
+
+// Floating Elements
+global.UI_COL_FLOATING_BG       = #172338;
+
+// Feedback
+global.UI_COL_SUCCESS           = #23A75A;
+global.UI_COL_WARNING           = #F59E0B;
+global.UI_COL_ERROR             = #EF4444;
+
+// Misc
+global.UI_COL_SCROLLBAR         = #CBD5E1;
 
 /// @desc Sets a scissor rect using GUI coordinates, automatically scaling them to real window/viewport space.
 function __uui_set_scissor(x, y, w, h) {
@@ -31,61 +47,61 @@ global.UI_THEMES = {};
 global.UI_THEMES.dark = {
     primary: #3B82F6,
     primaryHover: #2563EB,
-    bgSidebar: #0B0F19,
-    bgMain: #0F172A,
-    bgCard: #1E293B,
-    textMain: #F8FAFC,
-    textDim: #CBD5E1,
-    border: #334155,
-    btnHover: #334155,
-    dropdownListBg: #1E293B,
-    inspectorBg: #1E293B,
-    selection: #3B82F6,
+    surface0: #0F172A,
+    surface1: #0B0F19,
+    surface2: #1E293B,
+    surface3: #1E293B,
+    text1: #F8FAFC,
+    text2: #CBD5E1,
+    border1: #334155,
+    hover: #334155,
+    floatingBg: #1E293B,
+    selected: #3B82F6,
     success: #22C55E,
     warning: #F59E0B,
-    danger: #EF4444,
-    scrollbarThumb: #475569
+    error: #EF4444,
+    scrollbar: #475569
 };
 
 global.UI_THEMES.light = {
     primary: #2F6FEF,
     primaryHover: #215CDA,
-    bgSidebar: #F8FAFC,
-    bgMain: #FBFCFF,
-    bgCard: #FFFFFF,
-    textMain: #13213A,
-    textDim: #60708D,
-    border: #DDE5F0,
-    btnHover: #EDF3FF,
-    dropdownListBg: #172338,
-    inspectorBg: #EEF3FA,
-    selection: #3B82F6,
+    surface0: #FBFCFF,
+    surface1: #F8FAFC,
+    surface2: #EEF3FA,
+    surface3: #FFFFFF,
+    text1: #13213A,
+    text2: #60708D,
+    border1: #DDE5F0,
+    hover: #EDF3FF,
+    floatingBg: #172338,
+    selected: #3B82F6,
     success: #23A75A,
     warning: #F59E0B,
-    danger: #EF4444,
-    scrollbarThumb: #CBD5E1
+    error: #EF4444,
+    scrollbar: #CBD5E1
 };
 
 /// @desc Sets the active UI theme by name and requests a full redraw.
 function ui_set_theme(themeName) {
     var t = global.UI_THEMES[$ themeName];
     if (t == undefined) return;
-    global.UI_COL_PRIMARY          = t.primary;
-    global.UI_COL_PRIMARY_HOVER    = t.primaryHover;
-    global.UI_COL_BG_SIDEBAR       = t.bgSidebar;
-    global.UI_COL_BG_MAIN          = t.bgMain;
-    global.UI_COL_BG_CARD          = t.bgCard;
-    global.UI_COL_TEXT_MAIN        = t.textMain;
-    global.UI_COL_TEXT_DIM         = t.textDim;
-    global.UI_COL_BORDER           = t.border;
-    global.UI_COL_BTN_HOVER        = t.btnHover;
-    global.UI_COL_DROPDOWN_LIST_BG = t.dropdownListBg;
-    global.UI_COL_INSPECTOR_BG     = t.inspectorBg;
-    global.UI_COL_SELECTION       = t.selection;
-    global.UI_COL_SUCCESS         = t.success;
-    global.UI_COL_WARNING         = t.warning;
-    global.UI_COL_DANGER          = t.danger;
-    global.UI_COL_SCROLLBAR_THUMB = t.scrollbarThumb;
+    global.UI_COL_PRIMARY         = t.primary;
+    global.UI_COL_PRIMARY_HOVER         = t.primaryHover;
+    global.UI_COL_SURFACE_0         = t.surface0;
+    global.UI_COL_SURFACE_1         = t.surface1;
+    global.UI_COL_SURFACE_2         = t.surface2;
+    global.UI_COL_SURFACE_3         = t.surface3;
+    global.UI_COL_TEXT_1            = t.text1;
+    global.UI_COL_TEXT_2            = t.text2;
+    global.UI_COL_BORDER_1          = t.border1;
+    global.UI_COL_HOVER             = t.hover;
+    global.UI_COL_SELECTED          = t.selected;
+    global.UI_COL_FLOATING_BG       = t.floatingBg;
+    global.UI_COL_SUCCESS           = t.success;
+    global.UI_COL_WARNING           = t.warning;
+    global.UI_COL_ERROR             = t.error;
+    global.UI_COL_SCROLLBAR         = t.scrollbar;
     
     if (global.UI != undefined) {
         global.UI.requestRedraw();

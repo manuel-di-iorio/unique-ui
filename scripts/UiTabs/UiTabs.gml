@@ -18,7 +18,7 @@ function UiTabs(items, style = {}, props = {}): UiNode(style, props) constructor
     
     if (self.variant == "underline") {
         self.Strip.onDraw = method(self.Strip, function() {
-            draw_set_color(global.UI_COL_BORDER);
+            draw_set_color(global.UI_COL_BORDER_1);
             draw_line(self.x1, self.y2, self.x2, self.y2);
         });
     }
@@ -59,7 +59,7 @@ function UiTabs(items, style = {}, props = {}): UiNode(style, props) constructor
                         draw_set_color(global.UI_COL_PRIMARY);
                         draw_line_width(self.x1, self.y2, self.x2, self.y2, 2);
                     } else if (self.hovered) {
-                        draw_set_color(global.UI_COL_BTN_HOVER);
+                        draw_set_color(global.UI_COL_HOVER);
                         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2 - 2, 6, 6, false);
                     }
                 });
@@ -69,13 +69,13 @@ function UiTabs(items, style = {}, props = {}): UiNode(style, props) constructor
                         draw_set_color(global.UI_COL_PRIMARY);
                         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
                     } else if (self.hovered) {
-                        draw_set_color(global.UI_COL_BTN_HOVER);
+                        draw_set_color(global.UI_COL_HOVER);
                         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
                     }
                 });
             }
             
-            var textColor = global.UI_COL_TEXT_DIM;
+            var textColor = global.UI_COL_TEXT_2;
             if (isActive) {
                 textColor = (self.variant == "pills") ? function() { return #FFFFFF; } : global.UI_COL_PRIMARY;
             }

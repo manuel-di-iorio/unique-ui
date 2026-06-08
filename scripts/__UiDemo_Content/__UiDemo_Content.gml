@@ -8,12 +8,12 @@ function __ui_demo_refresh(preserveScroll = false) {
     // Title Section
     var Hero = new UiNode({ width: "100%", flexDirection: "column", marginBottom: 22 });
     area.add(Hero);
-    Hero.add(new UiText(global.UI_DEMO.currentPage, { marginBottom: 8, height: 36 }, { color: global.UI_COL_TEXT_MAIN, font: global.UI_FONTS.big })); 
+    Hero.add(new UiText(global.UI_DEMO.currentPage, { marginBottom: 8, height: 36 }, { color: global.UI_COL_TEXT_1, font: global.UI_FONTS.big })); 
     
     var metadata = __ui_demo_get_component_metadata();
     var componentData = metadata[$ global.UI_DEMO.currentPage];
     var desc = (componentData != undefined ? componentData.desc : "Explore the capabilities of the component " + global.UI_DEMO.currentPage);
-    Hero.add(new UiText(desc, {}, { color: global.UI_COL_TEXT_DIM }));
+    Hero.add(new UiText(desc, {}, { color: global.UI_COL_TEXT_2 }));
     
     // Tabs - Documentation tab is hidden for foundation pages (Colors, Typography, Introduction)
     var _isFoundation = (global.UI_DEMO.currentPage == "Colors" || global.UI_DEMO.currentPage == "Typography" || global.UI_DEMO.currentPage == "Store" || global.UI_DEMO.currentPage == "Introduction");
@@ -32,7 +32,7 @@ function __ui_demo_refresh(preserveScroll = false) {
 
     if (!_isFoundation) {
         var DocsPanel = new UiNode({ width: "100%", height: "100%", flexDirection: "column" });
-        DocsPanel.enableScrollbar(function() { return global.UI_COL_SCROLLBAR_THUMB; });
+        DocsPanel.enableScrollbar(function() { return global.UI_COL_SCROLLBAR; });
         __ui_demo_render_documentazione(DocsPanel);
         array_push(tabsItems, { label: "Documentation", content: DocsPanel });
     }
@@ -59,14 +59,14 @@ function __ui_demo_render_documentazione(area) {
     var Doc = new UiNode({ width: "100%", flexDirection: "column" });
     area.add(Doc);
     
-    Doc.add(new UiText("Usage", { marginBottom: 16, height: 28 }, { color: global.UI_COL_TEXT_MAIN }));
-    Doc.add(new UiText("The " + global.UI_DEMO.currentPage + " component is designed to be highly customizable.", { marginBottom: 32 }, { color: global.UI_COL_TEXT_DIM }));
+    Doc.add(new UiText("Usage", { marginBottom: 16, height: 28 }, { color: global.UI_COL_TEXT_1 }));
+    Doc.add(new UiText("The " + global.UI_DEMO.currentPage + " component is designed to be highly customizable.", { marginBottom: 32 }, { color: global.UI_COL_TEXT_2 }));
     
     if (componentData != undefined && variable_struct_exists(componentData, "props")) {
-        Doc.add(new UiText("Properties", { marginBottom: 16, height: 28 }, { color: global.UI_COL_TEXT_MAIN }));
+        Doc.add(new UiText("Properties", { marginBottom: 16, height: 28 }, { color: global.UI_COL_TEXT_1 }));
         var Table = new UiNode({ width: "100%", flexDirection: "column", padding: 16 });
         Table.onDraw = method(Table, function() {
-                draw_set_color(global.UI_COL_BG_CARD);
+                draw_set_color(global.UI_COL_SURFACE_3);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
         });
         Doc.add(Table);
@@ -77,15 +77,15 @@ function __ui_demo_render_documentazione(area) {
             __ui_demo_doc_row(Table, p.name, p.type, p.desc);
         }
     } else {
-        Doc.add(new UiText("No specific properties documented for this component.", { marginBottom: 32 }, { color: global.UI_COL_TEXT_DIM }));
+        Doc.add(new UiText("No specific properties documented for this component.", { marginBottom: 32 }, { color: global.UI_COL_TEXT_2 }));
     }
 }
 
 function __ui_demo_doc_row(parent, name, type, desc) {
     var Row = new UiNode({ flexDirection: "row", marginBottom: 12, width: "100%" });
-    Row.add(new UiText(name, { width: 220 }, { color: global.UI_COL_PRIMARY }));
-    Row.add(new UiText(type, { width: 120 }, { color: global.UI_COL_TEXT_DIM }));
-    Row.add(new UiText(desc, { flex: 1 }, { color: global.UI_COL_TEXT_DIM, wrap: true }));
+    Row.add(new UiText(name, { width: 240 }, { color: global.UI_COL_PRIMARY }));
+    Row.add(new UiText(type, { width: 120 }, { color: global.UI_COL_TEXT_2 }));
+    Row.add(new UiText(desc, { flex: 1 }, { color: global.UI_COL_TEXT_2, wrap: true }));
     parent.add(Row);
 }
 
@@ -106,12 +106,12 @@ function __ui_demo_render_anteprima(area) {
         marginRight: 20,
         flexDirection: "column"
     });
-    PreviewCard.enableScrollbar(function() { return global.UI_COL_SCROLLBAR_THUMB; });
-    PreviewCard.enableHorizontalScrollbar(function() { return global.UI_COL_SCROLLBAR_THUMB; });
+    PreviewCard.enableScrollbar(function() { return global.UI_COL_SCROLLBAR; });
+    PreviewCard.enableHorizontalScrollbar(function() { return global.UI_COL_SCROLLBAR; });
     PreviewCard.onDraw = method(PreviewCard, function() {
-        draw_set_color(global.UI_COL_BG_CARD);
+        draw_set_color(global.UI_COL_SURFACE_3);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
     MainRow.add(PreviewCard);
@@ -132,7 +132,7 @@ function __ui_demo_render_anteprima(area) {
 }
 
 function __ui_demo_preview_section(parent, title, mt = 0) {
-    parent.add(new UiText(title, { marginTop: mt, marginBottom: 8, height: 28 }, { color: global.UI_COL_TEXT_MAIN }));
+    parent.add(new UiText(title, { marginTop: mt, marginBottom: 8, height: 28 }, { color: global.UI_COL_TEXT_1 }));
 }
 
 function __ui_demo_render_component_example(page, parent) {
@@ -143,7 +143,7 @@ function __ui_demo_render_component_example(page, parent) {
         return exampleFunc(parent);
     }
     
-    parent.add(new UiText("Preview for " + page + " coming soon.", {}, { color: global.UI_COL_TEXT_DIM }));
+    parent.add(new UiText("Preview for " + page + " coming soon.", {}, { color: global.UI_COL_TEXT_2 }));
     return ["// Example not available"];
 }
 
@@ -278,9 +278,9 @@ function __ui_demo_overview_card(parent, title, layout = {}) {
     
     var Card = new UiNode(_style);
     Card.onDraw = method(Card, function() {
-        draw_set_color(global.UI_COL_BG_CARD);
+        draw_set_color(global.UI_COL_SURFACE_3);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
     parent.add(Card);

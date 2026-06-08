@@ -25,7 +25,7 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
     
     // Label node second
     if (self.label != undefined) {
-        self.Label = new UiText(self.label, {}, { color: global.UI_COL_TEXT_MAIN });
+        self.Label = new UiText(self.label, {}, { color: global.UI_COL_TEXT_1 });
         self.add(self.Label);
     }
     
@@ -36,10 +36,10 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
             var _checkedSprite = isRadio ? sprUiIconRadio : sprUiIconCheckbox;
             var _uncheckedSprite = isRadio ? sprUiIconRadioUnchecked : sprUiIconCheckboxUnchecked;
             var _sprite = isChecked ? _checkedSprite : _uncheckedSprite;
-            var _col = isChecked ? global.UI_COL_PRIMARY : global.UI_COL_TEXT_DIM;
+            var _col = isChecked ? global.UI_COL_PRIMARY : global.UI_COL_TEXT_2;
             
             if (self.parent.hovered && !isChecked) {
-                draw_set_color(global.UI_COL_BTN_HOVER);
+                draw_set_color(global.UI_COL_HOVER);
                 draw_roundrect_ext(self.x1 - 1, self.y1 - 1, self.x2 + 1, self.y2 + 1, 6, 6, false);
             }
             

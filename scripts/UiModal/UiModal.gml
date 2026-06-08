@@ -17,7 +17,7 @@ function UiModal(style = {}, props = {}) : UiNode(style, props) constructor {
     self.pointerEvents = true; 
     
     // Settings
-    self.backdropColor = props[$ "backdropColor"] ?? global.UI_COL_TEXT_MAIN;
+    self.backdropColor = props[$ "backdropColor"] ?? global.UI_COL_TEXT_1;
     self.backdropAlpha = props[$ "backdropAlpha"] ?? 0.65;
     self.dismissOnBackdropClick = props[$ "dismissOnBackdropClick"] ?? true;
     self.onClose = props[$ "onClose"] ?? function() {};
@@ -45,7 +45,7 @@ function UiModal(style = {}, props = {}) : UiNode(style, props) constructor {
     
     if (_panelStyle[$ "width"] == undefined) _panelStyle.width = 440;
     if (_panelStyle[$ "flexDirection"] == undefined) _panelStyle.flexDirection = "column";
-    if (_panelProps[$ "backgroundColor"] == undefined) _panelProps.backgroundColor = global.UI_COL_BG_CARD;
+    if (_panelProps[$ "backgroundColor"] == undefined) _panelProps.backgroundColor = global.UI_COL_SURFACE_3;
     if (_panelProps[$ "borderRadius"] == undefined) _panelProps.borderRadius = 12;
     
     self.Panel = new UiNode(_panelStyle, _panelProps);
@@ -54,7 +54,7 @@ function UiModal(style = {}, props = {}) : UiNode(style, props) constructor {
     
     if (self.Panel.borderWidth == undefined) {
         self.Panel.borderWidth = 1;
-        self.Panel.borderColor = global.UI_COL_BORDER;
+        self.Panel.borderColor = global.UI_COL_BORDER_1;
         self.Panel.border = true;
     }
     
@@ -98,14 +98,14 @@ function UiModal(style = {}, props = {}) : UiNode(style, props) constructor {
         });
         
         self.Header.onDraw = method(self.Header, function() {
-            draw_set_color(global.UI_COL_BORDER);
+            draw_set_color(global.UI_COL_BORDER_1);
             draw_line(self.x1, self.y2 - 1, self.x2, self.y2 - 1);
         });
         
         self.Panel.add(self.Header);
         
         if (self.title != undefined) {
-            self.Header.add(new UiText(self.title, {}, { color: global.UI_COL_TEXT_MAIN, font: global.UI_FONTS.standard }));
+            self.Header.add(new UiText(self.title, {}, { color: global.UI_COL_TEXT_1, font: global.UI_FONTS.standard }));
         }
         
         if (self.showCloseButton) {

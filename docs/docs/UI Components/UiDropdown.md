@@ -92,13 +92,13 @@ This allows dynamic filtering, ideal for asset browsers or large data lists.
 
 - Arrow icon: drawn using sprUiDropdownArrow on the right side.
 
-- Hovered items: highlighted with global.UI_COL_INSPECTOR_BG.
+- Hovered items: highlighted with global.UI_COL_SURFACE_2.
 
 - Selected item: drawn with a filled rectangle.
 
-- List background: uses global.UI_COL_DROPDOWN_LIST_BG.
+- List background: uses global.UI_COL_FLOATING_BG.
 
-- Search highlight: scrollbar uses global.UI_COL_BTN_HOVER.
+- Search highlight: scrollbar uses global.UI_COL_HOVER.
 
 ---
 

@@ -6,7 +6,7 @@ function ui_demo_example_menubar(PreviewCard) {
         "a dropdown panel with items, separators, shortcuts, and disabled states. " +
         "When a dropdown is open, hovering over another label immediately switches to it.",
         { width: "100%", marginBottom: 16 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
 
     // --- Live demo ---
@@ -26,12 +26,12 @@ function ui_demo_example_menubar(PreviewCard) {
         global.UI.requestRedraw();
     };
     statusNode.onDraw = method(statusNode, function() {
-        draw_set_color(global.UI_COL_INSPECTOR_BG);
+        draw_set_color(global.UI_COL_SURFACE_2);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, true);
         draw_set_font(global.UI_FONTS.small);
-        draw_set_color(global.UI_COL_TEXT_DIM);
+        draw_set_color(global.UI_COL_TEXT_2);
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_text(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), self.__msg);
@@ -93,9 +93,9 @@ function ui_demo_example_menubar(PreviewCard) {
         marginBottom: 28
     });
     demoCard.onDraw = method(demoCard, function() {
-        draw_set_color(global.UI_COL_BG_CARD);
+        draw_set_color(global.UI_COL_SURFACE_3);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
 
@@ -107,12 +107,12 @@ function ui_demo_example_menubar(PreviewCard) {
     // Fake "window content" area
     var contentArea = new UiNode({ width: "100%", height: 80, justifyContent: "center", alignItems: "center" });
     contentArea.onDraw = method(contentArea, function() {
-        draw_set_color(global.UI_COL_BG_MAIN);
+        draw_set_color(global.UI_COL_SURFACE_0);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, true);
         draw_set_font(global.UI_FONTS.small);
-        draw_set_color(global.UI_COL_TEXT_DIM);
+        draw_set_color(global.UI_COL_TEXT_2);
         draw_set_halign(fa_center); draw_set_valign(fa_middle);
         draw_text(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2),
             "Application content area");
@@ -127,7 +127,7 @@ function ui_demo_example_menubar(PreviewCard) {
         "Set disabled: true on any item to make it non-interactive. It renders at reduced opacity " +
         "and ignores clicks. In the View menu above, try 'Inspector (Unavailable)'.",
         { width: "100%", marginBottom: 28 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
 
     return [

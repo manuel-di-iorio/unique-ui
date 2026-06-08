@@ -17,12 +17,12 @@ function UiBadge(text, style = {}, props = {}): UiNode(style, props) constructor
     }
     
     function __badge_colors() {
-        var accent = global.UI_COL_TEXT_DIM;
+        var accent = global.UI_COL_TEXT_2;
         switch (self.variant) {
             case "primary": accent = global.UI_COL_PRIMARY; break;
             case "success": accent = global.UI_COL_SUCCESS; break;
             case "warning": accent = global.UI_COL_WARNING; break;
-            case "danger":  accent = global.UI_COL_DANGER; break;
+            case "danger":  accent = global.UI_COL_ERROR; break;
             case "info":    accent = #0EA5E9; break;
         }
         
@@ -31,9 +31,9 @@ function UiBadge(text, style = {}, props = {}): UiNode(style, props) constructor
         }
 
         return {
-            bg: merge_color(accent, global.UI_COL_BG_CARD, 0.76),
-            text: merge_color(accent, global.UI_COL_TEXT_MAIN, 0.12),
-            border: merge_color(accent, global.UI_COL_BORDER, 0.45)
+            bg: merge_color(accent, global.UI_COL_SURFACE_3, 0.76),
+            text: merge_color(accent, global.UI_COL_TEXT_1, 0.12),
+            border: merge_color(accent, global.UI_COL_BORDER_1, 0.45)
         };
     }
     

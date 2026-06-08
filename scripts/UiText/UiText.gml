@@ -70,10 +70,10 @@ function UiText(text = "", style = {}, props = {}): UiNode(style, props) constru
         }
         
         var textCol = self.color;
-        if (textCol == "main" || textCol == #0F172A || textCol == #F8FAFC || textCol == global.UI_COL_TEXT_MAIN || textCol == c_white || textCol == undefined) {
-            textCol = global.UI_COL_TEXT_MAIN;
-        } else if (textCol == "dim" || textCol == #64748B || textCol == #CBD5E1 || textCol == global.UI_COL_TEXT_DIM) {
-            textCol = global.UI_COL_TEXT_DIM;
+        if (textCol == "main" || textCol == #0F172A || textCol == #F8FAFC || textCol == global.UI_COL_TEXT_1 || textCol == c_white || textCol == undefined) {
+            textCol = global.UI_COL_TEXT_1;
+        } else if (textCol == "dim" || textCol == #64748B || textCol == #CBD5E1 || textCol == global.UI_COL_TEXT_2) {
+            textCol = global.UI_COL_TEXT_2;
         } else if (typeof(textCol) == "method") {
             textCol = textCol();
         }

@@ -5,7 +5,7 @@ function ui_demo_example_store(PreviewCard) {
         "all subscribers are notified immediately - no polling, no valueGetter running every step. " +
         "UiStore also calls global.UI.requestRedraw() so bound UI updates on the next frame.",
         { width: "100%", marginBottom: 16 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
 
     // --- Counter demo (subscribe) ---
@@ -21,13 +21,13 @@ function ui_demo_example_store(PreviewCard) {
         marginBottom: 28
     });
     counterRow.onDraw = method(counterRow, function() {
-        draw_set_color(global.UI_COL_BG_MAIN);
+        draw_set_color(global.UI_COL_SURFACE_0);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
 
-    var counterLabel = new UiText("Count: 0", { marginRight: 16 }, { color: global.UI_COL_TEXT_MAIN, font: global.UI_FONTS.big });
+    var counterLabel = new UiText("Count: 0", { marginRight: 16 }, { color: global.UI_COL_TEXT_1, font: global.UI_FONTS.big });
     counterStore.subscribe(method(counterLabel, function(state) {
         self.text = "Count: " + string(state.count);
     }));
@@ -54,7 +54,7 @@ function ui_demo_example_store(PreviewCard) {
         "Multiple components can read and write the same store. Use valueGetter on inputs " +
         "for read binding, and onChange to write back with set().",
         { width: "100%", marginBottom: 16 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
 
     var settingsStore = new UiStore({ notifications: false, volume: 80 });
@@ -66,15 +66,15 @@ function ui_demo_example_store(PreviewCard) {
         marginBottom: 28
     });
     syncCard.onDraw = method(syncCard, function() {
-        draw_set_color(global.UI_COL_BG_MAIN);
+        draw_set_color(global.UI_COL_SURFACE_0);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
 
     var statusLabel = new UiText("Notifications: Off", { marginBottom: 12 }, {
         color: method(settingsStore, function() {
-            return self.get("notifications") ? #16A34A : global.UI_COL_TEXT_DIM;
+            return self.get("notifications") ? #16A34A : global.UI_COL_TEXT_2;
         }),
         valueGetter: method(settingsStore, function() {
             return self.get("notifications") ? "Notifications: On" : "Notifications: Off";
@@ -112,7 +112,7 @@ function ui_demo_example_store(PreviewCard) {
         "setState() merges multiple keys in a single notification. reset() restores the initial " +
         "state snapshot. subscribe() is ideal for side effects like logging or audio updates.",
         { width: "100%", marginBottom: 16 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
 
     var batchStore = new UiStore({ label: "Ready", level: 1 });
@@ -126,13 +126,13 @@ function ui_demo_example_store(PreviewCard) {
         marginBottom: 12
     });
     batchRow.onDraw = method(batchRow, function() {
-        draw_set_color(global.UI_COL_BG_MAIN);
+        draw_set_color(global.UI_COL_SURFACE_0);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
 
-    var batchLabel = new UiText("Ready - Level 1", { marginRight: 40, marginBottom: 8 }, { color: global.UI_COL_TEXT_MAIN });
+    var batchLabel = new UiText("Ready - Level 1", { marginRight: 40, marginBottom: 8 }, { color: global.UI_COL_TEXT_1 });
     batchStore.subscribe(method(batchLabel, function(state) {
         self.text = state.label + " - Level " + string(state.level);
     }));

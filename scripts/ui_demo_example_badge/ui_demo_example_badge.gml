@@ -20,7 +20,7 @@ function ui_demo_example_badge(PreviewCard) {
     __ui_demo_preview_section(PreviewCard, "Inline with Text");
     var row3 = new UiNode({ flexDirection: "row", alignItems: "center", flexWrap: "wrap" });
     PreviewCard.add(row3);
-    row3.add(new UiText("System Status", { marginRight: 10 }, { color: global.UI_COL_TEXT_MAIN }));
+    row3.add(new UiText("System Status", { marginRight: 10 }, { color: global.UI_COL_TEXT_1 }));
     row3.add(new UiBadge("Online", {}, { variant: "success" }));
     
     return [

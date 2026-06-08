@@ -38,8 +38,8 @@ function UiSwitch(style = {}, props = {}) : UiNode(style, props) constructor {
             var r = h / 2;
             
             // Track
-            var trackColor = merge_color(global.UI_COL_BORDER, global.UI_COL_PRIMARY, p.animThumbPos);
-            if (p.hovered && !p.value) trackColor = global.UI_COL_BTN_HOVER;
+            var trackColor = merge_color(global.UI_COL_BORDER_1, global.UI_COL_PRIMARY, p.animThumbPos);
+            if (p.hovered && !p.value) trackColor = global.UI_COL_HOVER;
             
             draw_set_color(trackColor);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, r, r, false);

@@ -11,9 +11,9 @@ function ui_demo_example_colorpicker(PreviewCard) {
         })
     }));
 
-    PreviewCard.add(new UiNode({ width: "100%", height: 1, marginBottom: 12 }, { backgroundColor: global.UI_COL_BORDER }));
+    PreviewCard.add(new UiNode({ width: "100%", height: 1, marginBottom: 12 }, { backgroundColor: global.UI_COL_BORDER_1 }));
     PreviewCard.add(new UiText("", {}, {
-        color: global.UI_COL_TEXT_DIM,
+        color: global.UI_COL_TEXT_2,
         valueGetter: method(_state, function() { return "Selected: " + hex; })
     }));
 

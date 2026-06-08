@@ -39,11 +39,11 @@ function UiMenuBar(menus = [], style = {}, props = {}) : UiNode(style, props) co
 
     self.onDraw = function() {
         // Slightly recessed fill (theme-aware, no hardcoded white)
-        draw_set_color(merge_color(global.UI_COL_BG_CARD, global.UI_COL_BORDER, 0.14));
+        draw_set_color(merge_color(global.UI_COL_SURFACE_3, global.UI_COL_BORDER_1, 0.14));
         draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
 
         // Top & bottom edges — both use theme border color
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_line(self.x1, self.y1, self.x2, self.y1);
         draw_line(self.x1, self.y2 - 1, self.x2, self.y2 - 1);
     };
@@ -101,14 +101,14 @@ function UiMenuBar(menus = [], style = {}, props = {}) : UiNode(style, props) co
                     draw_set_color(global.UI_COL_PRIMARY);
                     draw_roundrect_ext(_ix1, _iy1, _ix2, _iy2, _rad, _rad, false);
                 } else if (self.hovered) {
-                    draw_set_color(global.UI_COL_BTN_HOVER);
+                    draw_set_color(global.UI_COL_HOVER);
                     draw_roundrect_ext(_ix1, _iy1, _ix2, _iy2, _rad, _rad, false);
-                    draw_set_color(global.UI_COL_BORDER);
+                    draw_set_color(global.UI_COL_BORDER_1);
                     draw_roundrect_ext(_ix1, _iy1, _ix2, _iy2, _rad, _rad, true);
                 }
 
                 draw_set_font(global.UI_FONTS.standard);
-                draw_set_color(_isOpen ? c_white : global.UI_COL_TEXT_MAIN);
+                draw_set_color(_isOpen ? c_white : global.UI_COL_TEXT_1);
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_middle);
                 draw_text(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), self.__label);
@@ -214,7 +214,7 @@ function UiMenuBar(menus = [], style = {}, props = {}) : UiNode(style, props) co
             });
 
             self.onDraw = function() {
-                draw_set_color(global.UI_COL_DROPDOWN_LIST_BG);
+                draw_set_color(global.UI_COL_FLOATING_BG);
                 draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
 
                 draw_set_color(#334155);

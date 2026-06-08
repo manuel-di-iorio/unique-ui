@@ -13,7 +13,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
     self.onChange = props[$ "onChange"] ?? function(input, value) {};
     
     if (self.label != undefined) {
-        self.LabelNode = new UiText(self.label, { marginRight: 15 }, { color: global.UI_COL_TEXT_MAIN });
+        self.LabelNode = new UiText(self.label, { marginRight: 15 }, { color: global.UI_COL_TEXT_1 });
         self.add(self.LabelNode);
     }
     
@@ -67,19 +67,19 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
         
         self.onDraw = function() {
             var radius = 6;
-            draw_set_color(global.UI_COL_BG_CARD);
+            draw_set_color(global.UI_COL_SURFACE_3);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
             
             if (self.hovered) {
-                draw_set_color(global.UI_COL_BTN_HOVER);
+                draw_set_color(global.UI_COL_HOVER);
                 draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, false);
             }
             
-            draw_set_color(global.UI_COL_BORDER);
+            draw_set_color(global.UI_COL_BORDER_1);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, true);
 
             // Button arrow (Modern Chevron)
-            var arrowCol = self.hovered ? global.UI_COL_TEXT_MAIN : global.UI_COL_TEXT_DIM;
+            var arrowCol = self.hovered ? global.UI_COL_TEXT_1 : global.UI_COL_TEXT_2;
             var cx = self.x2 - 16;
             var cy = floor(self.y1 + self.height/2);
             var size = 3;
@@ -97,7 +97,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             }
             
             // Selected value
-            draw_set_halign(fa_left); draw_set_valign(fa_middle); draw_set_color(global.UI_COL_TEXT_MAIN);
+            draw_set_halign(fa_left); draw_set_valign(fa_middle); draw_set_color(global.UI_COL_TEXT_1);
             var _val = self.parent.value;
             var _selectedIndex = array_find_index(self.parent.items, method({ value: _val }, function(item) {
                 return item.value == self.value;
@@ -164,9 +164,9 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
             });
             
             self.onDraw = function() {
-                draw_set_color(global.UI_COL_DROPDOWN_LIST_BG);
+                draw_set_color(global.UI_COL_FLOATING_BG);
                 draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-                draw_set_color(global.UI_COL_BORDER);
+                draw_set_color(global.UI_COL_BORDER_1);
                 draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
             }
             
@@ -229,7 +229,7 @@ function UiDropdown(style = {}, props = {}) : UiNode(style, props) constructor {
                     self.Items.add(_itemNode);
                 }
                 
-                self.Items.enableScrollbar(global.UI_COL_BTN_HOVER);
+                self.Items.enableScrollbar(global.UI_COL_HOVER);
             }
             
             // Create the search input

@@ -104,8 +104,8 @@ The textbox creates an internal node `self.Input` which handles input logic, ren
 
 | Layer       | Description                                       |
 | ----------- | ------------------------------------------------- |
-| Background  | Filled rectangle using `global.UI_COL_BG_CARD`.  |
-| Border      | Outline using `global.UI_COL_BORDER`.             |
+| Background  | Filled rectangle using `global.UI_COL_SURFACE_3`.  |
+| Border      | Outline using `global.UI_COL_BORDER_1`.             |
 | Selection   | Semi-transparent highlight when selecting text.   |
 | Text        | Drawn with `fText` font, horizontally scrollable. |
 | Placeholder | Faded text when empty/unfocused.                  |

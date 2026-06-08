@@ -7,14 +7,14 @@ function ui_demo_example_introduction(PreviewCard) {
         "At the top of the hierarchy sits UiRoot (instantiated globally as global.UI), which handles window resizing, " +
         "input propagation, rendering to a surface, and focus management.",
         { width: "100%", marginBottom: 12 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
     
     PreviewCard.add(new UiText(
         "Every element in the UI (including containers, buttons, and text fields) inherits from UiNode. " +
         "A UiNode defines coordinates (x1, y1, x2, y2), flexbox layout configuration, and event listeners.",
         { width: "100%", marginBottom: 28 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
     
     // --- 2. Containers and Nesting ---
@@ -24,7 +24,7 @@ function ui_demo_example_introduction(PreviewCard) {
         "You can easily nest nodes inside other nodes using parent.add(child) to create nested structures and layouts. " +
         "The following interactive card represents a container node holding a title and a horizontal row of buttons.",
         { width: "100%", marginBottom: 16 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
     
     // Container Demo
@@ -35,13 +35,13 @@ function ui_demo_example_introduction(PreviewCard) {
         marginBottom: 28
     });
     demoContainer.onDraw = method(demoContainer, function() {
-        draw_set_color(global.UI_COL_BG_MAIN);
+        draw_set_color(global.UI_COL_SURFACE_0);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
     
-    demoContainer.add(new UiText("Parent Container (UiNode)", { marginBottom: 12 }, { color: global.UI_COL_TEXT_MAIN, font: global.UI_FONTS.big }));
+    demoContainer.add(new UiText("Parent Container (UiNode)", { marginBottom: 12 }, { color: global.UI_COL_TEXT_1, font: global.UI_FONTS.big }));
     
     var rowContainer = new UiNode({
         flexDirection: "row",
@@ -60,13 +60,13 @@ function ui_demo_example_introduction(PreviewCard) {
         "For a node to intercept mouse input, you must set pointerEvents: true in its property constructor (or set it manually on the instance). " +
         "Nodes with pointerEvents: false are invisible to mouse detection, allowing mouse clicks and hovers to pass straight through them to elements underneath.",
         { width: "100%", marginBottom: 12 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
 
     PreviewCard.add(new UiText(
         "Event handlers (like onClick, onMouseEnter, etc.) trigger event propagation. Bubble-capable events propagate up from the deepest hovered target to its parent nodes.",
         { width: "100%", marginBottom: 28 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
 
     // --- 4. Custom Drawing (onDraw) ---
@@ -77,7 +77,7 @@ function ui_demo_example_introduction(PreviewCard) {
         "standard drawing functions. Inside the bound callback, self.x1, self.y1, self.x2, and self.y2 correspond " +
         "to the layout bounds calculated by the library.",
         { width: "100%", marginBottom: 16 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
     
     // Gradient custom drawing demo
@@ -110,7 +110,7 @@ function ui_demo_example_introduction(PreviewCard) {
         "- Set dropzone: true on target nodes, and define onDrop = function(draggedNode) to handle the drop event.\n" +
         "Drag and drop any of the blue boxes below and drop them onto the target container!",
         { width: "100%", marginBottom: 16 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
 
     // Drag & drop interactive demo
@@ -123,9 +123,9 @@ function ui_demo_example_introduction(PreviewCard) {
         marginBottom: 28
     });
     dragDropContainer.onDraw = method(dragDropContainer, function() {
-        draw_set_color(global.UI_COL_BG_MAIN);
+        draw_set_color(global.UI_COL_SURFACE_0);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
 
@@ -178,7 +178,7 @@ function ui_demo_example_introduction(PreviewCard) {
         "- Built-in layout methods (such as setSize(), add(), remove(), show(), and hide()) automatically trigger a layout update and repaint. You DO NOT need to call requestUpdate() manually for these actions.\n" +
         "- State changes (like mouse hovering or text changes in responsive labels) automatically request a redraw. You only need to call global.UI.requestRedraw() manually when you modify custom variables in your drawing code (e.g., toggling a custom selected color or changing a state flag in custom event handlers).",
         { width: "100%", marginBottom: 28 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
 
     // --- 7. Event Handling & Reactivity ---
@@ -189,7 +189,7 @@ function ui_demo_example_introduction(PreviewCard) {
         "Use methods like onClick(callback) or addEventListener(event_type, callback). " +
         "UiStore provides push-based reactivity: when you call store.set() or store.setState(), all subscribers fire immediately",
         { width: "100%", marginBottom: 16 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
     
     // Interactive event demo - UiStore-powered
@@ -201,9 +201,9 @@ function ui_demo_example_introduction(PreviewCard) {
         marginBottom: 28
     });
     eventContainer.onDraw = method(eventContainer, function() {
-        draw_set_color(global.UI_COL_BG_MAIN);
+        draw_set_color(global.UI_COL_SURFACE_0);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
     
@@ -211,7 +211,7 @@ function ui_demo_example_introduction(PreviewCard) {
     var clickStore = new UiStore({ count: 0 });
     
     var counterText = new UiText("Clicks: 0", {}, {
-        color: global.UI_COL_TEXT_MAIN,
+        color: global.UI_COL_TEXT_1,
         font: global.UI_FONTS.big
     });
     
@@ -237,7 +237,7 @@ function ui_demo_example_introduction(PreviewCard) {
         "The scrollbar automatically appears when content exceeds the container bounds " +
         "and supports mouse wheel scrolling and thumb dragging.",
         { width: "100%", marginBottom: 16 },
-        { color: global.UI_COL_TEXT_DIM, wrap: true }
+        { color: global.UI_COL_TEXT_2, wrap: true }
     ));
     
     var scrollDemo = new UiNode({
@@ -247,11 +247,11 @@ function ui_demo_example_introduction(PreviewCard) {
         padding: 8,
         marginBottom: 12
     });
-    scrollDemo.enableScrollbar(global.UI_COL_SCROLLBAR_THUMB);
+    scrollDemo.enableScrollbar(global.UI_COL_SCROLLBAR);
     scrollDemo.onDraw = method(scrollDemo, function() {
-        draw_set_color(global.UI_COL_BG_CARD);
+        draw_set_color(global.UI_COL_SURFACE_3);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
     
@@ -262,7 +262,7 @@ function ui_demo_example_introduction(PreviewCard) {
             draw_set_alpha(0.06);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 4, 4, false);
             draw_set_alpha(1);
-            draw_set_color(global.UI_COL_TEXT_DIM);
+            draw_set_color(global.UI_COL_TEXT_2);
             draw_set_font(global.UI_FONTS.small);
             draw_set_halign(fa_left);
             draw_set_valign(fa_middle);
@@ -326,7 +326,7 @@ function ui_demo_example_introduction(PreviewCard) {
         "",
         "// === 6. SCROLLABLE CONTAINER ===",
         "var container = new UiNode({ width: \"100%\", height: 200, flexDirection: \"column\" });",
-        "container.enableScrollbar(global.UI_COL_SCROLLBAR_THUMB);",
+        "container.enableScrollbar(global.UI_COL_SCROLLBAR);",
         "for (var i = 0; i < 20; i++) {",
         "    container.add(new UiText(\"Item \" + string(i)));",
         "}",

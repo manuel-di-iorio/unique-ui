@@ -118,9 +118,9 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
     // Disegna il bordo sul Container (non più sull'HexField)
     self.Container.onDraw = function() {
         var _focused = self.HexInput.Input.focused;
-        draw_set_color(global.UI_COL_BG_CARD);
+        draw_set_color(global.UI_COL_SURFACE_3);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
-        draw_set_color(_focused ? global.UI_COL_PRIMARY : global.UI_COL_BORDER);
+        draw_set_color(_focused ? global.UI_COL_PRIMARY : global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, true);
     };
     
@@ -212,7 +212,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             var _iy2 = min(self.y2, _scissor.y + _scissor.h);
             __uui_set_scissor(_ix1, _iy1, max(0, _ix2 - _ix1), max(0, _iy2 - _iy1));
             
-            draw_set_color(global.UI_COL_TEXT_MAIN);
+            draw_set_color(global.UI_COL_TEXT_1);
             draw_set_font(global.UI_FONTS.standard);
             draw_set_halign(fa_left);
             draw_set_valign(fa_middle);
@@ -226,13 +226,13 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
                 var _ended = max(self.selectionStart, self.selectionEnd);
                 var _startX = _textX + string_width(string_copy(_text, 1, _start));
                 var _endX = _textX + string_width(string_copy(_text, 1, _ended));
-                draw_set_color(global.UI_COL_SELECTION);
+                draw_set_color(global.UI_COL_SELECTED);
                 draw_set_alpha(0.3);
                 draw_rectangle(_startX, self.y1 + 2, _endX, self.y2 - 2, false);
                 draw_set_alpha(1);
             }
             
-            draw_set_color(global.UI_COL_TEXT_MAIN);
+            draw_set_color(global.UI_COL_TEXT_1);
             if (_text == "" && self.parent.placeholder != undefined) {
                 draw_set_alpha(0.5);
                 draw_text(_textX, _textY, self.parent.placeholder);
@@ -255,7 +255,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
     self.HexField.add(self.Divider);
     with (self.Divider) {
         self.onDraw = function() {
-            draw_set_color(global.UI_COL_BORDER);
+            draw_set_color(global.UI_COL_BORDER_1);
             draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
         };
     }
@@ -279,7 +279,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
         self.onDraw = function() {
             if (self.hovered) {
                 draw_set_alpha(0.08);
-                draw_set_color(global.UI_COL_TEXT_MAIN);
+                draw_set_color(global.UI_COL_TEXT_1);
                 draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
                 draw_set_alpha(1);
             }
@@ -288,7 +288,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             var _sprite = (self.parent.parent.parent.__copyCheckTimer > 0) ? sprUiIconCheck : sprUiIconCopy;
             var _sw = sprite_get_width(_sprite);
             var _sh = sprite_get_height(_sprite);
-            var _color = (self.parent.parent.parent.__copyCheckTimer > 0) ? global.UI_COL_SUCCESS : global.UI_COL_TEXT_DIM;
+            var _color = (self.parent.parent.parent.__copyCheckTimer > 0) ? global.UI_COL_SUCCESS : global.UI_COL_TEXT_2;
             var _iconSize = 16 * global.UI_ZOOM;
             draw_sprite_ext(_sprite, 0, _cx, _cy, _iconSize / _sw, _iconSize / _sh, 0, _color, 1);
         };
@@ -400,9 +400,9 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             });
             
             self.onDraw = function() {
-                draw_set_color(global.UI_COL_DROPDOWN_LIST_BG);
+                draw_set_color(global.UI_COL_FLOATING_BG);
                 draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-                draw_set_color(global.UI_COL_BORDER);
+                draw_set_color(global.UI_COL_BORDER_1);
                 draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
             };
             
@@ -456,7 +456,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
                     draw_vertex_color(self.x2, self.y2, c_black, 1);
                     draw_primitive_end();
                     
-                    draw_set_color(global.UI_COL_BORDER);
+                    draw_set_color(global.UI_COL_BORDER_1);
                     draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, true);
                     
                     var _Picker = self.parent.Picker;
@@ -464,7 +464,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
                     var _cy = lerp(self.y2, self.y1, _Picker.brightness);
                     draw_set_color(c_white);
                     draw_circle(_cx, _cy, 6, false);
-                    draw_set_color(global.UI_COL_TEXT_MAIN);
+                    draw_set_color(global.UI_COL_TEXT_1);
                     draw_circle(_cx, _cy, 6, true);
                 };
             }
@@ -515,13 +515,13 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
                     }
                     draw_primitive_end();
                     
-                    draw_set_color(global.UI_COL_BORDER);
+                    draw_set_color(global.UI_COL_BORDER_1);
                     draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, true);
                     
                     var _hx = lerp(self.x1, self.x2, self.parent.Picker.hue);
                     draw_set_color(c_white);
                     draw_roundrect_ext(_hx - 3, self.y1 - 2, _hx + 3, self.y2 + 2, 2, 2, false);
-                    draw_set_color(global.UI_COL_TEXT_MAIN);
+                    draw_set_color(global.UI_COL_TEXT_1);
                     draw_roundrect_ext(_hx - 3, self.y1 - 2, _hx + 3, self.y2 + 2, 2, 2, true);
                 };
             }

@@ -8,16 +8,18 @@ function ui_demo_example_colors(PreviewCard) {
         {name: "Primary Hover", col: global.UI_COL_PRIMARY_HOVER, hex: "#215CDA"},
         {name: "Success", col: global.UI_COL_SUCCESS, hex: "#23A75A"},
         {name: "Warning", col: global.UI_COL_WARNING, hex: "#F59E0B"},
-        {name: "Danger", col: global.UI_COL_DANGER, hex: "#EF4444"},
-        {name: "BG Sidebar", col: global.UI_COL_BG_SIDEBAR, hex: "#F8FAFC"},
-        {name: "BG Main", col: global.UI_COL_BG_MAIN, hex: "#FBFCFF"},
-        {name: "BG Card", col: global.UI_COL_BG_CARD, hex: "#FFFFFF"},
-        {name: "Text Main", col: global.UI_COL_TEXT_MAIN, hex: "#13213A"},
-        {name: "Text Dim", col: global.UI_COL_TEXT_DIM, hex: "#60708D"},
-        {name: "Border", col: global.UI_COL_BORDER, hex: "#DDE5F0"},
-        {name: "Btn Hover", col: global.UI_COL_BTN_HOVER, hex: "#EDF3FF"},
-        {name: "Dropdown BG", col: global.UI_COL_DROPDOWN_LIST_BG, hex: "#172338"},
-        {name: "Scrollbar Thumb", col: global.UI_COL_SCROLLBAR_THUMB, hex: "#CBD5E1"}
+        {name: "Error", col: global.UI_COL_ERROR, hex: "#EF4444"},
+        {name: "Surface 0", col: global.UI_COL_SURFACE_0, hex: "#FBFCFF"},
+        {name: "Surface 1", col: global.UI_COL_SURFACE_1, hex: "#F8FAFC"},
+        {name: "Surface 2", col: global.UI_COL_SURFACE_2, hex: "#EEF3FA"},
+        {name: "Surface 3", col: global.UI_COL_SURFACE_3, hex: "#FFFFFF"},
+        {name: "Text 1", col: global.UI_COL_TEXT_1, hex: "#13213A"},
+        {name: "Text 2", col: global.UI_COL_TEXT_2, hex: "#60708D"},
+        {name: "Border 1", col: global.UI_COL_BORDER_1, hex: "#DDE5F0"},
+        {name: "Hover", col: global.UI_COL_HOVER, hex: "#EDF3FF"},
+        {name: "Selected", col: global.UI_COL_SELECTED, hex: "#3B82F6"},
+        {name: "Floating BG", col: global.UI_COL_FLOATING_BG, hex: "#172338"},
+        {name: "Scrollbar", col: global.UI_COL_SCROLLBAR, hex: "#CBD5E1"}
     ];
     
     for (var i = 0; i < array_length(colors); i++) {
@@ -30,12 +32,12 @@ function ui_demo_example_colors(PreviewCard) {
             
             // Draw border for very light colors to make them visible
             if (self.__demoCol == #FFFFFF || self.__demoCol == #F8FAFC || self.__demoCol == #F1F5F9) {
-                draw_set_color(global.UI_COL_BORDER);
+                draw_set_color(global.UI_COL_BORDER_1);
                 draw_roundrect_ext(self.x1, self.y1, self.x2, self.y1 + 80, 8, 8, true);
             }
         });
-        box.add(new UiText(c.name, { marginTop: 85, height: 20 }, { color: global.UI_COL_TEXT_MAIN, font: global.UI_FONTS.small }));
-        box.add(new UiText(c.hex, { height: 20 }, { color: global.UI_COL_TEXT_DIM, font: global.UI_FONTS.small }));
+        box.add(new UiText(c.name, { marginTop: 85, height: 20 }, { color: global.UI_COL_TEXT_1, font: global.UI_FONTS.small }));
+        box.add(new UiText(c.hex, { height: 20 }, { color: global.UI_COL_TEXT_2, font: global.UI_FONTS.small }));
         grid.add(box);
     }
     
@@ -44,22 +46,29 @@ function ui_demo_example_colors(PreviewCard) {
     PreviewCard.add(semGrid);
     
     __ui_demo_doc_row(semGrid, "global.UI_COL_PRIMARY", "color", "Main brand color used for primary actions.");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_PRIMARY_HOVER", "color", "Hover state for primary elements.");
     __ui_demo_doc_row(semGrid, "global.UI_COL_SUCCESS", "color", "Positive feedback and success states.");
     __ui_demo_doc_row(semGrid, "global.UI_COL_WARNING", "color", "Cautionary feedback and warnings.");
-    __ui_demo_doc_row(semGrid, "global.UI_COL_DANGER", "color", "Negative feedback and error states.");
-    __ui_demo_doc_row(semGrid, "global.UI_COL_BG_MAIN", "color", "Default workspace background.");
-    __ui_demo_doc_row(semGrid, "global.UI_COL_BG_SIDEBAR", "color", "Dark sidebar background.");
-    __ui_demo_doc_row(semGrid, "global.UI_COL_TEXT_MAIN", "color", "Primary text color for maximum contrast.");
-    __ui_demo_doc_row(semGrid, "global.UI_COL_TEXT_DIM", "color", "Secondary text color for labels and hints.");
-    __ui_demo_doc_row(semGrid, "global.UI_COL_BORDER", "color", "Default border color for cards and inputs.");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_ERROR", "color", "Negative feedback and error states.");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_SURFACE_0", "color", "Default main background.");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_SURFACE_1", "color", "Secondary surface (e.g., sidebar).");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_SURFACE_2", "color", "Tertiary surface (e.g., inspector bg).");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_SURFACE_3", "color", "Card/surface foreground.");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_TEXT_1", "color", "Primary text color for maximum contrast.");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_TEXT_2", "color", "Secondary text color for labels and hints.");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_BORDER_1", "color", "Default border color for cards and inputs.");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_HOVER", "color", "Hover state for interactive elements.");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_SELECTED", "color", "Selected state highlight.");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_FLOATING_BG", "color", "Background for dropdowns and popovers.");
+    __ui_demo_doc_row(semGrid, "global.UI_COL_SCROLLBAR", "color", "Scrollbar thumb color.");
 
     return [
         "// The library uses a set of global variables for easy skinning.",
         "// You can override these at any time to change the look and feel.",
         "",
-        "global.UI_COL_PRIMARY = #2F6FEF;",
-        "global.UI_COL_SUCCESS = #23A75A;",
-        "global.UI_COL_DANGER  = #EF4444;",
-        "global.UI_COL_BG_MAIN = #FBFCFF;"
+        "global.UI_COL_PRIMARY   = #2F6FEF;",
+        "global.UI_COL_SURFACE_0 = #FBFCFF;",
+        "global.UI_COL_TEXT_1    = #13213A;",
+        "global.UI_COL_BORDER_1  = #DDE5F0;"
     ];
 }

@@ -11,7 +11,7 @@ function UiTreeview(style = {}, props = {}): UiNode(style, props) constructor {
     self.onItemSelected = undefined;
     self.onAssetDrop = undefined;
     self.onContextMenu = undefined; // Callback for showing context menu
-    self.backgroundColor = global.UI_COL_BG_SIDEBAR;
+    self.backgroundColor = global.UI_COL_SURFACE_1;
     
     // Create the items container
     self.Items = new UiNode({ name: "UiTreeview.Items", width: "100%" });
@@ -136,7 +136,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     // Background highlight
     self.Content.onDraw = method({ Content: _content, Item: _item }, function() {
         if (self.Content.hovered || self.Item.selected) {
-            draw_set_color(self.Item.selected ? global.UI_COL_PRIMARY : global.UI_COL_BTN_HOVER);
+            draw_set_color(self.Item.selected ? global.UI_COL_PRIMARY : global.UI_COL_HOVER);
             draw_set_alpha(self.Item.selected ? 0.3 : 0.1);
             draw_rectangle(self.Content.x1, self.Content.y1, self.Content.x2, self.Content.y2, false);
             draw_set_alpha(1);
@@ -152,7 +152,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     
     self.Arrow.onDraw = method({ Arrow: _arrow, Item: _item }, function() {
         if (self.Item.assetType != "Folder") return;
-        draw_set_color(self.Item.selected ? global.UI_COL_TEXT_MAIN : global.UI_COL_TEXT_DIM);
+        draw_set_color(self.Item.selected ? global.UI_COL_TEXT_1 : global.UI_COL_TEXT_2);
         var mx = (self.Arrow.x1 + self.Arrow.x2) / 2;
         var my = (self.Arrow.y1 + self.Arrow.y2) / 2;
         if (self.Item.collapsed) {
@@ -181,7 +181,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
             var _ox = sprite_get_xoffset(self.Item.icon);
             var _oy = sprite_get_yoffset(self.Item.icon);
             // Draw centered regardless of origin
-            var _iconCol = self.Item.selected ? global.UI_COL_TEXT_MAIN : global.UI_COL_TEXT_DIM;
+            var _iconCol = self.Item.selected ? global.UI_COL_TEXT_1 : global.UI_COL_TEXT_2;
             draw_sprite_ext(self.Item.icon, 0, mx - (_sw/2 - _ox) * _scale, my - (_sh/2 - _oy) * _scale, _scale, _scale, 0, _iconCol, 1);
         } else {
             if (self.Item.assetType == "Folder") {
@@ -198,7 +198,7 @@ function UiTreeviewItem(style = {}, props = {}): UiNode(style, props) constructo
     self.Content.add(self.Icon);
 
     // Label
-    self.Label = new UiText(self.name, { flex: 1 }, { color: function() { return global.UI_COL_TEXT_MAIN; }, font: global.UI_FONTS.small });
+    self.Label = new UiText(self.name, { flex: 1 }, { color: function() { return global.UI_COL_TEXT_1; }, font: global.UI_FONTS.small });
     self.Content.add(self.Label);
 
     // Handle selection

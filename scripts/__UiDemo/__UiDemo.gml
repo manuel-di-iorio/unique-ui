@@ -35,9 +35,9 @@ function ui_demo_create() {
         paddingTop: 18, paddingLeft: 24, paddingRight: 20, paddingBottom: 18,
     });
     Sidebar.onDraw = method(Sidebar, function() {
-        draw_set_color(global.UI_COL_BG_SIDEBAR);
+        draw_set_color(global.UI_COL_SURFACE_1);
         draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_line(self.x2, self.y1, self.x2, self.y2);
     });
     Main.add(Sidebar);
@@ -66,7 +66,7 @@ function ui_demo_create() {
     
     // Sidebar List
     var SidebarItems = new UiNode({ flex: 1, width: "100%", flexDirection: "column" });
-    SidebarItems.enableScrollbar(function() { return global.UI_COL_SCROLLBAR_THUMB; });
+    SidebarItems.enableScrollbar(function() { return global.UI_COL_SCROLLBAR; });
     Sidebar.add(SidebarItems);
     global.UI_DEMO.SidebarItems = SidebarItems;
     
@@ -75,7 +75,7 @@ function ui_demo_create() {
     // === CONTENT AREA ===
     var Content = new UiNode({ name: "Content", flex: 1, height: "100%", flexDirection: "column" });
     Content.onDraw = method(Content, function() {
-        draw_set_color(global.UI_COL_BG_MAIN);
+        draw_set_color(global.UI_COL_SURFACE_0);
         draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
     });
     Main.add(Content);
@@ -83,9 +83,9 @@ function ui_demo_create() {
     // Top Bar
     var TopBar = new UiNode({ width: "100%", height: 98, flexDirection: "row", alignItems: "center", paddingLeft: 46, paddingRight: 38 });
     TopBar.onDraw = method(TopBar, function() {
-        draw_set_color(global.UI_COL_BG_CARD);
+        draw_set_color(global.UI_COL_SURFACE_3);
         draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_line(self.x1, self.y2, self.x2, self.y2);
     });
     Content.add(TopBar);
@@ -167,10 +167,10 @@ function __ui_demo_icon_button(iconName, size = 36) {
     btn.onMouseLeave(function() { global.UI.requestRedraw(); });
     btn.onDraw = method(btn, function() {
         if (self.hovered) {
-            draw_set_color(global.UI_COL_BTN_HOVER);
+            draw_set_color(global.UI_COL_HOVER);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
         }
-        var icon_color = (global.UI_DEMO.currentTheme == "dark") ? c_white : global.UI_COL_TEXT_MAIN;
+        var icon_color = (global.UI_DEMO.currentTheme == "dark") ? c_white : global.UI_COL_TEXT_1;
         __ui_demo_draw_icon(self.__iconName, ~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), icon_color, 1.1);
     });
     return btn;

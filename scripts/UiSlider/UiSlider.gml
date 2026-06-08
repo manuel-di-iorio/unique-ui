@@ -38,7 +38,7 @@ function UiSlider(style = {}, props = {}) : UiNode(style, props) constructor {
         var trackH = 4;
         
         // Background track
-        draw_set_color(global.UI_COL_BORDER);
+        draw_set_color(global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, cy - trackH/2, self.x2, cy + trackH/2, trackH/2, trackH/2, false);
         
         // Fill track

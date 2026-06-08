@@ -106,10 +106,10 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     function onDraw() {
         var radius = 6;
         
-        var bg_color = global.UI_COL_BG_CARD;
-        var text_color = global.UI_COL_TEXT_MAIN;
-        var hover_color = global.UI_COL_BTN_HOVER;
-        var border_color = global.UI_COL_BORDER;
+        var bg_color = global.UI_COL_SURFACE_3;
+        var text_color = global.UI_COL_TEXT_1;
+        var hover_color = global.UI_COL_HOVER;
+        var border_color = global.UI_COL_BORDER_1;
         var ripple_color = c_white;
         
         if (self.variant == "primary") {
@@ -118,24 +118,24 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
             text_color = c_white;
             border_color = undefined;
         } else if (self.variant == "outline") {
-            bg_color = global.UI_COL_BG_CARD;
-            hover_color = global.UI_COL_BTN_HOVER;
-            text_color = global.UI_COL_TEXT_MAIN;
-            border_color = global.UI_COL_BORDER;
-            ripple_color = merge_color(global.UI_COL_TEXT_MAIN, c_black, 0.15);
+            bg_color = global.UI_COL_SURFACE_3;
+            hover_color = global.UI_COL_HOVER;
+            text_color = global.UI_COL_TEXT_1;
+            border_color = global.UI_COL_BORDER_1;
+            ripple_color = merge_color(global.UI_COL_TEXT_1, c_black, 0.15);
         } else if (self.variant == "ghost") {
             bg_color = -1;
-            hover_color = global.UI_COL_BTN_HOVER;
-            text_color = global.UI_COL_TEXT_DIM;
+            hover_color = global.UI_COL_HOVER;
+            text_color = global.UI_COL_TEXT_2;
             border_color = undefined;
-            ripple_color = merge_color(global.UI_COL_TEXT_MAIN, c_black, 0.15);
+            ripple_color = merge_color(global.UI_COL_TEXT_1, c_black, 0.15);
         } else if (self.variant == "danger") {
-            bg_color = global.UI_COL_DANGER;
+            bg_color = global.UI_COL_ERROR;
             hover_color = #DC2626;
             text_color = c_white;
             border_color = undefined;
         } else {
-            ripple_color = merge_color(global.UI_COL_TEXT_MAIN, c_black, 0.15);
+            ripple_color = merge_color(global.UI_COL_TEXT_1, c_black, 0.15);
         }
         
         if (self.selected) {
@@ -158,7 +158,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
         
         // Border
         if (border_color != undefined || self.outline) {
-            draw_set_color(border_color ?? global.UI_COL_BORDER);
+            draw_set_color(border_color ?? global.UI_COL_BORDER_1);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, radius, radius, true);
         }
         

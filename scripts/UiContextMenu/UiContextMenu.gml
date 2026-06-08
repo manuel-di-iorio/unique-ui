@@ -93,7 +93,7 @@ function UiContextMenu(x, y, items = []) constructor {
             });
             
             self.onDraw = function() {
-                draw_set_color(global.UI_COL_DROPDOWN_LIST_BG);
+                draw_set_color(global.UI_COL_FLOATING_BG);
                 draw_roundrect(self.x1, self.y1, self.x2, self.y2, false);
             };
             

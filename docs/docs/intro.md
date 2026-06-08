@@ -74,25 +74,20 @@ You can also define your own custom themes by modifying `global.UI_THEMES` in `_
 global.UI_THEMES.myCustomTheme = {
     primary: #FF5722,
     primaryHover: #E64A19,
-    bgSidebar: #121212,
-    bgMain: #1E1E1E,
-    bgCard: #2D2D2D,
-    textMain: #FFFFFF,
-    textDim: #B0B0B0,
-    border: #404040,
+    surface0: #1E1E1E,
+    surface1: #121212,
+    surface2: #2D2D2D,
+    surface3: #2D2D2D,
+    text1: #FFFFFF,
+    text2: #B0B0B0,
+    border1: #404040,
+    hover: #3D3D3D,
     selected: #FF5722,
-    selectedHover: #E64A19,
-    btnHover: #3D3D3D,
-    box: #2D2D2D,
-    inputBg: #121212,
-    checkboxHover: #3D3D3D,
-    dropdownListBg: #1E1E1E,
-    inspectorBg: #2D2D2D,
-    treeBg: #121212,
-    selection: #FF5722,
+    floatingBg: #1E1E1E,
     success: #4CAF50,
     warning: #FF9800,
-    danger: #F44336
+    error: #F44336,
+    scrollbar: #404040
 };
 
 // Then use it:

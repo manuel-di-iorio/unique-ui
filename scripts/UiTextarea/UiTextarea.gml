@@ -17,7 +17,7 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
     flexpanel_node_style_set_flex_direction(self.node, flexpanel_flex_direction.column);
     
     if (self.label != undefined) {
-        self.LabelNode = new UiText(self.label, { marginBottom: 8 }, { color: global.UI_COL_TEXT_MAIN });
+        self.LabelNode = new UiText(self.label, { marginBottom: 8 }, { color: global.UI_COL_TEXT_1 });
         self.add(self.LabelNode);
     }
     
@@ -628,9 +628,9 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
         });
         
         self.onDraw = function() {
-            draw_set_color(global.UI_COL_BG_CARD);
+            draw_set_color(global.UI_COL_SURFACE_3);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
-            draw_set_color(self.focused ? global.UI_COL_PRIMARY : global.UI_COL_BORDER);
+            draw_set_color(self.focused ? global.UI_COL_PRIMARY : global.UI_COL_BORDER_1);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, true);
             
             var _scissor = gpu_get_scissor();
@@ -655,7 +655,7 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
             var text = self.parent.value;
             
             if (text == "" && self.parent.placeholder != undefined) {
-                draw_set_color(global.UI_COL_TEXT_MAIN);
+                draw_set_color(global.UI_COL_TEXT_1);
                 draw_set_alpha(0.5);
                 draw_text(textX, textY, self.parent.placeholder);
                 draw_set_alpha(1);
@@ -663,7 +663,7 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
                 if (self.focused && self.selectionStart != self.selectionEnd) {
                     var selStart = min(self.selectionStart, self.selectionEnd);
                     var selEnd = max(self.selectionStart, self.selectionEnd);
-                    draw_set_color(global.UI_COL_SELECTION);
+                    draw_set_color(global.UI_COL_SELECTED);
                     draw_set_alpha(0.3);
                     for (var i = 0; i < array_length(lines); i++) {
                         var line = lines[i];
@@ -683,7 +683,7 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
                     draw_set_alpha(1);
                 }
                 
-                draw_set_color(global.UI_COL_TEXT_MAIN);
+                draw_set_color(global.UI_COL_TEXT_1);
                 for (var i = 0; i < array_length(lines); i++) {
                     var lineY = textY + i * self.parent.lineHeight;
                     if (lineY + self.parent.lineHeight >= sy && lineY <= sy + sh) {

@@ -45,11 +45,11 @@ function __ui_demo_sidebar_item(parent, text) {
             draw_set_color(#EAF1FF);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 7, 7, false);
         } else if (self.hovered) {
-            draw_set_color(global.UI_COL_BTN_HOVER);
+            draw_set_color(global.UI_COL_HOVER);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 7, 7, false);
         }
         
-        var col = self.__selected ? global.UI_COL_PRIMARY : global.UI_COL_TEXT_MAIN;
+        var col = self.__selected ? global.UI_COL_PRIMARY : global.UI_COL_TEXT_1;
         __ui_demo_draw_icon(self.__icon, self.x1 + 18, ~~mean(self.y1, self.y2), col, 0.78);
         draw_set_font(global.UI_FONTS.standard);
         draw_set_color(col);
@@ -67,7 +67,7 @@ function __ui_demo_sidebar_item(parent, text) {
 }
 
 function __ui_demo_sidebar_label(parent, text, mt = 0) {
-    parent.add(new UiText(text, { marginTop: mt, marginBottom: 12, marginLeft: 12 }, { color: global.UI_COL_TEXT_DIM, font: global.UI_FONTS.small }));
+    parent.add(new UiText(text, { marginTop: mt, marginBottom: 12, marginLeft: 12 }, { color: global.UI_COL_TEXT_2, font: global.UI_FONTS.small }));
 }
 
 function __ui_demo_sidebar_icon_name(text) {

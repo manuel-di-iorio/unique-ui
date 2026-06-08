@@ -25,7 +25,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
     flexpanel_node_style_set_align_items(self.node, flexpanel_align.center);
     
     if (self.label != undefined) {
-        self.LabelNode = new UiText(self.label, { marginRight: 15 }, { color: global.UI_COL_TEXT_MAIN });
+        self.LabelNode = new UiText(self.label, { marginRight: 15 }, { color: global.UI_COL_TEXT_1 });
         self.add(self.LabelNode);
     }
     
@@ -51,13 +51,13 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
     
     // Label and icons should not block pointer events
     if (self.iconLeft != undefined) {
-        self.IconL = new UiSprite(self.iconLeft, { width: 16, height: 16, marginRight: 8 }, { pointerEvents: false, color: function() { return global.UI_COL_TEXT_DIM; } });
+        self.IconL = new UiSprite(self.iconLeft, { width: 16, height: 16, marginRight: 8 }, { pointerEvents: false, color: function() { return global.UI_COL_TEXT_2; } });
         self.Input.add(self.IconL);
     }
     
     if (self.iconRight != undefined) {
         if (is_numeric(self.iconRight)) {
-            self.IconR = new UiSprite(self.iconRight, { position: "absolute", right: 12, width: 16, height: 16 }, { pointerEvents: false, color: function() { return global.UI_COL_TEXT_DIM; } });
+            self.IconR = new UiSprite(self.iconRight, { position: "absolute", right: 12, width: 16, height: 16 }, { pointerEvents: false, color: function() { return global.UI_COL_TEXT_2; } });
         } else {
             self.IconR = self.iconRight;
         }
@@ -775,10 +775,10 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
         // Draw the textbox
         self.onDraw = function() {
             // Background with border if focused
-            draw_set_color(global.UI_COL_BG_CARD);
+            draw_set_color(global.UI_COL_SURFACE_3);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, false);
             
-            draw_set_color(self.focused ? global.UI_COL_PRIMARY : global.UI_COL_BORDER);
+            draw_set_color(self.focused ? global.UI_COL_PRIMARY : global.UI_COL_BORDER_1);
             draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 6, 6, true);
             
             // Set clipping region to prevent text overflow
@@ -795,7 +795,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             __uui_set_scissor(_ix1, _iy1, max(0, _ix2 - _ix1), max(0, _iy2 - _iy1));
             
             // Text drawing settings
-            draw_set_color(global.UI_COL_TEXT_MAIN);
+            draw_set_color(global.UI_COL_TEXT_1);
             draw_set_font(global.UI_FONTS.standard);
             draw_set_halign(fa_left);
             draw_set_valign(fa_middle);
@@ -815,14 +815,14 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                 var endX = textX + string_width(string_copy(text, 1, ended));
                 
                 // Draw selection rectangle
-                draw_set_color(global.UI_COL_SELECTION);
+                draw_set_color(global.UI_COL_SELECTED);
                 draw_set_alpha(0.3);
                 draw_rectangle(startX, self.y1 + 2, endX, self.y2 - 2, false);
                 draw_set_alpha(1);
             }
             
             // Draw text (always visible)
-            draw_set_color(global.UI_COL_TEXT_MAIN);
+            draw_set_color(global.UI_COL_TEXT_1);
             
             if (text == "" && self.parent.placeholder != undefined) {
                 // Draw placeholder text

@@ -2,7 +2,7 @@ function ui_demo_example_modal(parent) {
     var _container = new UiNode({ width: "100%", flexDirection: "column", padding: 20 });
     parent.add(_container);
     
-    _container.add(new UiText("Modal component examples.", { marginBottom: 20 }, { color: global.UI_COL_TEXT_MAIN }));
+    _container.add(new UiText("Modal component examples.", { marginBottom: 20 }, { color: global.UI_COL_TEXT_1 }));
 
     // Basic Modal
     var _btnBasic = new UiButton("Open Basic Modal", { marginBottom: 10 });
@@ -10,7 +10,7 @@ function ui_demo_example_modal(parent) {
         var _modal = new UiModal({}, {
             title: "Basic Modal",
         });
-        _modal.add(new UiText("This is a basic modal. You can close it by clicking the X or clicking outside.", { width: "100%" }, { wrap: true, color: global.UI_COL_TEXT_MAIN }));
+        _modal.add(new UiText("This is a basic modal. You can close it by clicking the X or clicking outside.", { width: "100%" }, { wrap: true, color: global.UI_COL_TEXT_1 }));
         _modal.open();
     });
     _container.add(_btnBasic);
@@ -23,7 +23,7 @@ function ui_demo_example_modal(parent) {
             dismissOnBackdropClick: false
         });
         
-        _modal.add(new UiText("This modal cannot be closed by clicking the background. Do you wish to proceed?", { width: "100%", marginBottom: 20 }, { wrap: true, color: global.UI_COL_TEXT_MAIN }));
+        _modal.add(new UiText("This modal cannot be closed by clicking the background. Do you wish to proceed?", { width: "100%", marginBottom: 20 }, { wrap: true, color: global.UI_COL_TEXT_1 }));
         
         var _actions = new UiNode({ flexDirection: "row", justifyContent: "flex-end", marginTop: 10, width: "100%" });
         
