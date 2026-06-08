@@ -113,6 +113,7 @@ function UiNode(style = {}, props = {}) constructor {
     self.onDrag = undefined;
     self.onDragEnd = undefined;
     self.onDrop = undefined;
+    self.dragPreviewAlpha = props[$ "dragPreviewAlpha"] ?? 0.7;
 
     
     /** Methods */

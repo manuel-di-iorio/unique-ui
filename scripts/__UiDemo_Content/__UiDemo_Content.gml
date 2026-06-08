@@ -456,6 +456,159 @@ function __ui_demo_code_panel(title, height, width = undefined) {
     return Panel;
 }
 
+function __ui_demo_tokenize_gml(line) {
+    static _keywords = {
+        "new": true, "function": true, "var": true, "if": true, "else": true,
+        "for": true, "while": true, "do": true, "switch": true, "case": true,
+        "default": true, "break": true, "continue": true, "return": true,
+        "true": true, "false": true, "undefined": true, "static": true,
+        "constructor": true, "method": true, "enum": true, "global": true,
+        "self": true, "other": true, "all": true, "noone": true,
+        "try": true, "catch": true, "throw": true, "with": true,
+        "repeat": true, "until": true, "then": true, "delete": true, "exit": true,
+        "not": true, "and": true, "or": true, "mod": true, "div": true
+    };
+    static _constants = {
+        "fa_left": true, "fa_center": true, "fa_right": true, "fa_top": true,
+        "fa_middle": true, "fa_bottom": true
+    };
+
+    var result = [];
+    var len = string_length(line);
+    var pos = 1;
+
+    while (pos <= len) {
+        var ch = string_char_at(line, pos);
+
+        // Whitespace
+        if (ch == " " || ch == "\t") {
+            var start = pos;
+            while (pos <= len && (string_char_at(line, pos) == " " || string_char_at(line, pos) == "\t")) pos++;
+            array_push(result, { txt: string_copy(line, start, pos - start), col: #D4D4D4 });
+            continue;
+        }
+
+        // Line comment
+        if (ch == "/" && pos < len && string_char_at(line, pos + 1) == "/") {
+            array_push(result, { txt: "//", col: #6B7C99 });
+            pos += 2;
+            while (pos <= len) {
+                var _cc = string_char_at(line, pos);
+                if (_cc == " " || _cc == "\t") {
+                    var _s = pos;
+                    while (pos <= len && (string_char_at(line, pos) == " " || string_char_at(line, pos) == "\t")) pos++;
+                    array_push(result, { txt: string_copy(line, _s, pos - _s), col: #6B7C99 });
+                } else {
+                    var _s = pos;
+                    while (pos <= len && string_char_at(line, pos) != " " && string_char_at(line, pos) != "\t") pos++;
+                    array_push(result, { txt: string_copy(line, _s, pos - _s), col: #6B7C99 });
+                }
+            }
+            break;
+        }
+
+        // String literal
+        if (ch == "\"" || ch == "'") {
+            var quote = ch;
+            var start = pos;
+            pos++;
+            while (pos <= len) {
+                if (string_char_at(line, pos) == "\\") { pos += 2; }
+                else if (string_char_at(line, pos) == quote) { pos++; break; }
+                else { pos++; }
+            }
+            array_push(result, { txt: string_copy(line, start, pos - start), col: #CE9178 });
+            continue;
+        }
+
+        // Hex color literal
+        if (ch == "#") {
+            var hexCount = 0;
+            var scanPos = pos + 1;
+            while (scanPos <= len) {
+                var hch = string_char_at(line, scanPos);
+                if ((hch >= "0" && hch <= "9") || (hch >= "a" && hch <= "f") || (hch >= "A" && hch <= "F")) { hexCount++; scanPos++; }
+                else break;
+            }
+            if (hexCount == 6 || hexCount == 8) {
+                array_push(result, { txt: string_copy(line, pos, hexCount + 1), col: #F9C859 });
+                pos = scanPos;
+                continue;
+            }
+            array_push(result, { txt: "#", col: #D4D4D4 });
+            pos++;
+            continue;
+        }
+
+        // Number literal
+        if ((ch >= "0" && ch <= "9") || (ch == "." && pos < len && string_char_at(line, pos + 1) >= "0" && string_char_at(line, pos + 1) <= "9")) {
+            var start = pos;
+            var hadDot = (ch == ".");
+            pos++;
+            while (pos <= len) {
+                var nch = string_char_at(line, pos);
+                if (nch >= "0" && nch <= "9") { pos++; }
+                else if (nch == "." && !hadDot) { hadDot = true; pos++; }
+                else break;
+            }
+            array_push(result, { txt: string_copy(line, start, pos - start), col: #B5CEA8 });
+            continue;
+        }
+
+        // Identifier or keyword
+        if ((ch >= "a" && ch <= "z") || (ch >= "A" && ch <= "Z") || ch == "_") {
+            var start = pos;
+            while (pos <= len) {
+                var nch = string_char_at(line, pos);
+                if ((nch >= "a" && nch <= "z") || (nch >= "A" && nch <= "Z") || (nch >= "0" && nch <= "9") || nch == "_") pos++;
+                else break;
+            }
+            var word = string_copy(line, start, pos - start);
+            var col = #8AB4FF;
+
+            if (_keywords[$ word] != undefined) {
+                col = #C586C0;
+            } else if (_constants[$ word] != undefined) {
+                col = #569CD6;
+            } else if (string_length(word) >= 2 && string_char_at(word, 1) >= "A" && string_char_at(word, 1) <= "Z") {
+                var _allUpper = true;
+                for (var _c = 1; _c <= string_length(word); _c++) {
+                    var _wch = string_char_at(word, _c);
+                    if (_wch >= "a" && _wch <= "z") { _allUpper = false; break; }
+                }
+                if (!_allUpper) col = #4EC9B0;
+            }
+            if (string_length(word) > 3 && string_char_at(word, 1) == "s" && string_char_at(word, 2) == "p" && string_char_at(word, 3) == "r") {
+                col = #569CD6;
+            }
+            if (col == #8AB4FF) {
+                var _scan = pos;
+                while (_scan <= len && string_char_at(line, _scan) == " ") _scan++;
+                if (_scan <= len && string_char_at(line, _scan) == "(") col = #DCDCAA;
+            }
+            array_push(result, { txt: word, col: col });
+            continue;
+        }
+
+        // Multi-char operators
+        if (pos < len) {
+            var twoCh = string_char_at(line, pos) + string_char_at(line, pos + 1);
+            if (twoCh == "==" || twoCh == "!=" || twoCh == ">=" || twoCh == "<=" ||
+                twoCh == "&&" || twoCh == "||" || twoCh == "??" || twoCh == "=>" ||
+                twoCh == "++" || twoCh == "--") {
+                array_push(result, { txt: twoCh, col: #D4D4D4 });
+                pos += 2;
+                continue;
+            }
+        }
+
+        // Single-char operator / punctuation
+        array_push(result, { txt: ch, col: #D4D4D4 });
+        pos++;
+    }
+    return result;
+}
+
 function __ui_demo_add_code_lines(parent, lines) {
     parent.__copyText = "";
     for (var i = 0; i < array_length(lines); i++) {
@@ -467,8 +620,33 @@ function __ui_demo_add_code_lines(parent, lines) {
             continue;
         }
 
-        var col = #8AB4FF;
-        if (string_pos("//", lines[i]) == 1) col = #6B7C99;
-        parent.add(new UiText(lines[i], { marginBottom: 7, width: "100%" }, { color: col, font: global.UI_FONTS.small, wrap: true }));
+        var tokens = __ui_demo_tokenize_gml(lines[i]);
+        var lineNode = new UiNode({ width: "100%", marginBottom: 7, height: 18 });
+        lineNode.__tok = tokens;
+        lineNode.onDraw = method(lineNode, function() {
+            var toks = self.__tok;
+            if (array_length(toks) == 0) return;
+            draw_set_font(global.UI_FONTS.small);
+            draw_set_halign(fa_left);
+            draw_set_valign(fa_top);
+            var xx = self.x1;
+            var yy = self.y1;
+            var maxX = self.x2 - 12;
+            var lineH = string_height("Ay") + 2;
+            var maxY = yy + lineH;
+            for (var t = 0; t < array_length(toks); t++) {
+                var tok = toks[t];
+                var tw = string_width(tok.txt);
+                if (xx + tw > maxX && xx > self.x1) {
+                    yy += lineH; xx = self.x1; maxY = yy + lineH;
+                }
+                draw_set_color(tok.col);
+                draw_text(xx, yy, tok.txt);
+                xx += tw;
+            }
+            var neededH = maxY - self.y1;
+            if (abs(self.getHeight() - neededH) > 1) self.setHeight(neededH);
+        });
+        parent.add(lineNode);
     }
 }

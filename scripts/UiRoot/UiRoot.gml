@@ -455,6 +455,11 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             }
         }
         
+        // Call onDrag callback during active drag
+        if (self.draggedElement != undefined && self.draggedElement.onDrag != undefined) {
+            self.draggedElement.onDrag(self.draggedElement);
+        }
+        
         // Tooltip logic
         if (self.deepestTarget != self.tooltipElement) {
             // Target changed
@@ -728,6 +733,33 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         }
     }
     
+    // Recursively draw an element and its children offset by (dx, dy) for drag preview
+    function __drawDragPreview(elem, dx, dy, alpha) {
+        var _sx1 = elem.x1, _sy1 = elem.y1, _sx2 = elem.x2, _sy2 = elem.y2;
+        var _sxp1 = elem.xp1, _syp1 = elem.yp1, _sxp2 = elem.xp2, _syp2 = elem.yp2;
+        
+        elem.x1 += dx; elem.y1 += dy;
+        elem.x2 += dx; elem.y2 += dy;
+        elem.xp1 += dx; elem.yp1 += dy;
+        elem.xp2 += dx; elem.yp2 += dy;
+        
+        if (elem.display && elem.visible && elem.onDraw != undefined && !elem.isScrollbar) {
+            draw_set_alpha(alpha);
+            elem.onDraw();
+            draw_set_alpha(1);
+        }
+        
+        for (var i = 0; i < elem.childrenLength; i++) {
+            var child = elem.children[i];
+            if (child.display && child.visible) {
+                self.__drawDragPreview(child, dx, dy, alpha);
+            }
+        }
+        
+        elem.x1 = _sx1; elem.y1 = _sy1; elem.x2 = _sx2; elem.y2 = _sy2;
+        elem.xp1 = _sxp1; elem.yp1 = _syp1; elem.xp2 = _sxp2; elem.yp2 = _syp2;
+    }
+    
     // Render the node and its children to the static surface
     // Pass `true` as first argument to draw the nodes bounds and their (optional) name.
     function render(debug = false) {
@@ -764,6 +796,15 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         }
         
         draw_surface(self.surface, 0, 0);
+        
+        // Draw drag preview at cursor position
+        if (self.draggedElement != undefined) {
+            var _de = self.draggedElement;
+            var _hw = _de.width * 0.5, _hh = _de.height * 0.5;
+            var _targetX = self.mouseX - _hw;
+            var _targetY = self.mouseY - _hh;
+            self.__drawDragPreview(_de, _targetX - _de.x1, _targetY - _de.y1, _de.dragPreviewAlpha);
+        }
         
         // Clear redraw elements list for the next frame
         if (array_length(self.redrawElements) > 0) {
