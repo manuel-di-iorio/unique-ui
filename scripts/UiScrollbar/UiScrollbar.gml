@@ -21,15 +21,6 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
     self.__thumbPosName = self.isVertical ? "getTop" : "getLeft";
     self.__thumbSetPosName = self.isVertical ? "setTop" : "setLeft";
     
-    // Pre-create the reduce callback to avoid method struct allocation every step
-    self.__reduceCb = method(self, function(maxS, child) {
-        if (child.isScrollbar) return maxS;
-        var m = child[$ self.__marginName]();
-        if (is_undefined(m) || is_nan(m)) m = 0;
-        var childEdge = (child.layout[$ self.__posName] + child.layout[$ self.__propName]) - self.parent.layout[$ self.__posName] + m;
-        return max(maxS, childEdge);
-    });
-    
     // Create the thumb
     var thumbStyle = self.isVertical ? 
         { position: "absolute", left: 0, right: 0, top: 0, height: 0 } :
@@ -95,6 +86,7 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
     }
     
     self.__contentSize = 0;
+    self.__layoutFrames = 2; // Recalculate for 2 frames after layout (catches deferred text wrap)
 
     self.onStep(function(layoutUpdated) {
         if (self.parent == undefined) return;
@@ -102,35 +94,52 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
         var layoutSize = self.isVertical ? self.layout.height : self.layout.width;
         var parentSize = self.isVertical ? self.parent.layout.height : self.parent.layout.width;
         
-        // Always recalculate content size: wrapped text (UiText with wrap:true)
-        // adjusts its height one frame after layout, so a single layoutUpdated check
-        // would miss deferred size changes.
-        var _newContentSize = self.parent.reduceChildren(self.__reduceCb, 0, false);
+        // Reactive content size calculation:
+        // layoutUpdated tracks layout recalculations (add/remove/child resize).
+        // Wrapped text (UiText with wrap:true) adjusts its height one frame after layout,
+        // so we keep recalculating for 2 frames after the last layout update to catch that.
+        self.__layoutFrames = layoutUpdated ? 2 : max(0, self.__layoutFrames - 1);
         
-        var pPad = self.parent[$ self.__paddingName]();
-        if (is_undefined(pPad) || is_nan(pPad)) pPad = 0;
-        _newContentSize += pPad;
-        
-        if (_newContentSize != self.__contentSize || layoutUpdated) {
-            self.__contentSize = _newContentSize;
-        
-            var _thumbSize = ~~(max(10, min(layoutSize, layoutSize * (layoutSize / max(1, self.__contentSize)))));
-            
-            if (self.isVertical) {
-                if (_thumbSize != self.Thumb.getHeight()) self.Thumb.setHeight(_thumbSize);
-            } else {
-                if (_thumbSize != self.Thumb.getWidth()) self.Thumb.setWidth(_thumbSize);
+        if (self.__layoutFrames > 0) {
+            // Inline loop avoids function-call-per-child overhead of reduceChildren
+            var _pLayout = self.parent.layout;
+            var _newContentSize = 0;
+            var _children = self.parent.children;
+            var _len = self.parent.childrenLength;
+            for (var i = 0; i < _len; i++) {
+                var _child = _children[i];
+                if (_child.isScrollbar) continue;
+                var m = _child[$ self.__marginName]();
+                if (is_undefined(m) || is_nan(m)) m = 0;
+                var childEdge = (_child.layout[$ self.__posName] + _child.layout[$ self.__propName]) - _pLayout[$ self.__posName] + m;
+                if (childEdge > _newContentSize) _newContentSize = childEdge;
             }
-        
-            self.__maxThumbPosition = layoutSize - _thumbSize;
-            self.__maxScroll = max(0, self.__contentSize - parentSize);
+            
+            var pPad = self.parent[$ self.__paddingName]();
+            if (is_undefined(pPad) || is_nan(pPad)) pPad = 0;
+            _newContentSize += pPad;
+            
+            if (_newContentSize != self.__contentSize || layoutUpdated) {
+                self.__contentSize = _newContentSize;
+            
+                var _thumbSize = ~~(max(10, min(layoutSize, layoutSize * (layoutSize / max(1, self.__contentSize)))));
+                
+                if (self.isVertical) {
+                    if (_thumbSize != self.Thumb.getHeight()) self.Thumb.setHeight(_thumbSize);
+                } else {
+                    if (_thumbSize != self.Thumb.getWidth()) self.Thumb.setWidth(_thumbSize);
+                }
+            
+                self.__maxThumbPosition = layoutSize - _thumbSize;
+                self.__maxScroll = max(0, self.__contentSize - parentSize);
 
-            if (self.__maxScroll <= 0) {
-                self.parent[$ self.__scrollName] = 0;
-                if (self.Thumb[$ self.__thumbPosName]() != 0) self.Thumb[$ self.__thumbSetPosName](0);
+                if (self.__maxScroll <= 0) {
+                    self.parent[$ self.__scrollName] = 0;
+                    if (self.Thumb[$ self.__thumbPosName]() != 0) self.Thumb[$ self.__thumbSetPosName](0);
+                }
+                
+                global.UI.requestRedraw();
             }
-            
-            global.UI.requestRedraw();
         }
         
         // Dragging

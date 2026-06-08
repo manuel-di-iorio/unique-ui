@@ -16,8 +16,6 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
     // Debug counters
     self.__debugUpdateCount = 0;
     self.__debugRedrawCount = 0;
-    self.__debugLastUpdateElem = "";
-    self.__debugLastRedrawElem = "";
     
     /** Enable the custom UI Debug View in the GameMaker Debug Overlay */
     function enableDebugView() {
@@ -32,13 +30,6 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         dbg_text("Redraws:");
         dbg_same_line();
         dbg_text(ref_create(self, "__debugRedrawCount"));
-        dbg_section("Last Request");
-        dbg_text("Last updated:");
-        dbg_same_line();
-        dbg_text(ref_create(self, "__debugLastUpdateElem"));
-        dbg_text("Last redrawn:");
-        dbg_same_line();
-        dbg_text(ref_create(self, "__debugLastRedrawElem"));
     }
     
     self.getOverlay = function() {
@@ -67,9 +58,6 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         self.needsRedraw = true;
         if (element != undefined) {
             array_push(self.redrawElements, element);
-            self.__debugLastRedrawElem = flexpanel_node_get_name(element.node);
-        } else {
-            self.__debugLastRedrawElem = self.__debugStepOwner != undefined ? self.__debugStepOwner : "(no element)";
         }
     }
 
@@ -78,7 +66,6 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         self.needsUpdate = true;
         if (element != undefined) {
             array_push(self.dirtyElements, element);
-            self.__debugLastUpdateElem = flexpanel_node_get_name(element.node);
         }
     }
     
@@ -639,10 +626,8 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             var _owner = _entry[1];
             if (_owner != undefined && (_owner.destroyed || _owner.hasStepEvent != true)) continue;
 
-            self.__debugStepOwner = _owner != undefined ? _owner.getName() : "?";
             _entry[0](self.layoutUpdated);
         }
-        self.__debugStepOwner = undefined;
         
         self.mouseXPrev = self.mouseX;
         self.mouseYPrev = self.mouseY;
