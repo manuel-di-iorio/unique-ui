@@ -12,6 +12,24 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
     self.orientation = props[$ "orientation"] ?? "vertical";
     self.isVertical = self.orientation == "vertical";
     
+    // Cache orientation-dependent property names (never change after construction)
+    self.__propName = self.isVertical ? "height" : "width";
+    self.__posName = self.isVertical ? "top" : "left";
+    self.__marginName = self.isVertical ? "getMarginBottom" : "getMarginRight";
+    self.__paddingName = self.isVertical ? "getPaddingBottom" : "getPaddingRight";
+    self.__scrollName = self.isVertical ? "scrollTop" : "scrollLeft";
+    self.__thumbPosName = self.isVertical ? "getTop" : "getLeft";
+    self.__thumbSetPosName = self.isVertical ? "setTop" : "setLeft";
+    
+    // Pre-create the reduce callback to avoid method struct allocation every step
+    self.__reduceCb = method(self, function(maxS, child) {
+        if (child.isScrollbar) return maxS;
+        var m = child[$ self.__marginName]();
+        if (is_undefined(m) || is_nan(m)) m = 0;
+        var childEdge = (child.layout[$ self.__posName] + child.layout[$ self.__propName]) - self.parent.layout[$ self.__posName] + m;
+        return max(maxS, childEdge);
+    });
+    
     // Create the thumb
     var thumbStyle = self.isVertical ? 
         { position: "absolute", left: 0, right: 0, top: 0, height: 0 } :
@@ -77,96 +95,68 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
     }
     
     self.__contentSize = 0;
-    self.__sizeInitialized = false;
 
     self.onStep(function(layoutUpdated) {
+        if (self.parent == undefined) return;
+        
         var layoutSize = self.isVertical ? self.layout.height : self.layout.width;
         var parentSize = self.isVertical ? self.parent.layout.height : self.parent.layout.width;
         
         // Always recalculate content size: wrapped text (UiText with wrap:true)
         // adjusts its height one frame after layout, so a single layoutUpdated check
         // would miss deferred size changes.
-        {
-            self.__sizeInitialized = true;
-            // Content size calculation
-            var propName = self.isVertical ? "height" : "width";
-            var posName = self.isVertical ? "top" : "left";
-            var scrollName = self.isVertical ? "scrollTop" : "scrollLeft";
-            var marginName = self.isVertical ? "getMarginBottom" : "getMarginRight";
-            var paddingName = self.isVertical ? "getPaddingBottom" : "getPaddingRight";
-
-            var _parent = self.parent;
-            var _newContentSize = self.parent.reduceChildren(method({ scrollableParent: _parent, propName, posName, marginName }, function(maxS, child) {
-                if (child.isScrollbar) return maxS;
-                var m = child[$ marginName]();
-                if (is_undefined(m) || is_nan(m)) m = 0;
-                var childEdge = (child.layout[$ posName] + child.layout[$ propName]) - scrollableParent.layout[$ posName] + m;
-                return max(maxS, childEdge);
-            }), 0, false);
+        var _newContentSize = self.parent.reduceChildren(self.__reduceCb, 0, false);
+        
+        var pPad = self.parent[$ self.__paddingName]();
+        if (is_undefined(pPad) || is_nan(pPad)) pPad = 0;
+        _newContentSize += pPad;
+        
+        if (_newContentSize != self.__contentSize || layoutUpdated) {
+            self.__contentSize = _newContentSize;
+        
+            var _thumbSize = ~~(max(10, min(layoutSize, layoutSize * (layoutSize / max(1, self.__contentSize)))));
             
-            var pPad = self.parent[$ paddingName]();
-            if (is_undefined(pPad) || is_nan(pPad)) pPad = 0;
-            _newContentSize += pPad;
-            
-            // Only update thumb and maxScroll if content size or layout actually changed
-            if (_newContentSize != self.__contentSize || layoutUpdated) {
-                self.__contentSize = _newContentSize;
-           
-                var _thumbSize = ~~(max(10, min(layoutSize, layoutSize * (layoutSize / max(1, self.__contentSize)))));
-                
-                if (self.isVertical) {
-                    if (_thumbSize != self.Thumb.getHeight()) self.Thumb.setHeight(_thumbSize);
-                } else {
-                    if (_thumbSize != self.Thumb.getWidth()) self.Thumb.setWidth(_thumbSize);
-                }
-            
-                self.__maxThumbPosition = layoutSize - _thumbSize;
-                self.__maxScroll = max(0, self.__contentSize - parentSize);
-
-                // Reset if content fits
-                if (self.__maxScroll <= 0) {
-                    self.parent[$ scrollName] = 0;
-                    var thumbPosName = self.isVertical ? "getTop" : "getLeft";
-                    var thumbSetPosName = self.isVertical ? "setTop" : "setLeft";
-                    if (self.Thumb[$ thumbPosName]() != 0) self.Thumb[$ thumbSetPosName](0);
-                }
-                
-                global.UI.requestRedraw();
+            if (self.isVertical) {
+                if (_thumbSize != self.Thumb.getHeight()) self.Thumb.setHeight(_thumbSize);
+            } else {
+                if (_thumbSize != self.Thumb.getWidth()) self.Thumb.setWidth(_thumbSize);
             }
+        
+            self.__maxThumbPosition = layoutSize - _thumbSize;
+            self.__maxScroll = max(0, self.__contentSize - parentSize);
+
+            if (self.__maxScroll <= 0) {
+                self.parent[$ self.__scrollName] = 0;
+                if (self.Thumb[$ self.__thumbPosName]() != 0) self.Thumb[$ self.__thumbSetPosName](0);
+            }
+            
+            global.UI.requestRedraw();
         }
         
         // Dragging
         if (self.dragged) {
             var mousePos = self.isVertical ? global.UI.mouseY : global.UI.mouseX;
             var delta = mousePos - self.dragStartMouse;
-            var scrollName = self.isVertical ? "scrollTop" : "scrollLeft";
             
-            if (self.__maxScroll > 0) {
-                if (self.__maxThumbPosition > 0) {
-                    var scrollDelta = (delta / self.__maxThumbPosition) * self.__maxScroll;
-                    self.parent[$ scrollName] = clamp(self.dragStartScroll + scrollDelta, 0, self.__maxScroll);
-                    global.UI.requestUpdate();
-                    global.UI.requestRedraw();
-                }
+            if (self.__maxScroll > 0 && self.__maxThumbPosition > 0) {
+                var scrollDelta = (delta / self.__maxThumbPosition) * self.__maxScroll;
+                self.parent[$ self.__scrollName] = clamp(self.dragStartScroll + scrollDelta, 0, self.__maxScroll);
+                global.UI.requestUpdate();
+                global.UI.requestRedraw();
             }
         }
         
         // Update thumb position
         if (self.__maxScroll > 0) {
-            var scrollName = self.isVertical ? "scrollTop" : "scrollLeft";
-            var thumbSetPosName = self.isVertical ? "setTop" : "setLeft";
-            var thumbPosName = self.isVertical ? "getTop" : "getLeft";
-            
-            var thumbPosition = floor((self.parent[$ scrollName] / self.__maxScroll) * self.__maxThumbPosition); 
-            if (self.Thumb[$ thumbPosName]() != thumbPosition) {
-                self.Thumb[$ thumbSetPosName](thumbPosition);
+            var thumbPosition = floor((self.parent[$ self.__scrollName] / self.__maxScroll) * self.__maxThumbPosition); 
+            if (self.Thumb[$ self.__thumbPosName]() != thumbPosition) {
+                self.Thumb[$ self.__thumbSetPosName](thumbPosition);
             }
         }
         
         // Ensure scroll is within bounds (e.g. after items destroyed)
-        var scrollName = self.isVertical ? "scrollTop" : "scrollLeft";
-        if (self.parent[$ scrollName] > self.__maxScroll) {
-            self.parent[$ scrollName] = self.__maxScroll;
+        if (self.parent[$ self.__scrollName] > self.__maxScroll) {
+            self.parent[$ self.__scrollName] = self.__maxScroll;
             global.UI.requestUpdate();
         }
     });
