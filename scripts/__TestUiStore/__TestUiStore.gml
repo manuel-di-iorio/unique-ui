@@ -70,25 +70,6 @@ ui_test_suite("UiStore", function() {
         assert_equal(store.get("c"), 3);
     });
 
-    // ─── setState (updater function) ─────────────────────────
-
-    ui_test("setState with updater function merges result", function() {
-        var store = new UiStore({ count: 10 });
-        store.setState(function(state) {
-            return { count: state[$ "count"] + 5 };
-        });
-        assert_equal(store.get("count"), 15);
-    });
-
-    ui_test("setState with updater and replace=true replaces entire state", function() {
-        var store = new UiStore({ a: 1, b: 2 });
-        store.setState(function(state) {
-            return { c: 3 };
-        }, true);
-        assert_false(store.has("a"));
-        assert_equal(store.get("c"), 3);
-    });
-
     // ─── remove ──────────────────────────────────────────────
 
     ui_test("remove deletes key from state", function() {
@@ -107,10 +88,7 @@ ui_test_suite("UiStore", function() {
     ui_test("remove notifies subscribers", function() {
         var store = new UiStore({ a: 1, b: 2 });
         var tracker = { called: 0 };
-        store.subscribe(
-            function(s) { return s[$ "a"]; },
-            method(tracker, function() { self.called++; })
-        );
+        store.subscribe(method(tracker, function(state) { self.called++; }));
         store.remove("a");
         assert_equal(tracker.called, 1);
     });
@@ -129,10 +107,7 @@ ui_test_suite("UiStore", function() {
     ui_test("reset notifies subscribers", function() {
         var store = new UiStore({ a: 1 });
         var tracker = { called: 0 };
-        store.subscribe(
-            function(s) { return s; },
-            method(tracker, function() { self.called++; })
-        );
+        store.subscribe(method(tracker, function(state) { self.called++; }));
         store.reset();
         assert_true(tracker.called > 0);
     });
@@ -142,54 +117,15 @@ ui_test_suite("UiStore", function() {
     ui_test("subscribe triggers callback on setState", function() {
         var store = new UiStore({ count: 10 });
         var tracker = { received: undefined };
-        store.subscribe(
-            function(state) { return state[$ "count"]; },
-            method(tracker, function(val) { self.received = val; })
-        );
+        store.subscribe(method(tracker, function(state) { self.received = state.count; }));
         store.setState({ count: 20 });
         assert_equal(tracker.received, 20);
-    });
-
-    ui_test("subscribe with selector only triggers when selected value changes", function() {
-        var store = new UiStore({ a: 1, b: 1 });
-        var tracker = { calls: 0 };
-        store.subscribe(
-            function(state) { return state[$ "a"]; },
-            method(tracker, function() { self.calls++; })
-        );
-        store.setState({ b: 2 });
-        assert_equal(tracker.calls, 0);
-        store.setState({ a: 2 });
-        assert_equal(tracker.calls, 1);
-    });
-
-    ui_test("subscribe with custom equality function", function() {
-        var store = new UiStore({ items: [1, 2, 3] });
-        var tracker = { calls: 0 };
-        store.subscribe(
-            function(state) { return state[$ "items"]; },
-            method(tracker, function() { self.calls++; }),
-            function(a, b) {
-                if (array_length(a) != array_length(b)) return false;
-                for (var _i = 0; _i < array_length(a); _i++) {
-                    if (a[_i] != b[_i]) return false;
-                }
-                return true;
-            }
-        );
-        store.setState({ items: [1, 2, 3] });
-        assert_equal(tracker.calls, 0);
-        store.setState({ items: [1, 2, 4] });
-        assert_equal(tracker.calls, 1);
     });
 
     ui_test("unsubscribe removes subscriber", function() {
         var store = new UiStore({ val: 1 });
         var tracker = { calls: 0 };
-        var unsub = store.subscribe(
-            function(s) { return s[$ "val"]; },
-            method(tracker, function() { self.calls++; })
-        );
+        var unsub = store.subscribe(method(tracker, function(state) { self.calls++; }));
         unsub();
         store.setState({ val: 2 });
         assert_equal(tracker.calls, 0);
@@ -199,14 +135,8 @@ ui_test_suite("UiStore", function() {
         var store = new UiStore({ val: "A" });
         var trackerA = { hits: 0 };
         var trackerB = { hits: 0 };
-        store.subscribe(
-            function(s) { return s[$ "val"]; },
-            method(trackerA, function() { self.hits++; })
-        );
-        store.subscribe(
-            function(s) { return s[$ "val"]; },
-            method(trackerB, function() { self.hits++; })
-        );
+        store.subscribe(method(trackerA, function(state) { self.hits++; }));
+        store.subscribe(method(trackerB, function(state) { self.hits++; }));
         store.setState({ val: "B" });
         assert_equal(trackerA.hits, 1);
         assert_equal(trackerB.hits, 1);
@@ -219,17 +149,11 @@ ui_test_suite("UiStore", function() {
             unsub: undefined,
             calls: []
         };
-        ctx.unsub = store.subscribe(
-            function(s) { return s[$ "val"]; },
-            method(ctx, function() {
-                array_push(self.calls, "first");
-                self.unsub();
-            })
-        );
-        store.subscribe(
-            function(s) { return s[$ "val"]; },
-            method(ctx, function() { array_push(self.calls, "second"); })
-        );
+        ctx.unsub = store.subscribe(method(ctx, function(state) {
+            array_push(self.calls, "first");
+            self.unsub();
+        }));
+        store.subscribe(method(ctx, function(state) { array_push(self.calls, "second"); }));
         store.setState({ val: 2 });
         assert_equal(array_length(ctx.calls), 2);
         store.setState({ val: 3 });
@@ -240,37 +164,22 @@ ui_test_suite("UiStore", function() {
 
     ui_test("middleware can transform state", function() {
         var store = new UiStore({ count: 0 });
-        store.use(function(changedKeys, newState, store) {
-            if (variable_struct_exists(newState, "count")) {
-                var _c = {};
-                var _keys = variable_struct_get_names(newState);
-                for (var i = 0; i < array_length(_keys); i++) {
-                    _c[$ _keys[i]] = newState[$ _keys[i]];
-                }
-                _c[$ "count"] = _c[$ "count"] * 2;
-                return _c;
+        store.use(function(newState, store) {
+            var _c = {};
+            var _keys = variable_struct_get_names(newState);
+            for (var i = 0; i < array_length(_keys); i++) {
+                _c[$ _keys[i]] = newState[$ _keys[i]];
             }
-            return undefined;
+            _c[$ "count"] = _c[$ "count"] * 2;
+            return _c;
         });
         store.setState({ count: 5 });
         assert_equal(store.get("count"), 10);
     });
 
-    ui_test("middleware can log changed keys", function() {
-        var store = new UiStore({ val: "original" });
-        var ctx = { entries: [] };
-        store.use(method(ctx, function(changedKeys, newState, store) {
-            array_push(self.entries, changedKeys);
-            return undefined;
-        }));
-        store.setState({ val: "updated" });
-        assert_equal(array_length(ctx.entries), 1);
-        assert_equal(ctx.entries[0][0], "val");
-    });
-
     ui_test("multiple middleware execute in order", function() {
         var store = new UiStore({ val: "" });
-        store.use(function(ck, ns, s) {
+        store.use(function(ns, s) {
             var _keys = variable_struct_get_names(ns);
             var _c = {};
             for (var i = 0; i < array_length(_keys); i++) {
@@ -279,7 +188,7 @@ ui_test_suite("UiStore", function() {
             _c[$ "val"] = _c[$ "val"] + "1";
             return _c;
         });
-        store.use(function(ck, ns, s) {
+        store.use(function(ns, s) {
             var _keys = variable_struct_get_names(ns);
             var _c = {};
             for (var i = 0; i < array_length(_keys); i++) {
@@ -323,28 +232,11 @@ ui_test_suite("UiStore", function() {
     ui_test("destroy clears all subscribers and middleware", function() {
         var store = new UiStore({ val: 1 });
         var tracker = { calls: 0 };
-        store.subscribe(
-            function(s) { return s; },
-            method(tracker, function() { self.calls++; })
-        );
-        store.use(function(ck, ns, s) { return undefined; });
+        store.subscribe(method(tracker, function(state) { self.calls++; }));
+        store.use(function(ns, s) { return undefined; });
         store.destroy();
         store.setState({ val: 2 });
         assert_true(true, "destroy did not cause errors");
-    });
-
-    // ─── Edge Cases ──────────────────────────────────────────
-
-    ui_test("subscribe with equalityFn prevents duplicate notifications", function() {
-        var store = new UiStore({ val: "same" });
-        var tracker = { calls: 0 };
-        store.subscribe(
-            function(s) { return s[$ "val"]; },
-            method(tracker, function() { self.calls++; }),
-            function(a, b) { return a == b; }
-        );
-        store.setState({ val: "same" });
-        assert_equal(tracker.calls, 0);
     });
 
 });

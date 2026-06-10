@@ -215,7 +215,7 @@ function ui_demo_example_introduction(PreviewCard) {
         font: global.UI_FONTS.big
     });
     
-    // Subscribe the label to store changes - fires only when state actually changes
+    // Subscribe the label to store changes
     clickStore.subscribe(method(counterText, function(state) {
         self.text = "Clicks: " + string(state.count);
     }));

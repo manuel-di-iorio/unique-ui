@@ -1,67 +1,46 @@
 /**
- * UiStore - Zustand-inspired state management for GameMaker
- * Minimal, fast, selector-based subscriptions with direct mutation
+ * UiStore - Simple push-based state management for GameMaker
+ * No selectors, no equality checks — just set and notify.
  * 
  * Core API:
- * - setState(partialState | updater) - Merge or replace state
+ * - setState(partialState, replace?) - Update state (merge or replace)
  * - getState() - Get full state
  * - get(key, defaultValue) - Get single value
  * - has(key) - Check if key exists
  * - remove(key) - Delete key from state
  * - reset() - Reset to initial state
- * - subscribe(selector, callback, equalityFn) - Subscribe with optional custom equality
+ * - subscribe(callback) - Subscribe to state changes
  * - use(middleware) - Add optional middleware
  */
 function UiStore(initialState = {}) constructor {
     self.state = initialState;
-    // One-time shallow clone so reset() always has the original values
     var _keys = variable_struct_get_names(initialState);
     self.__initialState = {};
     for (var i = 0; i < array_length(_keys); i++) {
         self.__initialState[$ _keys[i]] = initialState[$ _keys[i]];
     }
-    self.__selectorListeners = [];
+    self.__listeners = [];
     self.__nextSubscriberId = 0;
     self.__middleware = [];
     
     self.setState = function(arg, replace = false) {
-        var _changedKeys = [];
-        
-        if (is_callable(arg)) {
-            var _result = arg(self.state);
-            if (replace) {
-                self.state = _result;
-                _changedKeys = variable_struct_get_names(_result);
-            } else {
-                var _keys = variable_struct_get_names(_result);
-                for (var i = 0; i < array_length(_keys); i++) {
-                    var _key = _keys[i];
-                    self.state[$ _key] = _result[$ _key];
-                    array_push(_changedKeys, _key);
-                }
-            }
+        if (replace) {
+            self.state = arg;
         } else {
-            if (replace) {
-                self.state = arg;
-                _changedKeys = variable_struct_get_names(arg);
-            } else {
-                var _keys = variable_struct_get_names(arg);
-                for (var i = 0; i < array_length(_keys); i++) {
-                    var _key = _keys[i];
-                    self.state[$ _key] = arg[$ _key];
-                    array_push(_changedKeys, _key);
-                }
+            var _keys = variable_struct_get_names(arg);
+            for (var i = 0; i < array_length(_keys); i++) {
+                self.state[$ _keys[i]] = arg[$ _keys[i]];
             }
         }
         
         for (var i = 0; i < array_length(self.__middleware); i++) {
-            var _mResult = self.__middleware[i](_changedKeys, self.state, self);
+            var _mResult = self.__middleware[i](self.state, self);
             if (is_struct(_mResult)) {
                 self.state = _mResult;
             }
         }
         
-        self.__notify(_changedKeys);
+        self.__notify();
         return self;
     };
     
@@ -76,7 +55,7 @@ function UiStore(initialState = {}) constructor {
     self.remove = function(key) {
         if (variable_struct_exists(self.state, key)) {
             variable_struct_remove(self.state, key);
-            self.__notify([key]);
+            self.__notify();
         }
         return self;
     };
@@ -87,7 +66,7 @@ function UiStore(initialState = {}) constructor {
         for (var i = 0; i < array_length(_keys); i++) {
             self.state[$ _keys[i]] = self.__initialState[$ _keys[i]];
         }
-        self.__notify(_keys);
+        self.__notify();
         return self;
     };
     
@@ -96,25 +75,21 @@ function UiStore(initialState = {}) constructor {
     };
     
     self._unsubscribeByRef = function(sub) {
-        for (var i = array_length(self.__selectorListeners) - 1; i >= 0; i--) {
-            if (self.__selectorListeners[i] == sub) {
-                array_delete(self.__selectorListeners, i, 1);
+        for (var i = array_length(self.__listeners) - 1; i >= 0; i--) {
+            if (self.__listeners[i] == sub) {
+                array_delete(self.__listeners, i, 1);
                 break;
             }
         }
     };
     
-    self.subscribe = function(selector, callback, equalityFn = undefined) {
-        var _initialValue = selector(self.state);
+    self.subscribe = function(callback) {
         var _subscriber = {
             id: self.__nextSubscriberId,
-            selector: selector,
-            callback: callback,
-            lastValue: _initialValue,
-            equalityFn: equalityFn
+            callback: callback
         };
         self.__nextSubscriberId++;
-        array_push(self.__selectorListeners, _subscriber);
+        array_push(self.__listeners, _subscriber);
         
         var _storeRef = self;
         return method({sub: _subscriber, store: _storeRef}, function() {
@@ -127,27 +102,14 @@ function UiStore(initialState = {}) constructor {
         return self;
     };
     
-    self.__notify = function(changedKeys = []) {
-        for (var i = array_length(self.__selectorListeners) - 1; i >= 0; i--) {
-            var _sub = self.__selectorListeners[i];
-            var _newValue = _sub.selector(self.state);
-            var _hasChanged = false;
-            
-            if (_sub.equalityFn != undefined) {
-                _hasChanged = !_sub.equalityFn(_newValue, _sub.lastValue);
-            } else {
-                _hasChanged = (_newValue != _sub.lastValue);
-            }
-            
-            if (_hasChanged) {
-                _sub.callback(_newValue);
-                _sub.lastValue = _newValue;
-            }
+    self.__notify = function() {
+        for (var i = array_length(self.__listeners) - 1; i >= 0; i--) {
+            self.__listeners[i].callback(self.state);
         }
     };
     
     self.destroy = function() {
-        self.__selectorListeners = [];
+        self.__listeners = [];
         self.__middleware = [];
     };
 }

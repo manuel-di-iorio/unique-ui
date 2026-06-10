@@ -2,7 +2,7 @@ function ui_demo_example_store(PreviewCard) {
     // --- Intro ---
     PreviewCard.add(new UiText(
         "UiStore is a lightweight reactive state container. When you call setState(), " +
-        "all subscribers are notified immediately - no polling, no valueGetter running every step. " +
+        "all subscribers are notified immediately. " +
         "UiStore also calls global.UI.requestRedraw() so bound UI updates on the next frame.",
         { width: "100%", marginBottom: 16 },
         { color: global.UI_COL_TEXT_2, wrap: true }
@@ -110,7 +110,7 @@ function ui_demo_example_store(PreviewCard) {
 
     PreviewCard.add(new UiText(
         "setState() merges multiple keys in a single notification. reset() restores the initial " +
-        "state snapshot. subscribe() is ideal for side effects like logging or audio updates.",
+        "state snapshot. subscribe() is ideal for side effects, logging, or audio updates.",
         { width: "100%", marginBottom: 16 },
         { color: global.UI_COL_TEXT_2, wrap: true }
     ));
@@ -162,7 +162,7 @@ function ui_demo_example_store(PreviewCard) {
     __ui_demo_doc_row(apiGrid, "has(key)", "method", "Check if a key exists in state");
     __ui_demo_doc_row(apiGrid, "remove(key)", "method", "Remove a key and notify subscribers");
     __ui_demo_doc_row(apiGrid, "reset()", "method", "Restore initial state and notify subscribers");
-    __ui_demo_doc_row(apiGrid, "subscribe(selector, cb)", "method", "Register callback on selector value change");
+    __ui_demo_doc_row(apiGrid, "subscribe(cb)", "method", "Register callback on state changes");
     __ui_demo_doc_row(apiGrid, "use(middleware)", "method", "Add optional middleware (undo/redo, logging, etc.)");
 
     return [
@@ -188,7 +188,7 @@ function ui_demo_example_store(PreviewCard) {
         "store.reset();",
         "",
         "// Unsubscribe when done",
-        "var unsubscribe = store.subscribe(selector, callback);",
+        "var unsubscribe = store.subscribe(callback);",
         "unsubscribe();",
     ];
 }

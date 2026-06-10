@@ -4,20 +4,17 @@ sidebar_position: 1
 
 # UiStore
 
-Zustand-inspired state management for GameMaker. Minimal, fast, selector-based subscriptions.
+Simple push-based state management for GameMaker. Minimal, fast, no selectors — just set and notify.
 
-`UiStore` is lib-agnostic and can be used outside of UniqueUI. It provides a clean API inspired by Zustand with optional middleware for advanced features like undo/redo, logging, and persistence.
+`UiStore` is lib-agnostic and can be used outside of UniqueUI. It provides a clean API with optional middleware for advanced features like undo/redo, logging, and persistence.
 
 ## Performance Features
 
-- **Direct mutation**: State is mutated directly instead of cloning - no variable_clone() bottleneck
-- **Selector-based subscriptions**: Subscribe to specific values with `subscribe(selector, callback, equalityFn?)` - only notified when selected value changes
-- **Custom equality functions**: Optional custom equality for struct/array selectors to avoid reference-based comparison issues
-- **Changed keys tracking**: Changed keys are passed to callbacks for optimization
+- **Direct mutation**: State is mutated directly instead of cloning — no `variable_clone()` bottleneck
+- **Simple subscriptions**: Subscribe with a callback that receives the full state — no selectors, no equality checks
 - **Middleware system**: Composable middleware for undo/redo, logging, validation, and more
 - **Replace mode**: `setState(partial, true)` for complete state replacement
-- **Change detection**: Only notifies subscribers when values actually change
-- **Minimal API**: Core API is small and focused - advanced features via optional middleware
+- **Minimal API**: Core API is small and focused — advanced features via optional middleware
 
 ## Usage
 
@@ -28,28 +25,20 @@ var store = new UiStore({
     themeMode: "dark"
 });
 
-// 2. Subscribe to changes with selector
-store.subscribe(
-    function(state) { return state.counter; },
-    function(count) {
-        show_debug_message("Counter: " + string(count));
-    }
-);
+// 2. Subscribe to changes (callback receives full state)
+store.subscribe(function(state) {
+    show_debug_message("Counter: " + string(state.counter));
+});
 
 // 3. Update state with partial state (merge)
 store.setState({ counter: 10, themeMode: "light" });
-
-// OR update with function
-store.setState(function(state) {
-    return { counter: state.counter + 1 };
-});
 
 // OR replace entire state
 store.setState({ newKey: "value" }, true);
 
 // 4. Add optional middleware
-store.use(function(changedKeys, newState, store) {
-    show_debug_message("Keys changed: " + string(changedKeys));
+store.use(function(newState, store) {
+    show_debug_message("State changed: " + string(newState));
     return undefined; // pass through
 });
 ```
@@ -62,13 +51,9 @@ store.use(function(changedKeys, newState, store) {
 
 ## Methods
 
-### `setState(arg, replace = false)`
+### `setState(partialState, replace = false)`
 
-Supports four signatures:
-- `setState(partialState)` - Merge partial state struct
-- `setState(partialState, true)` - Replace entire state
-- `setState(updater)` - Function that receives state and returns partial state
-- `setState(updater, true)` - Function that receives state and replaces entire state
+Merge a state struct, or replace the entire state when `replace` is `true`.
 
 ```gml
 // Partial state (merge)
@@ -76,16 +61,6 @@ store.setState({ counter: 10, themeMode: "light" });
 
 // Replace entire state
 store.setState({ newKey: "value" }, true);
-
-// Updater function (merge)
-store.setState(function(state) {
-    return { counter: state.counter + 1 };
-});
-
-// Updater function (replace)
-store.setState(function(state) {
-    return { newCount: state.counter + 1 };
-}, true);
 ```
 
 ### `get(key, defaultValue?)`
@@ -105,16 +80,14 @@ Returns the live `state` struct reference. Prefer `get()` for reads unless you n
 **WARNING**: Returns a live reference. Do not directly mutate arrays or structs obtained through this method. Always use `setState()` for modifications.
 
 ```gml
-// DON'T DO THIS - won't trigger reactivity
+// DON'T DO THIS — won't trigger reactivity
 var items = store.get("items");
 array_push(items, "new item"); // ❌ No notification
 
-// DO THIS - will trigger reactivity
-store.setState(function(state) {
-    var newItems = array_copy(state.items);
-    array_push(newItems, "new item");
-    return { items: newItems }; // ✅ Notifies subscribers
-});
+// DO THIS — will trigger reactivity
+var newItems = array_copy(store.get("items"));
+array_push(newItems, "new item");
+store.setState({ items: newItems }); // ✅ Notifies subscribers
 ```
 
 ### `has(key)`
@@ -141,35 +114,16 @@ Restores state to the initial snapshot passed to the constructor and notifies su
 store.reset();
 ```
 
-### `subscribe(selector, callback, equalityFn?)`
+### `subscribe(callback)`
 
-Subscribe to state changes using a selector function. Only notified when the selected value changes.
-
-- `selector` (Function): Function(state) -> value to select
-- `callback` (Function): Callback receiving the new selected value (and optional changedKeys as second argument)
-- `equalityFn` (Function, optional): Custom equality function(a, b) -> bool for struct/array comparison
+Subscribe to state changes. The callback receives the full state on every change.
 
 Returns an unsubscribe function.
 
 ```gml
-var unsubscribe = store.subscribe(
-    function(state) { return state.counter; },
-    function(count) {
-        show_debug_message("Counter: " + string(count));
-    }
-);
-
-// With custom equality for struct selectors
-var unsubscribe2 = store.subscribe(
-    function(state) { return state.player; },
-    function(player) {
-        show_debug_message("Player updated");
-    },
-    function(a, b) {
-        // Custom equality for structs
-        return a.hp == b.hp && a.x == b.x && a.y == b.y;
-    }
-);
+var unsubscribe = store.subscribe(function(state) {
+    show_debug_message("Counter: " + string(state.counter));
+});
 
 // Cleanup
 unsubscribe();
@@ -177,31 +131,21 @@ unsubscribe();
 
 ### `use(middleware)`
 
-Apply middleware to the store. Middleware receives `(changedKeys, newState, store)` and can:
+Apply middleware to the store. Middleware receives `(newState, store)` and can:
 - Return `undefined` to use newState as-is
 - Return a new state to transform it
-- Return `false` to interrupt the update
 
 Returns `self` for chaining.
 
 ```gml
 // Logger middleware
-store.use(function(changedKeys, newState, store) {
-    show_debug_message("Changed keys: " + string(changedKeys));
+store.use(function(newState, store) {
     show_debug_message("New state: " + string(newState));
     return undefined;
 });
 
-// Validation middleware
-store.use(function(changedKeys, newState, store) {
-    if (newState.count < 0) {
-        return false; // Interrupt update
-    }
-    return undefined;
-});
-
 // Transform middleware
-store.use(function(changedKeys, newState, store) {
+store.use(function(newState, store) {
     newState.timestamp = current_time;
     return newState;
 });
@@ -215,101 +159,17 @@ Destroy the store and cleanup all listeners. Use this when you're done with the 
 store.destroy();
 ```
 
-## Performance Patterns
-
-### Selector-based subscriptions (recommended)
-
-Use selector-based `subscribe()` when you only care about specific values. This prevents unnecessary callback executions and scales to nested state.
-
-```gml
-var store = new UiStore({ 
-    user: { name: "Test", age: 25 },
-    count: 0 
-});
-
-// Only notified when user.name changes
-store.subscribe(
-    function(state) { return state.user.name; },
-    function(name) {
-        show_debug_message("Name changed to " + name);
-    }
-);
-
-// Only notified when count changes
-store.subscribe(
-    function(state) { return state.count; },
-    function(count) {
-        show_debug_message("Count changed to " + string(count));
-    }
-);
-```
-
-### Component-level reactive binding
-
-Use `bind()` on components for clean reactive property updates.
-
-```gml
-var label = new UiText("", {}, {});
-label.bind(store, function(state) { return state.counter; }, "text", function(val) {
-    return "Count: " + string(val);
-});
-```
-
-### Mutations
-
-Use `setState()` with an updater function for cleaner state mutations when updating multiple related values.
-
-```gml
-store.setState(function(state) {
-    return {
-        x: state.x + 10,
-        y: state.y + 10,
-        z: state.z + 10
-    };
-});
-```
-
-
-### Undo/Redo with middleware
-
-Undo/redo is now optional via middleware instead of built-in.
-
-```gml
-var editorStore = new UiStore({
-    document: "",
-    cursor: { x: 0, y: 0 }
-});
-
-// Add undo/redo middleware
-editorStore.use(UiStoreMiddleware_undoRedo());
-
-// Every state change is automatically saved
-editorStore.setState({ document: "Hello World" });
-
-// Undo the last change
-editorStore.undo();
-
-// Redo the undone change
-editorStore.redo();
-```
-
 ## How Reactivity Works
 
 1. You call `setState()`, `remove()`, or `reset()`.
 2. State is mutated directly (no cloning for performance).
-3. Changed keys are tracked.
-4. Middleware chain is applied - each middleware can transform or interrupt the update.
-5. `__notify()` iterates registered selector-based subscribers in reverse order:
-   - Only notifies subscribers when their selected value actually changed
-   - Custom equality functions can be used for struct/array comparison
-   - Changed keys are passed to callbacks as second argument
+3. Middleware chain is applied — each middleware can transform the update.
+4. `__notify()` iterates registered subscribers in reverse order and calls each callback with the full state.
 
 There is no automatic two-way binding — you wire reads (`get()` / `getState()` / `subscribe`) and writes (`setState()`) explicitly, which keeps data flow predictable in GML.
 
 ## Performance Notes
 
-- **Direct mutation**: State is mutated directly instead of cloning - no variable_clone() bottleneck. This is especially important for per-frame updates (mouseX, mouseY, scroll, hovered, focused).
-- **Selector-based subscriptions**: Only subscribers whose selected value changed are notified, preventing unnecessary callback executions.
-- **Custom equality functions**: Use custom equality for struct/array selectors to avoid reference-based comparison issues.
-- **Changed keys optimization**: Callbacks receive changed keys as second argument for selective filtering.
+- **Direct mutation**: State is mutated directly instead of cloning — no `variable_clone()` bottleneck. This is especially important for per-frame updates (mouseX, mouseY, scroll, hovered, focused).
+- **Simple callbacks**: Every subscriber receives the full state on each change. Keep callbacks lightweight for best performance.
 - **Middleware is optional**: Core API is minimal and fast. Add middleware only when you need advanced features like undo/redo, logging, or persistence.
