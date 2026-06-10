@@ -151,7 +151,7 @@ function ui_demo_example_introduction(PreviewCard) {
         if (variable_struct_exists(draggedNode, "parent") && draggedNode.parent != undefined) {
             var label = "Dropped!";
             if (variable_struct_exists(draggedNode, "children") && array_length(draggedNode.children) > 0) {
-                label = draggedNode.children[0].text;
+                label = draggedNode.children[0].value;
             }
             self.__statusText = "Received: " + label;
             global.UI.requestRedraw();
@@ -217,7 +217,7 @@ function ui_demo_example_introduction(PreviewCard) {
     
     // Subscribe the label to store changes
     clickStore.subscribe(method(counterText, function(state) {
-        self.text = "Clicks: " + string(state.count);
+        self.value = "Clicks: " + string(state.count);
     }));
     
     var eventBtn = new UiButton("Click to Trigger", { marginRight: 16, height: 36 }, { variant: "success" });
@@ -313,7 +313,7 @@ function ui_demo_example_introduction(PreviewCard) {
         "",
         "// Subscribe - fires immediately when state changes",
         "store.subscribe(method(myLabel, function(state) {",
-        "    self.text = \"Clicks: \" + string(state.count);",
+        "    self.value = \"Clicks: \" + string(state.count);",
         "}));",
         "",
         "// Update state - all subscribers are notified automatically",

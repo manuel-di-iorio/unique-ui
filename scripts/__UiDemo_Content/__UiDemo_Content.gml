@@ -3,7 +3,7 @@ function __ui_demo_refresh(preserveScroll = false) {
     var _oldScroll = area.scrollTop;
     if (global.UI_DEMO.currentPage == "Overview") global.UI_DEMO.currentPage = "Button";
     area.destroyChildren(true);
-    global.UI_DEMO.BreadcrumbPage.text = global.UI_DEMO.currentPage;
+    global.UI_DEMO.BreadcrumbPage.value = global.UI_DEMO.currentPage;
     
     // Title Section
     var Hero = new UiNode({ width: "100%", flexDirection: "column", marginBottom: 22 });

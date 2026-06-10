@@ -1,5 +1,5 @@
 function UiAccordion(text, style = {}, data = {}) : UiNode(style, data) constructor {
-    self.text = text;
+    self.value = text;
     self.collapsed = data[$ "collapsed"] ?? false;
     
     // Default style adjustments
@@ -66,7 +66,7 @@ function UiAccordion(text, style = {}, data = {}) : UiNode(style, data) construc
     });
     
     // Label
-    self.Label = new UiText(self.text, { height: 20 }, { 
+    self.Label = new UiText(self.value, { height: 20 }, { 
         color: global.UI_COL_TEXT_1,
         font: global.UI_FONTS.standard
     });

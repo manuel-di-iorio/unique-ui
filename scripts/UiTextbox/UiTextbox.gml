@@ -8,7 +8,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
     self.label = props[$ "label"] ?? undefined;
     self.value = props[$ "value"] ?? "";
     self.valueGetter = props[$ "valueGetter"] ?? undefined;
-    self.onChange = props[$ "onChange"] ?? function(value, input) {};
+    if (props[$ "onChange"] != undefined) self.onChange(props[$ "onChange"]);
     self.maxLength = props[$ "maxLength"] ?? 255;
     draw_set_font(global.UI_FONTS.standard);
     var marginLeft = self.label == undefined ? 0 : string_width(self.label) + 15;
@@ -161,12 +161,10 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                 var state = self.undoStack[array_length(self.undoStack) - 1];
                 array_delete(self.undoStack, array_length(self.undoStack) - 1, 1);
                 
-                self.parent.value = state.text;
+                self.parent.setValue(state.text);
                 self.cursorPos = state.cursorPos;
                 self.selectionStart = state.selectionStart;
                 self.selectionEnd = state.selectionEnd;
-                
-                self.parent.onChange(self.parent.value);
                 self.updateScrollOffset();
             }
         };
@@ -187,12 +185,10 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                 var state = self.redoStack[array_length(self.redoStack) - 1];
                 array_delete(self.redoStack, array_length(self.redoStack) - 1, 1);
                 
-                self.parent.value = state.text;
+                self.parent.setValue(state.text);
                 self.cursorPos = state.cursorPos;
                 self.selectionStart = state.selectionStart;
                 self.selectionEnd = state.selectionEnd;
-                
-                self.parent.onChange(self.parent.value, self.parent);
                 self.updateScrollOffset();
             }
         };
@@ -361,9 +357,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             var ended = max(self.selectionStart, self.selectionEnd);
             
             if (start != ended) {
-                var text = self.parent.value;
-                self.parent.value = string_delete(text, start + 1, ended - start);
-                self.parent.onChange(self.parent.value, self.parent);
+                self.parent.setValue(string_delete(self.parent.value, start + 1, ended - start));
                 self.cursorPos = start;
                 self.selectionStart = start;
                 self.selectionEnd = start;
@@ -424,8 +418,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                 }
             }
             
-            self.parent.value = newValue;
-            self.parent.onChange(self.parent.value, self.parent);
+            self.parent.setValue(newValue);
             self.redoStack = [];
             self.cursorPos += string_length(filteredText);
             self.selectionStart = self.cursorPos;
@@ -571,15 +564,12 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                     
                     if (!self.deleteSelected() && self.cursorPos > 0) {
                         if (ctrl) {
-                            // Delete word
                             var newPos = self.findWordBoundary(self.cursorPos, -1);
-                            self.parent.value = string_delete(self.parent.value, newPos + 1, self.cursorPos - newPos);
-                            self.parent.onChange(self.parent.value, self.parent);
+                            self.parent.setValue(string_delete(self.parent.value, newPos + 1, self.cursorPos - newPos));
                             self.cursorPos = newPos;
                         } else {
                             // Delete character
-                            self.parent.value = string_delete(self.parent.value, self.cursorPos, 1);
-                            self.parent.onChange(self.parent.value, self.parent);
+                            self.parent.setValue(string_delete(self.parent.value, self.cursorPos, 1));
                             self.cursorPos--;
                         }
                         self.selectionStart = self.cursorPos;
@@ -598,12 +588,10 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                         if (ctrl) {
                             // Delete word
                             var newPos = self.findWordBoundary(self.cursorPos, 1);
-                            self.parent.value = string_delete(self.parent.value, self.cursorPos + 1, newPos - self.cursorPos);
-                            self.parent.onChange(self.parent.value, self.parent);
+                            self.parent.setValue(string_delete(self.parent.value, self.cursorPos + 1, newPos - self.cursorPos));
                         } else {
                             // Delete character
-                            self.parent.value = string_delete(self.parent.value, self.cursorPos + 1, 1);
-                            self.parent.onChange(self.parent.value, self.parent);
+                            self.parent.setValue(string_delete(self.parent.value, self.cursorPos + 1, 1));
                         }
                     }
                     
@@ -971,8 +959,7 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
                     }
                 }
                 
-                self.parent.value = value;
-                self.parent.onChange(self.parent.value, self.parent);
+                self.parent.setValue(value);
             }
             
             global.UI.requestRedraw();

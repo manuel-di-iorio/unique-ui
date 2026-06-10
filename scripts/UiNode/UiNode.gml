@@ -115,6 +115,10 @@ function UiNode(style = {}, props = {}) constructor {
     self.onDrop = undefined;
     self.dragPreviewAlpha = props[$ "dragPreviewAlpha"] ?? 0.7;
 
+    // Generic value
+    self.value = undefined;
+    self.__valueChangeListeners = [];
+
     
     /** Methods */
     
@@ -128,6 +132,25 @@ function UiNode(style = {}, props = {}) constructor {
     function requestRedraw() {
         gml_pragma("forceinline");
         global.UI.requestRedraw(self);
+    }
+    
+    // Set the value and trigger redraw + listeners
+    function setValue(newValue) {
+        gml_pragma("forceinline");
+        self.value = newValue;
+        self.requestRedraw();
+        var _listeners = self.__valueChangeListeners;
+        for (var i = 0; i < array_length(_listeners); i++) {
+            _listeners[i](newValue, self);
+        }
+        return self;
+    }
+    
+    // Register a value change listener
+    function onChange(cb) {
+        gml_pragma("forceinline");
+        array_push(self.__valueChangeListeners, cb);
+        return self;
     }
     
     // Set the size of the node

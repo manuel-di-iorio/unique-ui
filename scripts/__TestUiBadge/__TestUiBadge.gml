@@ -4,9 +4,9 @@
 
 ui_test_suite("UiBadge", function() {
     
-    ui_test("Create - text property set", function() {
+    ui_test("Create - value property set", function() {
         var b = new UiBadge("Beta", {}, {});
-        assert_equal(b.text, "Beta", "text = 'Beta'");
+        assert_equal(b.value, "Beta", "value = 'Beta'");
     });
     
     ui_test("Create - default variant is 'default'", function() {
@@ -29,10 +29,10 @@ ui_test_suite("UiBadge", function() {
         assert_true(b.dot, "dot = true");
     });
     
-    ui_test("setText updates text property", function() {
+    ui_test("setText updates value property", function() {
         var b = new UiBadge("Old", {}, {});
         b.setText("New");
-        assert_equal(b.text, "New", "text updated to 'New'");
+        assert_equal(b.value, "New", "value updated to 'New'");
     });
     
     ui_test("setVariant updates variant property", function() {

@@ -88,7 +88,7 @@ ui_test_suite("UiTextbox", function() {
         assert_equal(tb.value, "Hello", "inserted at position 3");
     });
     
-    ui_test("insertText calls onChange", function() {
+    ui_test("insertText calls onChange (prop)", function() {
         var state = { called_with: "" };
         var tb  = new UiTextbox({}, { onChange: method(state, function(v) { called_with = v; }) });
         var inp = tb.Input;
@@ -98,6 +98,14 @@ ui_test_suite("UiTextbox", function() {
         inp.selectionEnd   = 0;
         inp.insertText("X");
         assert_equal(state.called_with, "X", "onChange called with new value");
+    });
+    
+    ui_test("onChange method registers listener", function() {
+        var state = { called_with: "" };
+        var tb = new UiTextbox({}, {});
+        tb.onChange(method(state, function(v) { called_with = v; }));
+        tb.setValue("Y");
+        assert_equal(state.called_with, "Y", "listener called via method");
     });
     
     // ── Selection ────────────────────────────────────────────

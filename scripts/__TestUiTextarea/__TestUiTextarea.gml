@@ -132,13 +132,12 @@ ui_test_suite("UiTextarea", function() {
         assert_equal(ta.value, "Hello\nWorld", "redo restores value");
     });
     
-    ui_test("onBlur calls parent onBlur", function() {
-        var state = { value: "" };
-        var ta = new UiTextarea({}, { value: "Done", onBlur: method(state, function(v) { value = v; }) });
-        ta.Input.focused = true;
-        ta.Input.onBlur();
-        assert_equal(state.value, "Done", "onBlur value");
-        assert_false(ta.Input.focused, "focused false after blur");
+    ui_test("onChange method registers listener", function() {
+        var state = { called_with: "" };
+        var ta = new UiTextarea({}, {});
+        ta.onChange(method(state, function(v) { called_with = v; }));
+        ta.setValue("Z");
+        assert_equal(state.called_with, "Z", "listener called via method");
     });
     
 });

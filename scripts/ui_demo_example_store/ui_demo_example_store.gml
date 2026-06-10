@@ -29,7 +29,7 @@ function ui_demo_example_store(PreviewCard) {
 
     var counterLabel = new UiText("Count: 0", { marginRight: 16 }, { color: global.UI_COL_TEXT_1, font: global.UI_FONTS.big });
     counterStore.subscribe(method(counterLabel, function(state) {
-        self.text = "Count: " + string(state.count);
+        self.value = "Count: " + string(state.count);
     }));
 
     var decBtn = new UiButton("-", { width: 40, height: 36, marginRight: 8 }, { variant: "outline" });
@@ -134,7 +134,7 @@ function ui_demo_example_store(PreviewCard) {
 
     var batchLabel = new UiText("Ready - Level 1", { marginRight: 40, marginBottom: 8 }, { color: global.UI_COL_TEXT_1 });
     batchStore.subscribe(method(batchLabel, function(state) {
-        self.text = state.label + " - Level " + string(state.level);
+        self.value = state.label + " - Level " + string(state.level);
     }));
 
     var levelUpBtn = new UiButton("Level Up", { height: 34, marginRight: 8, marginBottom: 8 }, { variant: "primary" });
@@ -171,7 +171,7 @@ function ui_demo_example_store(PreviewCard) {
         "",
         "// Subscribe - fires when state changes",
         "store.subscribe(function(state) {",
-        "    self.text = \"Count: \" + string(state.count);",
+        "    self.value = \"Count: \" + string(state.count);",
         "});",
         "",
         "// Update state (merge)",

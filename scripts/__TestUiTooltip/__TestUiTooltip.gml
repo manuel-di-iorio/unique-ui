@@ -20,9 +20,9 @@ ui_test_suite("UiTooltip", function() {
         assert_true(tip.textNode.isUiNode, "textNode is UiNode");
     });
     
-    ui_test("textNode starts with empty text", function() {
+    ui_test("textNode starts with empty value", function() {
         var tip = new UiTooltip();
-        assert_equal(tip.textNode.text, "", "textNode.text = ''");
+        assert_equal(tip.textNode.value, "", "textNode.value = ''");
     });
     
     ui_test("target starts as undefined", function() {
@@ -48,13 +48,13 @@ ui_test_suite("UiTooltip", function() {
         assert_equal(tip.target, target, "target set after show()");
     });
     
-    ui_test("show() sets textNode.text", function() {
+    ui_test("show() sets textNode.value", function() {
         var tip    = new UiTooltip();
         var target = new UiNode({}, {});
         global.UI.mouseX = 50;
         global.UI.mouseY = 50;
         tip.show(target, "My Tooltip");
-        assert_equal(tip.textNode.text, "My Tooltip", "textNode.text set");
+        assert_equal(tip.textNode.value, "My Tooltip", "textNode.value set");
     });
     
     ui_test("hide() sets display = false", function() {

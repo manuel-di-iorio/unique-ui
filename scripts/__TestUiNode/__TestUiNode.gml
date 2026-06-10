@@ -41,6 +41,60 @@ ui_test_suite("UiNode", function() {
         assert_true(n.pointerEvents, "pointerEvents = true");
     });
     
+    // ── value / setValue / onChange ──────────────────────────
+    
+    ui_test("value defaults to undefined", function() {
+        var n = __make_node();
+        assert_is_undefined(n.value, "value = undefined by default");
+    });
+    
+    ui_test("setValue sets the value", function() {
+        var n = __make_node();
+        n.setValue(42);
+        assert_equal(n.value, 42, "value = 42 after setValue");
+    });
+    
+    ui_test("setValue returns self for chaining", function() {
+        var n = __make_node();
+        var result = n.setValue("hello");
+        assert_equal(result, n, "returns self");
+    });
+    
+    ui_test("onChange listener fires with new value on setValue", function() {
+        var n = __make_node();
+        var state = { received: undefined };
+        n.onChange(method(state, function(val) { received = val; }));
+        n.setValue("test");
+        assert_equal(state.received, "test", "listener received 'test'");
+    });
+    
+    ui_test("onChange listener fires with new value and node reference", function() {
+        var n = __make_node();
+        var state = { value: undefined, node: undefined };
+        n.onChange(method(state, function(val, node) { value = val; self.node = node; }));
+        n.setValue(99);
+        assert_equal(state.value, 99, "listener received value 99");
+        assert_equal(state.node, n, "listener received node reference");
+    });
+    
+    ui_test("multiple onChange listeners all fire", function() {
+        var n = __make_node();
+        var state = { count: 0 };
+        n.onChange(method(state, function(v) { count++; }));
+        n.onChange(method(state, function(v) { count++; }));
+        n.setValue("x");
+        assert_equal(state.count, 2, "both listeners fired");
+    });
+    
+    ui_test("setValue with same value still fires listeners", function() {
+        var n = __make_node();
+        var state = { count: 0 };
+        n.onChange(method(state, function(v) { count++; }));
+        n.setValue("same");
+        n.setValue("same");
+        assert_equal(state.count, 2, "both setValue calls fired listeners");
+    });
+    
     // ── setName / getName ────────────────────────────────────
     
     ui_test("setName and getName round-trip", function() {

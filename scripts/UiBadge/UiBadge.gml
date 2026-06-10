@@ -2,7 +2,7 @@
 /// Variants: "default", "primary", "success", "warning", "danger", "info"
 function UiBadge(text, style = {}, props = {}): UiNode(style, props) constructor {
     setName(style[$ "name"] ?? "UiBadge");
-    self.text    = text;
+    self.value   = text;
     self.variant = props[$ "variant"] ?? "default";
     self.dot     = props[$ "dot"]     ?? false; // Show as a dot (no text)
     
@@ -53,23 +53,22 @@ function UiBadge(text, style = {}, props = {}): UiNode(style, props) constructor
             draw_rectangle(self.x1, self.y1, self.x2, self.y2, true);
         }
         
-        if (!self.dot && self.text != undefined && self.text != "") {
+        if (!self.dot && self.value != undefined && self.value != "") {
             draw_set_font(global.UI_FONTS.small);
             draw_set_color(cols.text);
             draw_set_halign(fa_center);
             draw_set_valign(fa_middle);
-            draw_text(floor(mean(self.x1, self.x2)), floor(mean(self.y1, self.y2)), self.text);
+            draw_text(floor(mean(self.x1, self.x2)), floor(mean(self.y1, self.y2)), self.value);
         }
     };
     
     /// @desc Updates the badge text and resizes.
     function setText(_text) {
-        self.text = _text;
+        self.setValue(_text);
         if (!self.dot) {
             draw_set_font(global.UI_FONTS.small);
             self.setWidth(string_width(_text) + 24);
         }
-        global.UI.requestRedraw();
     }
     
     /// @desc Changes the badge variant.

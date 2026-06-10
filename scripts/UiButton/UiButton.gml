@@ -1,6 +1,6 @@
 function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) constructor {
     setName(style[$ "name"] ?? "UiButton");
-    self.text = undefined;
+    self.value = undefined;
     self.sprite = undefined;
     self.label = props[$ "label"]; // Text label to show alongside sprite
     self.style = style;
@@ -10,7 +10,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     self.halign = props[$ "halign"] ?? fa_center;
     self.handpoint = true;
     self.selected = false;
-    self.enabled = true;
+    self.disabled = false;
     self.enableRipple = props[$ "enableRipple"] ?? true;
     self.variant = props[$ "variant"] ?? "secondary"; // primary, secondary, outline, ghost, danger
     self.spriteWidth = props[$ "spriteWidth"]; // Custom sprite width
@@ -27,7 +27,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     self.ripples = [];
     
     self.onClick(function() {
-        if (!self.enabled) return;
+        if (self.disabled) return;
         if (!self.enableRipple) return;
         
         var mx = window_mouse_get_x();
@@ -53,10 +53,10 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
         var actualSpriteWidth = self.spriteWidth != undefined ? self.spriteWidth * global.UI_ZOOM : (self.sprite != undefined ? sprite_get_width(self.sprite) : 0);
         var actualSpriteHeight = self.spriteHeight != undefined ? self.spriteHeight * global.UI_ZOOM : (self.sprite != undefined ? sprite_get_height(self.sprite) : 0);
         
-        if (self.text != undefined) {
+        if (self.value != undefined) {
             draw_set_font(global.UI_FONTS.standard);
-            _w = string_width(self.text) + 24;
-            _h = string_height(self.text) + 12;
+            _w = string_width(self.value) + 24;
+            _h = string_height(self.value) + 12;
         } else if (self.sprite != undefined && self.label != undefined) {
             draw_set_font(global.UI_FONTS.standard);
             _w = actualSpriteWidth + string_width(self.label) + 30;
@@ -81,20 +81,20 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
         }
     }
     
-    function setEnabled(enabled) {
-        self.enabled = enabled;
-        self.pointerEvents = enabled;
+    function setDisabled(disabled) {
+        self.disabled = disabled;
+        self.pointerEvents = !disabled;
         global.UI.requestRedraw();
     }
 
     function click() {
-        if (!self.enabled) return self;
+        if (self.disabled) return self;
         global.UI.dispatchEvent(UI_EVENT.click, self);
         return self;
     }
     
     function setText(text) {
-        self.text = text;
+        self.setValue(text);
         self.resize();
     }
     
@@ -144,7 +144,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
         }
         
         // Disabled dimming
-        var _alpha = self.enabled ? 1 : 0.35;
+        var _alpha = self.disabled ? 0.35 : 1;
         draw_set_alpha(_alpha);
 
         // Background
@@ -190,9 +190,9 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
         
         var ym = ~~mean(self.y1, self.y2);
         
-        if (self.text != undefined) {
+        if (self.value != undefined) {
             draw_set_font(global.UI_FONTS.standard); draw_set_color(text_color); draw_set_halign(self.halign); draw_set_valign(fa_middle);
-            draw_text(xm, ym, self.text);
+            draw_text(xm, ym, self.value);
         } else if (self.sprite != undefined && self.label != undefined) {
             var originalSpriteW = sprite_get_width(self.sprite);
             var originalSpriteH = sprite_get_height(self.sprite);
@@ -223,7 +223,7 @@ function UiButton(textOrImage, style = {}, props = {}): UiNode(style, props) con
     // Set the text/sprite and resize the button if specified
     if (textOrImage != undefined) {
         if (is_string(textOrImage)) {
-            self.text = textOrImage;
+            self.value = textOrImage;
         } else {
             self.sprite = textOrImage;
         }

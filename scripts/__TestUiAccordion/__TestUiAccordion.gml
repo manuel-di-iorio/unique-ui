@@ -4,9 +4,9 @@
 
 ui_test_suite("UiAccordion", function() {
     
-    ui_test("text stored from constructor", function() {
+    ui_test("value stored from constructor", function() {
         var acc = new UiAccordion("My Section", {}, {});
-        assert_equal(acc.text, "My Section", "text = 'My Section'");
+        assert_equal(acc.value, "My Section", "value = 'My Section'");
     });
     
     ui_test("collapsed defaults to false", function() {
@@ -36,10 +36,10 @@ ui_test_suite("UiAccordion", function() {
         assert_not_undefined(acc.Arrow, "Arrow exists");
     });
     
-    ui_test("Label sub-node exists and has correct text", function() {
+    ui_test("Label sub-node exists and has correct value", function() {
         var acc = new UiAccordion("My Title", {}, {});
         assert_not_undefined(acc.Label, "Label exists");
-        assert_equal(acc.Label.text, "My Title", "Label text = 'My Title'");
+        assert_equal(acc.Label.value, "My Title", "Label value = 'My Title'");
     });
     
     ui_test("Content is visible when not collapsed", function() {

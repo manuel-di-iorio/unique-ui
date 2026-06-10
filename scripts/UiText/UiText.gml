@@ -1,6 +1,6 @@
 function UiText(text = "", style = {}, props = {}): UiNode(style, props) constructor {
     setName(style[$ "name"] ?? "UiText");
-    self.text = text;
+    self.value = text;
     self.style = style;
     self.autoResize = props[$ "autoResize"] ?? (style[$ "width"] == undefined && style[$ "height"] == undefined) ?? true;
     self.halign = fa_left;
@@ -21,11 +21,11 @@ function UiText(text = "", style = {}, props = {}): UiNode(style, props) constru
         var _fixedWidth = style[$ "width"];
         if (self.wrap && is_numeric(_fixedWidth)) {
             _w = _fixedWidth;
-            _h = string_height_ext(self.text, self.sep, _w);
+            _h = string_height_ext(self.value, self.sep, _w);
         } else {
-            _w = string_width(self.text);
+            _w = string_width(self.value);
             if (self.icon != undefined) _w += sprite_get_width(self.icon) + 10;
-            _h = string_height(self.text);
+            _h = string_height(self.value);
         }
         
         if (self.autoResize || self.style[$ "width"] == undefined) {
@@ -39,8 +39,8 @@ function UiText(text = "", style = {}, props = {}): UiNode(style, props) constru
     self.onStep(function() {
         if (self.valueGetter != undefined) {
             var _newText = self.valueGetter();
-            if (_newText != self.text) {
-                self.text = _newText;
+            if (_newText != self.value) {
+                self.value = _newText;
                 computeSize();
             }
         }
@@ -52,7 +52,7 @@ function UiText(text = "", style = {}, props = {}): UiNode(style, props) constru
             if (_currentWidth > 0 && _currentWidth != self.__lastWrapWidth) {
                 self.__lastWrapWidth = _currentWidth;
                 draw_set_font(self.font);
-                var _h = string_height_ext(self.text, self.sep, _currentWidth);
+                var _h = string_height_ext(self.value, self.sep, _currentWidth);
                 if (abs(_h - (self.y2 - self.y1)) > 1) {
                     self.setHeight(_h);
                 }
@@ -82,9 +82,9 @@ function UiText(text = "", style = {}, props = {}): UiNode(style, props) constru
         
         if (self.wrap) {
             var _w = self.x2 - _x;
-            draw_text_ext(_x, _y, self.text, self.sep, _w);
+            draw_text_ext(_x, _y, self.value, self.sep, _w);
         } else {
-            draw_text(_x, _y, self.text);
+            draw_text(_x, _y, self.value);
         }
     }
     

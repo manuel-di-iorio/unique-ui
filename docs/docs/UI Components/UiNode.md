@@ -37,6 +37,7 @@ new UiNode(style = {}, props = {})
 | `dropzone`       | `boolean`              | Enables node to receive dropped elements.       |
 | `scrollTop`      | `real`                 | Current scroll offset (for scrollable parents). |
 | `layout`         | `struct`               | Layout box (position, margins, paddings, size). |
+| `value`          | `any`                  | Generic value property used by components (e.g., UiText uses it for displayed text). Default: `undefined`. |
 | `onDraw`         | `function`             | Called every frame before drawing.              |
 | `onDestroy`      | `function`             | Called when the node is destroyed.              |
 | `tooltip`        | `string|function`      | Optional tooltip text or function. If set, `tooltipDelay` (ms) controls how long the cursor must hover before the tooltip is shown. |
@@ -70,6 +71,13 @@ new UiNode(style = {}, props = {})
 | `blur()`       | Removes focus from this element.                |
 | `hasFocus()`   | Returns `true` if this element is focused.      |
 | `getFocused()` | Returns the currently focused element (static). |
+
+**Value API**
+
+| Method                         | Description                                         |
+| ------------------------------ | --------------------------------------------------- |
+| `setValue(value)`              | Sets the node value, triggers redraw, and fires all `onChange` listeners with the new value and node reference. |
+| `onChange(callback)`           | Registers a listener `callback(value, node)` that fires when `setValue()` is called. Returns self for chaining. |
 
 **Layout & style**
 

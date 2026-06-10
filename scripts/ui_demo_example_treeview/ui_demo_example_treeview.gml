@@ -34,7 +34,7 @@ function ui_demo_example_treeview(PreviewCard) {
         }));
         menu.addItem("Rename", method({ item }, function() {
             item.name = "Renamed Item";
-            item.Label.text = item.name;
+            item.Label.value = item.name;
         }));
         menu.addSeparator();
         menu.addItem("Delete", method({ item }, function() {

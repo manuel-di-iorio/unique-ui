@@ -4,9 +4,9 @@
 
 ui_test_suite("UiButton", function() {
     
-    ui_test("Create with text - text property set", function() {
+    ui_test("Create with text - value property set", function() {
         var btn = new UiButton("Click Me", {}, {});
-        assert_equal(btn.text, "Click Me", "text property");
+        assert_equal(btn.value, "Click Me", "value property");
     });
     
     ui_test("Create with text - sprite is undefined", function() {
@@ -14,9 +14,9 @@ ui_test_suite("UiButton", function() {
         assert_is_undefined(btn.sprite, "sprite = undefined for text button");
     });
     
-    ui_test("Create with undefined - both text and sprite undefined", function() {
+    ui_test("Create with undefined - both value and sprite undefined", function() {
         var btn = new UiButton(undefined, {}, {});
-        assert_is_undefined(btn.text,   "text = undefined");
+        assert_is_undefined(btn.value,  "value = undefined");
         assert_is_undefined(btn.sprite, "sprite = undefined");
     });
     
@@ -60,10 +60,10 @@ ui_test_suite("UiButton", function() {
         assert_equal(btn.halign, fa_left, "halign = fa_left");
     });
     
-    ui_test("setText changes text property", function() {
+    ui_test("setText changes value property", function() {
         var btn = new UiButton("Original", {}, {});
         btn.setText("Updated");
-        assert_equal(btn.text, "Updated", "text updated");
+        assert_equal(btn.value, "Updated", "value updated");
     });
     
     ui_test("onClick registers click listener", function() {
@@ -101,42 +101,42 @@ ui_test_suite("UiButton", function() {
         assert_equal(btn.type, "UiNode", "type = UiNode");
     });
     
-    ui_test("enabled is true by default", function() {
+    ui_test("disabled is false by default", function() {
         var btn = new UiButton("Test", {}, {});
-        assert_true(btn.enabled, "enabled = true");
+        assert_false(btn.disabled, "disabled = false by default");
     });
     
-    ui_test("setEnabled(false) sets enabled to false", function() {
+    ui_test("setDisabled(true) sets disabled to true", function() {
         var btn = new UiButton("Test", {}, {});
-        btn.setEnabled(false);
-        assert_false(btn.enabled, "enabled = false after setEnabled(false)");
+        btn.setDisabled(true);
+        assert_true(btn.disabled, "disabled = true after setDisabled(true)");
     });
     
-    ui_test("setEnabled(true) sets enabled to true", function() {
+    ui_test("setDisabled(false) sets disabled to false", function() {
         var btn = new UiButton("Test", {}, {});
-        btn.setEnabled(false);
-        btn.setEnabled(true);
-        assert_true(btn.enabled, "enabled = true after setEnabled(true)");
+        btn.setDisabled(true);
+        btn.setDisabled(false);
+        assert_false(btn.disabled, "disabled = false after setDisabled(false)");
     });
     
-    ui_test("setEnabled(false) disables pointerEvents", function() {
+    ui_test("setDisabled(true) disables pointerEvents", function() {
         var btn = new UiButton("Test", {}, {});
-        btn.setEnabled(false);
+        btn.setDisabled(true);
         assert_false(btn.pointerEvents, "pointerEvents = false when disabled");
     });
     
-    ui_test("setEnabled(true) enables pointerEvents", function() {
+    ui_test("setDisabled(false) enables pointerEvents", function() {
         var btn = new UiButton("Test", {}, {});
-        btn.setEnabled(false);
-        btn.setEnabled(true);
-        assert_true(btn.pointerEvents, "pointerEvents = true when enabled");
+        btn.setDisabled(true);
+        btn.setDisabled(false);
+        assert_true(btn.pointerEvents, "pointerEvents = true when not disabled");
     });
     
     ui_test("disabled button does not trigger onClick", function() {
         var btn = new UiButton("Test", {}, {});
         var state = { hit: false };
         btn.onClick(method(state, function() { hit = true; }));
-        btn.setEnabled(false);
+        btn.setDisabled(true);
         btn.click();
         assert_false(state.hit, "onClick not fired when disabled");
     });

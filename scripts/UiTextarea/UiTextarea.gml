@@ -8,7 +8,7 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
     self.label = props[$ "label"] ?? undefined;
     self.value = props[$ "value"] ?? "";
     self.valueGetter = props[$ "valueGetter"] ?? undefined;
-    self.onChange = props[$ "onChange"] ?? function(value, input) {};
+    if (props[$ "onChange"] != undefined) self.onChange(props[$ "onChange"]);
     self.onBlur = props[$ "onBlur"] ?? function(value, input) {};
     self.maxLength = props[$ "maxLength"] ?? 4000;
     self.placeholder = props[$ "placeholder"];
@@ -274,8 +274,7 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
             var ended = max(self.selectionStart, self.selectionEnd);
             if (start == ended) return false;
             
-            self.parent.value = string_delete(self.parent.value, start + 1, ended - start);
-            self.parent.onChange(self.parent.value, self.parent);
+            self.parent.setValue(string_delete(self.parent.value, start + 1, ended - start));
             self.cursorPos = start;
             self.selectionStart = start;
             self.selectionEnd = start;
@@ -316,11 +315,10 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
             
             var state = self.undoStack[array_length(self.undoStack) - 1];
             array_delete(self.undoStack, array_length(self.undoStack) - 1, 1);
-            self.parent.value = state.text;
+            self.parent.setValue(state.text);
             self.cursorPos = state.cursorPos;
             self.selectionStart = state.selectionStart;
             self.selectionEnd = state.selectionEnd;
-            self.parent.onChange(self.parent.value, self.parent);
             self.updateScrollOffset();
         };
         
@@ -335,11 +333,10 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
             
             var state = self.redoStack[array_length(self.redoStack) - 1];
             array_delete(self.redoStack, array_length(self.redoStack) - 1, 1);
-            self.parent.value = state.text;
+            self.parent.setValue(state.text);
             self.cursorPos = state.cursorPos;
             self.selectionStart = state.selectionStart;
             self.selectionEnd = state.selectionEnd;
-            self.parent.onChange(self.parent.value, self.parent);
             self.updateScrollOffset();
         };
         
@@ -356,11 +353,10 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
             if (availableSpace <= 0) return;
             if (string_length(newText) > availableSpace) newText = string_copy(newText, 1, availableSpace);
             
-            self.parent.value = string_insert(newText, currentText, self.cursorPos + 1);
+            self.parent.setValue(string_insert(newText, currentText, self.cursorPos + 1));
             self.cursorPos += string_length(newText);
             self.selectionStart = self.cursorPos;
             self.selectionEnd = self.cursorPos;
-            self.parent.onChange(self.parent.value, self.parent);
             self.redoStack = [];
             self.updateScrollOffset();
         };
@@ -534,11 +530,10 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
                     self.saveUndoState();
                     if (!self.deleteSelected() && self.cursorPos > 0) {
                         var newPos = ctrl ? self.findWordStart(self.cursorPos) : self.cursorPos - 1;
-                        self.parent.value = string_delete(self.parent.value, newPos + 1, self.cursorPos - newPos);
+                        self.parent.setValue(string_delete(self.parent.value, newPos + 1, self.cursorPos - newPos));
                         self.cursorPos = newPos;
                         self.selectionStart = newPos;
                         self.selectionEnd = newPos;
-                        self.parent.onChange(self.parent.value, self.parent);
                     }
                     self.updateScrollOffset();
                 }
@@ -549,8 +544,7 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
                     self.saveUndoState();
                     if (!self.deleteSelected() && self.cursorPos < string_length(self.parent.value)) {
                         var newPos = ctrl ? self.findWordEnd(self.cursorPos) : self.cursorPos + 1;
-                        self.parent.value = string_delete(self.parent.value, self.cursorPos + 1, newPos - self.cursorPos);
-                        self.parent.onChange(self.parent.value, self.parent);
+                        self.parent.setValue(string_delete(self.parent.value, self.cursorPos + 1, newPos - self.cursorPos));
                     }
                     self.updateScrollOffset();
                 }

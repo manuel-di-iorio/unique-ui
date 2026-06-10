@@ -32,7 +32,7 @@ UiTextbox(style = {}, props = {})
 | `label`       | `string`                           | `undefined`    | Optional label drawn before the textbox.                  |
 | `value`       | `string`                           | `""`           | The initial value of the textbox.                         |
 | `valueGetter` | `function`                         | `undefined`    | Function returning a dynamic external value to sync with. |
-| `onChange`    | `function(value, input)`           | empty function | Called whenever text value changes.                       |
+| `onChange`    | `function(value, node)`           | `undefined`    | Called when value changes via `setValue()`. Pass as prop or register later via `onChange(cb)`. |
 | `onBlur`      | `function(value, input)`           | empty function | Called when textbox loses focus.                          |
 | `maxLength`   | `real`                             | `255`          | Maximum allowed text length.                              |
 | `format`      | `"string"`, `"integer"`, `"float"` | `"string"`     | Input format constraint.                                  |
@@ -83,6 +83,8 @@ The textbox creates an internal node `self.Input` which handles input logic, ren
 | `resetCursorBlink()`                             | Resets the cursor blinking timer.                                              |
 | `isValidCharacter(char, currentText, cursorPos)` | Checks if a character is valid given the input format.                         |
 | `validateValue(value)`                           | Validates an entire value against min/max and format rules.                    |
+| `setValue(newValue)`                             | Sets the value and fires `onChange` listeners. Inherited from UiNode. |
+| `onChange(cb)`                                   | Registers a change listener. Multiple listeners supported. Inherited from UiNode. |
 
 **Keyboard shortcuts**
 

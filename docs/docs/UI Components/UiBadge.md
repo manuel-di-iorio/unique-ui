@@ -26,7 +26,7 @@ new UiBadge(text, style = {}, props = {})
 
 | Property  | Type      | Description                                                                          |
 | --------- | --------- | ------------------------------------------------------------------------------------ |
-| `text`    | `string`  | The badge label.                                                                     |
+| `value`   | `string`  | The badge label (inherited from UiNode).                                             |
 | `variant` | `string`  | Color scheme: `"default"`, `"primary"`, `"success"`, `"warning"`, `"danger"`, `"info"`. |
 | `dot`     | `boolean` | When `true`, renders a small colored circle with no text (default `false`).          |
 

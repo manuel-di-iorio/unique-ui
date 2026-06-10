@@ -4,14 +4,14 @@
 
 ui_test_suite("UiText", function() {
     
-    ui_test("text stored from constructor", function() {
+    ui_test("value stored from constructor", function() {
         var t = new UiText("Hello", {}, {});
-        assert_equal(t.text, "Hello", "text = 'Hello'");
+        assert_equal(t.value, "Hello", "value = 'Hello'");
     });
     
-    ui_test("text defaults to empty string", function() {
+    ui_test("value defaults to empty string", function() {
         var t = new UiText("", {}, {});
-        assert_equal(t.text, "", "text = ''");
+        assert_equal(t.value, "", "value = ''");
     });
     
     ui_test("color defaults to c_white", function() {
@@ -60,10 +60,18 @@ ui_test_suite("UiText", function() {
         assert_false(t.autoResize, "autoResize = false with explicit width");
     });
     
-    ui_test("text can be changed directly", function() {
+    ui_test("value can be changed via setValue", function() {
         var t = new UiText("Initial", {}, {});
-        t.text = "Updated";
-        assert_equal(t.text, "Updated", "text updated directly");
+        t.setValue("Updated");
+        assert_equal(t.value, "Updated", "value updated via setValue");
+    });
+    
+    ui_test("onChange fires when setValue is called", function() {
+        var t = new UiText("Initial", {}, {});
+        var state = { received: "" };
+        t.onChange(method(state, function(val) { received = val; }));
+        t.setValue("New Value");
+        assert_equal(state.received, "New Value", "onChange received new value");
     });
     
 });

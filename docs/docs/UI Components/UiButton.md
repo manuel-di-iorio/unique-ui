@@ -26,7 +26,8 @@ new UiButton(textOrImage, style = {}, props = {})
 
 | Property        | Type                   | Description                                                                |
 | --------------- | ---------------------- | -------------------------------------------------------------------------- |
-| `text`          | `string` | `undefined` | The button label text, if any.                                             |
+| `value`         | `string` | `undefined` | The button label text (inherited from UiNode).                             |
+| `disabled`      | `boolean`              | When `true`, the button is dimmed and pointer events are disabled. Default `false`. |
 | `sprite`        | `sprite` | `undefined` | The button sprite (uses subimg 1 on hover if available).                   |
 | `label`         | `string` | `undefined` | Optional text label to show alongside a sprite.                           |
 | `spriteWidth`   | `number` | `undefined` | Custom width for the sprite (scales the sprite).                          |
@@ -40,7 +41,6 @@ new UiButton(textOrImage, style = {}, props = {})
 | `selected`      | `boolean`              | Indicates selection state for toggle-like buttons.                         |
 | `variant`       | `string`              | Visual theme variant (`'primary'`, `'secondary'`, `'outline'`, `'ghost'`, `'danger'`). Default `'secondary'`. |
 | `enableRipple`  | `boolean`              | Enables ripple click animation when pressed (default `true`).             |
-| `enabled`       | `boolean`              | Enables button interaction. When `false`, button is dimmed and unclickable (default `true`). |
 | `ripples`       | `array`                | Internal array of active ripple effects (used by the renderer).           |
 
 **Methods**
@@ -50,7 +50,7 @@ new UiButton(textOrImage, style = {}, props = {})
 | `resize()`          | `void`  | Updates width and height to fit text or sprite content. |
 | `setText(text)`     | `void`  | Sets the button text and resizes it automatically.      |
 | `setSprite(sprite)` | `void`  | Sets the button sprite and resizes it automatically.    |
-| `setEnabled(enabled)` | `void` | Enables or disables the button. When disabled, the button is visually dimmed and pointer events are disabled. |
+| `setDisabled(disabled)` | `void` | Disables (`true`) or enables the button. When disabled, the button is visually dimmed and pointer events are disabled. |
 | `onClick(handler)`  | `void`  | Attach a click handler. When `enableRipple` is true the built-in click handler will also spawn a ripple animation centered on the click position. |
 
 **Drawing Behavior**

@@ -21,7 +21,7 @@ function UiTooltip(): UiNode({
     
     self.show = function(target, text) {
         self.target = target;
-        self.textNode.text = text;
+        self.textNode.value = text;
         self.textNode.computeSize();
         
         // Calculate initial position based on cursor

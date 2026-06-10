@@ -23,7 +23,7 @@ If an icon is provided, it will be drawn next to the text with proper spacing.
 
 | Property      | Type       | Default                              | Description                                                                    |
 | ------------- | ---------- | ------------------------------------ | ------------------------------------------------------------------------------ |
-| `text`        | `string`   | `""`                                 | The text displayed by the node.                                                |
+| `value`       | `string`   | `""`                                 | The text displayed by the node (inherited from UiNode).                        |
 | `autoResize`  | `bool`     | `true` (if no width/height in style) | Automatically adjusts node size to match text content.                         |
 | `halign`      | `constant` | `fa_left`                            | Horizontal alignment (left, center, right).                                    |
 | `valign`      | `constant` | `fa_top`                             | Vertical alignment (top, middle, bottom).                                      |
