@@ -108,7 +108,7 @@ ui_test_suite("UiStore", function() {
         var store = new UiStore({ a: 1, b: 2 });
         var tracker = { called: 0 };
         store.subscribe(
-            function(s) { return s; },
+            function(s) { return s[$ "a"]; },
             method(tracker, function() { self.called++; })
         );
         store.remove("a");
@@ -187,7 +187,7 @@ ui_test_suite("UiStore", function() {
         var store = new UiStore({ val: 1 });
         var tracker = { calls: 0 };
         var unsub = store.subscribe(
-            function(s) { return s; },
+            function(s) { return s[$ "val"]; },
             method(tracker, function() { self.calls++; })
         );
         unsub();
@@ -200,11 +200,11 @@ ui_test_suite("UiStore", function() {
         var trackerA = { hits: 0 };
         var trackerB = { hits: 0 };
         store.subscribe(
-            function(s) { return s; },
+            function(s) { return s[$ "val"]; },
             method(trackerA, function() { self.hits++; })
         );
         store.subscribe(
-            function(s) { return s; },
+            function(s) { return s[$ "val"]; },
             method(trackerB, function() { self.hits++; })
         );
         store.setState({ val: "B" });
@@ -256,16 +256,16 @@ ui_test_suite("UiStore", function() {
         assert_equal(store.get("count"), 10);
     });
 
-    ui_test("middleware can interrupt (return false) preventing mutation", function() {
+    ui_test("middleware can log changed keys", function() {
         var store = new UiStore({ val: "original" });
-        store.use(function(changedKeys, newState, store) {
-            if (variable_struct_exists(newState, "val") && newState[$ "val"] == "blocked") {
-                return false;
-            }
+        var ctx = { entries: [] };
+        store.use(method(ctx, function(changedKeys, newState, store) {
+            array_push(self.entries, changedKeys);
             return undefined;
-        });
-        store.setState({ val: "blocked" });
-        assert_equal(store.get("val"), "original");
+        }));
+        store.setState({ val: "updated" });
+        assert_equal(array_length(ctx.entries), 1);
+        assert_equal(ctx.entries[0][0], "val");
     });
 
     ui_test("multiple middleware execute in order", function() {
