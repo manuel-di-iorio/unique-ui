@@ -6,6 +6,9 @@ function ui_demo_create() {
     device_mouse_dbclick_enable(false);
     draw_enable_svg_aa(true);
     draw_set_svg_aa_level(.1);
+    call_later(1, time_source_units_frames, function() {
+        window_command_run(window_command_maximize);
+    });
     
     global.UI_DEMO = {
         currentPage: "Introduction",

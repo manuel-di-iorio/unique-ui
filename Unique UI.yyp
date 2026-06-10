@@ -38,6 +38,7 @@
     {"$GMFolder":"","%Name":"Treeview","folderPath":"folders/Demo/Examples/Treeview.yy","name":"Treeview","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Typography","folderPath":"folders/Demo/Examples/Typography.yy","name":"Typography","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Sprites","folderPath":"folders/Demo/Sprites.yy","name":"Sprites","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Extensions","folderPath":"folders/Extensions.yy","name":"Extensions","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Unique Math","folderPath":"folders/Unique Math.yy","name":"Unique Math","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"UniqueUI__Tests","folderPath":"folders/UniqueUI__Tests.yy","name":"UniqueUI__Tests","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"UniqueUI","folderPath":"folders/UniqueUI.yy","name":"UniqueUI","resourceType":"GMFolder","resourceVersion":"2.0",},
@@ -58,6 +59,7 @@
   },
   "name":"Unique UI",
   "resources":[
+    {"id":{"name":"window_command_hook","path":"extensions/window_command_hook/window_command_hook.yy",},},
     {"id":{"name":"fText_2K","path":"fonts/fText_2K/fText_2K.yy",},},
     {"id":{"name":"fText_4K","path":"fonts/fText_4K/fText_4K.yy",},},
     {"id":{"name":"fText","path":"fonts/fText/fText.yy",},},
