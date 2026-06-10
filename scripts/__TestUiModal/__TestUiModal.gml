@@ -10,6 +10,8 @@ ui_test_suite("UiModal", function() {
         modal.add(child);
         
         assert_equal(modal.Body.childrenLength, 1, "Child should be added to the Body node");
+        modal.destroy();
+        child.destroy();
     });
     
     ui_test("UiModal can be opened and closed", function() {

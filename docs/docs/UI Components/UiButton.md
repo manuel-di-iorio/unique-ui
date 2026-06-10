@@ -11,47 +11,47 @@ A clickable UI element that displays either **text** or a **sprite**, supporting
 **Constructor**
 
 ```js
-new UiButton(textOrImage, style = {}, props = {})
+new UiButton(textOrSprite, (style = {}), (props = {}));
 ```
 
 **Parameters**
 
-| Name          | Type                | Description                                                             |
-| ------------- | ------------------- | ----------------------------------------------------------------------- |
-| `textOrImage` | `string` | `sprite` | Optional text or sprite to display.                                     |
-| `style`       | `struct`            | FlexPanel layout style (width, height, margins, etc.).                  |
-| `props`       | `struct`            | Additional configuration such as `outline`, `autoResize`, and `halign`. |
+| Name           | Type                 | Description                                                             |
+| -------------- | -------------------- | ----------------------------------------------------------------------- |
+| `textOrSprite` | `string` or `sprite` | Optional text or sprite to display.                                     |
+| `style`        | `struct`             | FlexPanel layout style (width, height, margins, etc.).                  |
+| `props`        | `struct`             | Additional configuration such as `outline`, `autoResize`, and `halign`. |
 
 **Properties**
 
-| Property        | Type                   | Description                                                                |
-| --------------- | ---------------------- | -------------------------------------------------------------------------- |
-| `value`         | `string` | `undefined` | The button label text (inherited from UiNode).                             |
-| `disabled`      | `boolean`              | When `true`, the button is dimmed and pointer events are disabled. Default `false`. |
-| `sprite`        | `sprite` | `undefined` | The button sprite (uses subimg 1 on hover if available).                   |
-| `label`         | `string` | `undefined` | Optional text label to show alongside a sprite.                           |
-| `spriteWidth`   | `number` | `undefined` | Custom width for the sprite (scales the sprite).                          |
-| `spriteHeight`  | `number` | `undefined` | Custom height for the sprite (scales the sprite).                         |
-| `autoResize`    | `boolean`              | Automatically adjusts size to fit content. Defaults to `true`.             |
-| `outline`       | `boolean`              | Draws an outline instead of a filled background.                           |
-| `halign`        | `constant`             | Horizontal alignment (`fa_left`, `fa_center`, `fa_right`). Default center. |
-| `handpoint`     | `boolean`              | Shows a hand cursor when hovering (UI convenience flag).                   |
-| `pointerEvents` | `boolean`              | Enables pointer interaction.                                               |
-| `hovered`       | `boolean`              | True when the mouse is over the button.                                    |
-| `selected`      | `boolean`              | Indicates selection state for toggle-like buttons.                         |
-| `variant`       | `string`              | Visual theme variant (`'primary'`, `'secondary'`, `'outline'`, `'ghost'`, `'danger'`). Default `'secondary'`. |
-| `enableRipple`  | `boolean`              | Enables ripple click animation when pressed (default `true`).             |
-| `ripples`       | `array`                | Internal array of active ripple effects (used by the renderer).           |
+| Property        | Type                    | Description                                                                                                   |
+| --------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `value`         | `string` or `undefined` | The button label text (inherited from UiNode).                                                                |
+| `disabled`      | `boolean`               | When `true`, the button is dimmed and pointer events are disabled. Default `false`.                           |
+| `sprite`        | `sprite` or `undefined` | The button sprite (uses subimg 1 on hover if available). or                                                   |
+| `label`         | `string` or `undefined` | Optional text label to show alongside a sprite.                                                               |
+| `spriteWidth`   | `number` or `undefined` | Custom width for the sprite (scales the sprite).                                                              |
+| `spriteHeight`  | `number` or `undefined` | Custom height for the sprite (scales the sprite).                                                             |
+| `autoResize`    | `boolean`               | Automatically adjusts size to fit content. Defaults to `true`.                                                |
+| `outline`       | `boolean`               | Draws an outline instead of a filled background.                                                              |
+| `halign`        | `constant`              | Horizontal alignment (`fa_left`, `fa_center`, `fa_right`). Default center.                                    |
+| `handpoint`     | `boolean`               | Shows a hand cursor when hovering (UI convenience flag).                                                      |
+| `pointerEvents` | `boolean`               | Enables pointer interaction.                                                                                  |
+| `hovered`       | `boolean`               | True when the mouse is over the button.                                                                       |
+| `selected`      | `boolean`               | Indicates selection state for toggle-like buttons.                                                            |
+| `variant`       | `string`                | Visual theme variant (`'primary'`, `'secondary'`, `'outline'`, `'ghost'`, `'danger'`). Default `'secondary'`. |
+| `enableRipple`  | `boolean`               | Enables ripple click animation when pressed (default `true`).                                                 |
+| `ripples`       | `array`                 | Internal array of active ripple effects (used by the renderer).                                               |
 
 **Methods**
 
-| Method              | Returns | Description                                             |
-| ------------------- | ------- | ------------------------------------------------------- |
-| `resize()`          | `void`  | Updates width and height to fit text or sprite content. |
-| `setText(text)`     | `void`  | Sets the button text and resizes it automatically.      |
-| `setSprite(sprite)` | `void`  | Sets the button sprite and resizes it automatically.    |
-| `setDisabled(disabled)` | `void` | Disables (`true`) or enables the button. When disabled, the button is visually dimmed and pointer events are disabled. |
-| `onClick(handler)`  | `void`  | Attach a click handler. When `enableRipple` is true the built-in click handler will also spawn a ripple animation centered on the click position. |
+| Method                  | Returns | Description                                                                                                                                       |
+| ----------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `resize()`              | `void`  | Updates width and height to fit text or sprite content.                                                                                           |
+| `setText(text)`         | `void`  | Sets the button text and resizes it automatically.                                                                                                |
+| `setSprite(sprite)`     | `void`  | Sets the button sprite and resizes it automatically.                                                                                              |
+| `setDisabled(disabled)` | `void`  | Disables (`true`) or enables the button. When disabled, the button is visually dimmed and pointer events are disabled.                            |
+| `onClick(handler)`      | `void`  | Attach a click handler. When `enableRipple` is true the built-in click handler will also spawn a ripple animation centered on the click position. |
 
 **Drawing Behavior**
 
@@ -60,9 +60,8 @@ It uses the global UI color palette:
 
 | Constant                  | Description                         |
 | ------------------------- | ----------------------------------- |
-| `global.UI_COL_HOVER`   | Background color when hovered.      |
+| `global.UI_COL_HOVER`     | Background color when hovered.      |
 | `global.UI_COL_SURFACE_3` | Normal background or outline color. |
-
 
 If text is defined, the button draws centered text using fText.
 If sprite is defined instead, it draws the sprite centered on the button, switching to subimage 1 when hovered.
@@ -71,17 +70,18 @@ If sprite is defined instead, it draws the sprite centered on the button, switch
 
 ```js
 var btn = new UiButton("Click me", { left: 10, top: 10 });
-btn.onClick(function() {
-    show_debug_message("Button clicked!");
+btn.onClick(function () {
+  show_debug_message("Button clicked!");
 });
 global.UI.add(btn);
 ```
 
 Or with a sprite-based button:
+
 ```js
 var btn = new UiButton(spr_button);
-btn.onClick(function() {
-    show_debug_message("Sprite button pressed!");
+btn.onClick(function () {
+  show_debug_message("Sprite button pressed!");
 });
 ```
 

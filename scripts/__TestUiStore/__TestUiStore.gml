@@ -10,21 +10,25 @@ ui_test_suite("UiStore", function() {
         var store = new UiStore({ username: "Manuel", theme: "dark" });
         assert_equal(store.get("username"), "Manuel");
         assert_equal(store.get("theme"), "dark");
+        store.destroy();
     });
 
     ui_test("constructor with empty initial state", function() {
         var store = new UiStore();
         assert_is_undefined(store.get("nonexistent"));
+        store.destroy();
     });
 
     ui_test("get() returns default value for missing key", function() {
         var store = new UiStore({ a: 1 });
         assert_equal(store.get("b", 42), 42);
+        store.destroy();
     });
 
     ui_test("get() returns undefined for missing key without default", function() {
         var store = new UiStore({ a: 1 });
         assert_is_undefined(store.get("b"));
+        store.destroy();
     });
 
     ui_test("getState() returns full state", function() {
@@ -32,6 +36,7 @@ ui_test_suite("UiStore", function() {
         var state = store.state;
         assert_equal(state[$ "x"], 10);
         assert_equal(state[$ "y"], 20);
+        store.destroy();
     });
 
     ui_test("getState() returns current state after setState", function() {
@@ -40,16 +45,19 @@ ui_test_suite("UiStore", function() {
         assert_equal(state[$ "val"], 1);
         store.set({ val: 99 });
         assert_equal(store.get("val"), 99);
+        store.destroy();
     });
 
     ui_test("has() returns true for existing keys", function() {
         var store = new UiStore({ a: 1 });
         assert_true(store.has("a"));
+        store.destroy();
     });
 
     ui_test("has() returns false for missing keys", function() {
         var store = new UiStore({ a: 1 });
         assert_false(store.has("b"));
+        store.destroy();
     });
 
     // ─── setState (partial merge) ────────────────────────────
@@ -60,6 +68,7 @@ ui_test_suite("UiStore", function() {
         assert_equal(store.get("a"), 1);
         assert_equal(store.get("b"), 3);
         assert_equal(store.get("c"), 4);
+        store.destroy();
     });
 
     ui_test("setState with replace=true replaces entire state", function() {
@@ -68,6 +77,7 @@ ui_test_suite("UiStore", function() {
         assert_false(store.has("a"));
         assert_false(store.has("b"));
         assert_equal(store.get("c"), 3);
+        store.destroy();
     });
 
     // ─── remove ──────────────────────────────────────────────
@@ -77,12 +87,14 @@ ui_test_suite("UiStore", function() {
         store.remove("a");
         assert_false(store.has("a"));
         assert_true(store.has("b"));
+        store.destroy();
     });
 
     ui_test("remove on missing key does nothing", function() {
         var store = new UiStore({ a: 1 });
         store.remove("b");
         assert_equal(store.get("a"), 1);
+        store.destroy();
     });
 
     ui_test("remove notifies subscribers", function() {
@@ -91,6 +103,7 @@ ui_test_suite("UiStore", function() {
         store.subscribe(method(tracker, function(state) { self.called++; }));
         store.remove("a");
         assert_equal(tracker.called, 1);
+        store.destroy();
     });
 
     // ─── reset ───────────────────────────────────────────────
@@ -102,6 +115,7 @@ ui_test_suite("UiStore", function() {
         assert_equal(store.get("a"), 1);
         assert_equal(store.get("b"), 2);
         assert_false(store.has("c"));
+        store.destroy();
     });
 
     ui_test("reset notifies subscribers", function() {
@@ -110,6 +124,7 @@ ui_test_suite("UiStore", function() {
         store.subscribe(method(tracker, function(state) { self.called++; }));
         store.reset();
         assert_true(tracker.called > 0);
+        store.destroy();
     });
 
     // ─── subscribe ───────────────────────────────────────────
@@ -120,6 +135,7 @@ ui_test_suite("UiStore", function() {
         store.subscribe(method(tracker, function(state) { self.received = state.count; }));
         store.set({ count: 20 });
         assert_equal(tracker.received, 20);
+        store.destroy();
     });
 
     ui_test("unsubscribe removes subscriber", function() {
@@ -129,6 +145,7 @@ ui_test_suite("UiStore", function() {
         unsub();
         store.set({ val: 2 });
         assert_equal(tracker.calls, 0);
+        store.destroy();
     });
 
     ui_test("multiple subscribers all receive updates", function() {
@@ -140,6 +157,7 @@ ui_test_suite("UiStore", function() {
         store.set({ val: "B" });
         assert_equal(trackerA.hits, 1);
         assert_equal(trackerB.hits, 1);
+        store.destroy();
     });
 
     ui_test("subscriber can unsubscribe during callback without breaking iteration", function() {
@@ -158,6 +176,7 @@ ui_test_suite("UiStore", function() {
         assert_equal(array_length(ctx.calls), 2);
         store.set({ val: 3 });
         assert_equal(array_length(ctx.calls), 3);
+        store.destroy();
     });
 
     // ─── Middleware ──────────────────────────────────────────
@@ -175,6 +194,7 @@ ui_test_suite("UiStore", function() {
         });
         store.set({ count: 5 });
         assert_equal(store.get("count"), 10);
+        store.destroy();
     });
 
     ui_test("multiple middleware execute in order", function() {
@@ -199,6 +219,7 @@ ui_test_suite("UiStore", function() {
         });
         store.set({ val: "0" });
         assert_equal(store.get("val"), "012");
+        store.destroy();
     });
 
     // ─── Chaining ────────────────────────────────────────────
@@ -207,24 +228,28 @@ ui_test_suite("UiStore", function() {
         var store = new UiStore({ a: 1 });
         var result = store.set({ b: 2 });
         assert_equal(result, store);
+        store.destroy();
     });
 
     ui_test("remove returns self for chaining", function() {
         var store = new UiStore({ a: 1 });
         var result = store.remove("a");
         assert_equal(result, store);
+        store.destroy();
     });
 
     ui_test("reset returns self for chaining", function() {
         var store = new UiStore({ a: 1 });
         var result = store.reset();
         assert_equal(result, store);
+        store.destroy();
     });
 
     ui_test("use returns self for chaining", function() {
         var store = new UiStore({ a: 1 });
         var result = store.use(function() { return undefined; });
         assert_equal(result, store);
+        store.destroy();
     });
 
     // ─── destroy ─────────────────────────────────────────────

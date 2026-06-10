@@ -7,53 +7,63 @@ ui_test_suite("UiBadge", function() {
     ui_test("Create - value property set", function() {
         var b = new UiBadge("Beta", {}, {});
         assert_equal(b.value, "Beta", "value = 'Beta'");
+        b.destroy();
     });
     
     ui_test("Create - default variant is 'default'", function() {
         var b = new UiBadge("New", {}, {});
         assert_equal(b.variant, "default", "variant = default");
+        b.destroy();
     });
     
     ui_test("Variant prop stored correctly", function() {
         var b = new UiBadge("OK", {}, { variant: "success" });
         assert_equal(b.variant, "success", "variant = success");
+        b.destroy();
     });
     
     ui_test("dot prop defaults to false", function() {
         var b = new UiBadge("X", {}, {});
         assert_false(b.dot, "dot = false");
+        b.destroy();
     });
     
     ui_test("dot prop can be enabled", function() {
         var b = new UiBadge("", {}, { dot: true });
         assert_true(b.dot, "dot = true");
+        b.destroy();
     });
     
     ui_test("setText updates value property", function() {
         var b = new UiBadge("Old", {}, {});
         b.setText("New");
         assert_equal(b.value, "New", "value updated to 'New'");
+        b.destroy();
     });
     
     ui_test("setVariant updates variant property", function() {
         var b = new UiBadge("X", {}, {});
         b.setVariant("danger");
         assert_equal(b.variant, "danger", "variant updated to danger");
+        b.destroy();
     });
     
     ui_test("isUiNode is true (inherits UiNode)", function() {
         var b = new UiBadge("X", {}, {});
         assert_true(b.isUiNode, "isUiNode = true");
+        b.destroy();
     });
     
     ui_test("height defaults to 26", function() {
         var b = new UiBadge("Hi", {}, {});
         assert_equal(b.getHeight(), 26, "height = 26");
+        b.destroy();
     });
     
     ui_test("style height override works", function() {
         var b = new UiBadge("Hi", { height: 28 }, {});
         assert_equal(b.getHeight(), 28, "height = 28 from style");
+        b.destroy();
     });
     
     ui_test("all variants are accepted without error", function() {
@@ -61,6 +71,7 @@ ui_test_suite("UiBadge", function() {
         for (var i = 0; i < array_length(variants); i++) {
             var b = new UiBadge("X", {}, { variant: variants[i] });
             assert_equal(b.variant, variants[i], "variant = " + variants[i]);
+            b.destroy();
         }
     });
     

@@ -7,27 +7,32 @@ ui_test_suite("UiTextarea", function() {
     ui_test("value defaults to empty string", function() {
         var ta = new UiTextarea({}, {});
         assert_equal(ta.value, "", "default value");
+        ta.destroy();
     });
     
     ui_test("value set from props", function() {
         var ta = new UiTextarea({}, { value: "Hello\nWorld" });
         assert_equal(ta.value, "Hello\nWorld", "value from props");
+        ta.destroy();
     });
     
     ui_test("Input sub-node exists", function() {
         var ta = new UiTextarea({}, {});
         assert_not_undefined(ta.Input, "Input exists");
         assert_true(ta.Input.isUiNode, "Input is UiNode");
+        ta.destroy();
     });
     
     ui_test("maxLength defaults to 4000", function() {
         var ta = new UiTextarea({}, {});
         assert_equal(ta.maxLength, 4000, "maxLength = 4000");
+        ta.destroy();
     });
     
     ui_test("lineHeight defaults to 22", function() {
         var ta = new UiTextarea({}, {});
         assert_equal(ta.lineHeight, 22, "lineHeight = 22");
+        ta.destroy();
     });
     
     ui_test("getLines splits multiline value", function() {
@@ -36,6 +41,7 @@ ui_test_suite("UiTextarea", function() {
         assert_equal(array_length(lines), 3, "three lines");
         assert_equal(lines[1].text, "Two", "second line");
         assert_equal(lines[2].start, 8, "third line start");
+        ta.destroy();
     });
     
     ui_test("insertText preserves newline characters", function() {
@@ -47,6 +53,7 @@ ui_test_suite("UiTextarea", function() {
         inp.insertText("A\nB");
         assert_equal(ta.value, "A\nB", "newline inserted");
         assert_equal(inp.cursorPos, 3, "cursor after inserted text");
+        ta.destroy();
     });
     
     ui_test("insertText normalizes CRLF clipboard text", function() {
@@ -54,6 +61,7 @@ ui_test_suite("UiTextarea", function() {
         var inp = ta.Input;
         inp.insertText("A\r\nB\rC");
         assert_equal(ta.value, "A\nB\nC", "CRLF normalized");
+        ta.destroy();
     });
     
     ui_test("insertText respects maxLength", function() {
@@ -61,6 +69,7 @@ ui_test_suite("UiTextarea", function() {
         var inp = ta.Input;
         inp.insertText("Hello\nWorld");
         assert_equal(string_length(ta.value), 5, "truncated to maxLength");
+        ta.destroy();
     });
     
     ui_test("getSelectedText returns multiline substring", function() {
@@ -69,6 +78,7 @@ ui_test_suite("UiTextarea", function() {
         inp.selectionStart = 2;
         inp.selectionEnd = 7;
         assert_equal(inp.getSelectedText(), "e\nTwo", "multiline selection");
+        ta.destroy();
     });
     
     ui_test("deleteSelected removes text across lines", function() {
@@ -80,6 +90,7 @@ ui_test_suite("UiTextarea", function() {
         assert_true(deleted, "selection deleted");
         assert_equal(ta.value, "OneThree", "cross-line deletion");
         assert_equal(inp.cursorPos, 3, "cursor at selection start");
+        ta.destroy();
     });
     
     ui_test("getLineStart and getLineEnd use current cursor line", function() {
@@ -87,6 +98,7 @@ ui_test_suite("UiTextarea", function() {
         var inp = ta.Input;
         assert_equal(inp.getLineStart(5), 4, "line start");
         assert_equal(inp.getLineEnd(5), 7, "line end");
+        ta.destroy();
     });
     
     ui_test("vertical movement keeps preferred x where possible", function() {
@@ -98,6 +110,7 @@ ui_test_suite("UiTextarea", function() {
         assert_equal(inp.cursorPos, 7, "moves to end of shorter line");
         inp.moveVertical(1, false);
         assert_equal(inp.cursorPos, 11, "returns to preferred column");
+        ta.destroy();
     });
     
     ui_test("saveUndoState pushes state onto undoStack", function() {
@@ -107,6 +120,7 @@ ui_test_suite("UiTextarea", function() {
         inp.saveUndoState();
         assert_equal(array_length(inp.undoStack), 1, "undo state saved");
         assert_equal(inp.undoStack[0].text, "Hello", "correct text saved");
+        ta.destroy();
     });
     
     ui_test("performUndo restores multiline value", function() {
@@ -118,6 +132,7 @@ ui_test_suite("UiTextarea", function() {
         inp.cursorPos = 11;
         inp.performUndo();
         assert_equal(ta.value, "Hello", "undo restores previous value");
+        ta.destroy();
     });
     
     ui_test("performRedo restores multiline value", function() {
@@ -130,6 +145,7 @@ ui_test_suite("UiTextarea", function() {
         inp.performUndo();
         inp.performRedo();
         assert_equal(ta.value, "Hello\nWorld", "redo restores value");
+        ta.destroy();
     });
     
     ui_test("onChange method registers listener", function() {
@@ -138,6 +154,7 @@ ui_test_suite("UiTextarea", function() {
         ta.onChange(method(state, function(v) { called_with = v; }));
         ta.setValue("Z");
         assert_equal(state.called_with, "Z", "listener called via method");
+        ta.destroy();
     });
     
 });

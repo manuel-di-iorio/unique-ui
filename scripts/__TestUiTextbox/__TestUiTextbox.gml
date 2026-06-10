@@ -9,47 +9,56 @@ ui_test_suite("UiTextbox", function() {
     ui_test("value defaults to empty string", function() {
         var tb = new UiTextbox({}, {});
         assert_equal(tb.value, "", "default value");
+        tb.destroy();
     });
     
     ui_test("value set from props", function() {
         var tb = new UiTextbox({}, { value: "Hello" });
         assert_equal(tb.value, "Hello", "value from props");
+        tb.destroy();
     });
     
     ui_test("Input sub-node exists", function() {
         var tb = new UiTextbox({}, {});
         assert_not_undefined(tb.Input, "Input exists");
         assert_true(tb.Input.isUiNode, "Input is UiNode");
+        tb.destroy();
     });
     
     ui_test("Input.focused defaults to false", function() {
         var tb = new UiTextbox({}, {});
         assert_false(tb.Input.focused, "not focused on create");
+        tb.destroy();
     });
     
     ui_test("maxLength defaults to 255", function() {
         var tb = new UiTextbox({}, {});
         assert_equal(tb.maxLength, 255, "maxLength = 255");
+        tb.destroy();
     });
     
     ui_test("maxLength can be overridden via props", function() {
         var tb = new UiTextbox({}, { maxLength: 10 });
         assert_equal(tb.maxLength, 10, "maxLength = 10");
+        tb.destroy();
     });
     
     ui_test("format defaults to string", function() {
         var tb = new UiTextbox({}, {});
         assert_equal(tb.format, "string", "format = string");
+        tb.destroy();
     });
     
     ui_test("placeholder stored from props", function() {
         var tb = new UiTextbox({}, { placeholder: "Type here..." });
         assert_equal(tb.placeholder, "Type here...", "placeholder");
+        tb.destroy();
     });
     
     ui_test("negative defaults to false", function() {
         var tb = new UiTextbox({}, {});
         assert_false(tb.negative, "negative = false");
+        tb.destroy();
     });
     
     // ── insertText ───────────────────────────────────────────
@@ -64,6 +73,7 @@ ui_test_suite("UiTextbox", function() {
         inp.insertText("Hi");
         assert_equal(tb.value, "Hi", "value after insertText");
         assert_equal(inp.cursorPos, 2, "cursor moved to end");
+        tb.destroy();
     });
     
     ui_test("insertText respects maxLength", function() {
@@ -75,6 +85,7 @@ ui_test_suite("UiTextbox", function() {
         inp.selectionEnd   = 0;
         inp.insertText("Hello World");
         assert_equal(string_length(tb.value), 5, "truncated to maxLength");
+        tb.destroy();
     });
     
     ui_test("insertText at middle of text inserts at cursor", function() {
@@ -86,6 +97,7 @@ ui_test_suite("UiTextbox", function() {
         inp.selectionEnd   = 3;
         inp.insertText("l");
         assert_equal(tb.value, "Hello", "inserted at position 3");
+        tb.destroy();
     });
     
     ui_test("insertText calls onChange (prop)", function() {
@@ -98,6 +110,7 @@ ui_test_suite("UiTextbox", function() {
         inp.selectionEnd   = 0;
         inp.insertText("X");
         assert_equal(state.called_with, "X", "onChange called with new value");
+        tb.destroy();
     });
     
     ui_test("onChange method registers listener", function() {
@@ -106,6 +119,7 @@ ui_test_suite("UiTextbox", function() {
         tb.onChange(method(state, function(v) { called_with = v; }));
         tb.setValue("Y");
         assert_equal(state.called_with, "Y", "listener called via method");
+        tb.destroy();
     });
     
     // ── Selection ────────────────────────────────────────────
@@ -117,6 +131,7 @@ ui_test_suite("UiTextbox", function() {
         inp.selectionEnd   = 5;
         var sel = inp.getSelectedText();
         assert_equal(sel, "Hello", "selected text = 'Hello'");
+        tb.destroy();
     });
     
     ui_test("getSelectedText handles reversed selection", function() {
@@ -126,6 +141,7 @@ ui_test_suite("UiTextbox", function() {
         inp.selectionEnd   = 0;
         var sel = inp.getSelectedText();
         assert_equal(sel, "Hello", "handles reversed selection");
+        tb.destroy();
     });
     
     ui_test("getSelectedText returns empty string when no selection", function() {
@@ -135,6 +151,7 @@ ui_test_suite("UiTextbox", function() {
         inp.selectionEnd   = 3;
         var sel = inp.getSelectedText();
         assert_equal(sel, "", "no selection = empty string");
+        tb.destroy();
     });
     
     ui_test("deleteSelected removes selected text and moves cursor", function() {
@@ -146,6 +163,7 @@ ui_test_suite("UiTextbox", function() {
         assert_true(deleted, "deleteSelected returns true");
         assert_equal(tb.value, "Hello", "selection deleted");
         assert_equal(inp.cursorPos, 5, "cursor at selection start");
+        tb.destroy();
     });
     
     ui_test("deleteSelected returns false when no selection", function() {
@@ -155,6 +173,7 @@ ui_test_suite("UiTextbox", function() {
         inp.selectionEnd   = 2;
         var deleted = inp.deleteSelected();
         assert_false(deleted, "no deletion when no selection");
+        tb.destroy();
     });
     
     // ── Undo/Redo ────────────────────────────────────────────
@@ -168,6 +187,7 @@ ui_test_suite("UiTextbox", function() {
         inp.saveUndoState();
         assert_equal(array_length(inp.undoStack), 1, "1 item in undoStack");
         assert_equal(inp.undoStack[0].text, "Hello", "correct text saved");
+        tb.destroy();
     });
     
     ui_test("saveUndoState does not duplicate identical states", function() {
@@ -179,6 +199,7 @@ ui_test_suite("UiTextbox", function() {
         inp.saveUndoState();
         inp.saveUndoState(); // same state
         assert_equal(array_length(inp.undoStack), 1, "no duplicate");
+        tb.destroy();
     });
     
     ui_test("performUndo restores previous value", function() {
@@ -192,6 +213,7 @@ ui_test_suite("UiTextbox", function() {
         inp.cursorPos = 11;
         inp.performUndo();
         assert_equal(tb.value, "Hello", "undo restores 'Hello'");
+        tb.destroy();
     });
     
     ui_test("performRedo restores redone value", function() {
@@ -206,6 +228,7 @@ ui_test_suite("UiTextbox", function() {
         inp.performUndo();
         inp.performRedo();
         assert_equal(tb.value, "Hello World", "redo restores 'Hello World'");
+        tb.destroy();
     });
     
     ui_test("insertText clears redo stack", function() {
@@ -220,6 +243,7 @@ ui_test_suite("UiTextbox", function() {
         inp.redoStack = [{ text: "xyz", cursorPos: 3, selectionStart: 0, selectionEnd: 0 }];
         inp.insertText("!");
         assert_equal(array_length(inp.redoStack), 0, "redo stack cleared after new input");
+        tb.destroy();
     });
     
     ui_test("undoStack limited to TEXTBOX_UNDO_STACK_SIZE", function() {
@@ -233,6 +257,7 @@ ui_test_suite("UiTextbox", function() {
         }
         assert_less(array_length(inp.undoStack), TEXTBOX_UNDO_STACK_SIZE + 5,
             "undo stack does not grow unbounded");
+        tb.destroy();
     });
     
     // ── Format validation ────────────────────────────────────
@@ -241,48 +266,56 @@ ui_test_suite("UiTextbox", function() {
         var tb  = new UiTextbox({}, { format: "integer" });
         var inp = tb.Input;
         assert_true(inp.isValidCharacter("5", "", 0), "digit valid for integer");
+        tb.destroy();
     });
     
     ui_test("integer format - letter is invalid", function() {
         var tb  = new UiTextbox({}, { format: "integer" });
         var inp = tb.Input;
         assert_false(inp.isValidCharacter("a", "", 0), "letter invalid for integer");
+        tb.destroy();
     });
     
     ui_test("integer format - minus valid at pos 0 with negative=true", function() {
         var tb  = new UiTextbox({}, { format: "integer", negative: true });
         var inp = tb.Input;
         assert_true(inp.isValidCharacter("-", "", 0), "minus valid at pos 0");
+        tb.destroy();
     });
     
     ui_test("integer format - minus invalid at pos 1", function() {
         var tb  = new UiTextbox({}, { format: "integer", negative: true });
         var inp = tb.Input;
         assert_false(inp.isValidCharacter("-", "1", 1), "minus invalid at pos 1");
+        tb.destroy();
     });
     
     ui_test("integer format - minus invalid when negative=false", function() {
         var tb  = new UiTextbox({}, { format: "integer", negative: false });
         var inp = tb.Input;
         assert_false(inp.isValidCharacter("-", "", 0), "minus invalid when negative=false");
+        tb.destroy();
     });
     
     ui_test("float format - digit is valid", function() {
         var tb  = new UiTextbox({}, { format: "float" });
         var inp = tb.Input;
         assert_true(inp.isValidCharacter("3", "", 0), "digit valid for float");
+        tb.destroy();
     });
     
     ui_test("float format - first dot is valid", function() {
         var tb  = new UiTextbox({}, { format: "float" });
         var inp = tb.Input;
         assert_true(inp.isValidCharacter(".", "", 0), "first dot valid");
+        tb.destroy();
     });
     
     ui_test("float format - second dot is invalid", function() {
         var tb  = new UiTextbox({}, { format: "float" });
         var inp = tb.Input;
         assert_false(inp.isValidCharacter(".", "1.", 1), "second dot invalid");
+        tb.destroy();
     });
     
     ui_test("string format - all printable chars valid", function() {
@@ -291,6 +324,7 @@ ui_test_suite("UiTextbox", function() {
         assert_true(inp.isValidCharacter("a", "", 0), "letter valid for string");
         assert_true(inp.isValidCharacter("!", "", 0), "symbol valid for string");
         assert_true(inp.isValidCharacter("5", "", 0), "digit valid for string");
+        tb.destroy();
     });
     
     // ── Cursor movement ──────────────────────────────────────
@@ -298,17 +332,20 @@ ui_test_suite("UiTextbox", function() {
     ui_test("cursorPos starts at 0", function() {
         var tb = new UiTextbox({}, {});
         assert_equal(tb.Input.cursorPos, 0, "cursor at 0");
+        tb.destroy();
     });
     
     ui_test("selectionStart and selectionEnd start at 0", function() {
         var tb = new UiTextbox({}, {});
         assert_equal(tb.Input.selectionStart, 0, "selectionStart = 0");
         assert_equal(tb.Input.selectionEnd,   0, "selectionEnd = 0");
+        tb.destroy();
     });
     
     ui_test("scrollOffset starts at 0", function() {
         var tb = new UiTextbox({}, {});
         assert_equal(tb.Input.scrollOffset, 0, "scrollOffset = 0");
+        tb.destroy();
     });
     
     // ── findWordStart / findWordEnd ──────────────────────────
@@ -318,6 +355,7 @@ ui_test_suite("UiTextbox", function() {
         var inp = tb.Input;
         var result = inp.findWordStart(0);
         assert_equal(result, 0, "word start at 0");
+        tb.destroy();
     });
     
     ui_test("findWordEnd returns end of word", function() {
@@ -325,6 +363,7 @@ ui_test_suite("UiTextbox", function() {
         var inp = tb.Input;
         var result = inp.findWordEnd(0);
         assert_equal(result, 5, "word end at 5 for 'Hello'");
+        tb.destroy();
     });
     
     ui_test("findWordStart stops at space", function() {
@@ -334,6 +373,7 @@ ui_test_suite("UiTextbox", function() {
         var result = inp.findWordStart(8);
         // Should stop at the space (position 5)
         assert_equal(result, 6, "word start of 'World' at pos 6");
+        tb.destroy();
     });
     
     // ── onBlur cleanup ───────────────────────────────────────
@@ -344,6 +384,7 @@ ui_test_suite("UiTextbox", function() {
         inp.focused = true;
         inp.onBlur();
         assert_false(inp.focused, "focused = false after onBlur");
+        tb.destroy();
     });
     
     ui_test("onBlur for integer format - empty becomes '0'", function() {
@@ -353,6 +394,7 @@ ui_test_suite("UiTextbox", function() {
         tb.value     = "";
         inp.onBlur();
         assert_equal(tb.value, "0", "empty integer → '0'");
+        tb.destroy();
     });
     
     ui_test("onBlur for float format - clamps to max if exceeded", function() {
@@ -362,6 +404,7 @@ ui_test_suite("UiTextbox", function() {
         tb.value    = "99.5";
         inp.onBlur();
         assert_equal(real(tb.value), 10, "clamped to max=10");
+        tb.destroy();
     });
     
     ui_test("onBlur for float format - clamps to min if below", function() {
@@ -371,6 +414,7 @@ ui_test_suite("UiTextbox", function() {
         tb.value    = "-5.0";
         inp.onBlur();
         assert_equal(real(tb.value), 0, "clamped to min=0");
+        tb.destroy();
     });
     
     ui_test("onBlur removes trailing dot from float", function() {
@@ -380,6 +424,7 @@ ui_test_suite("UiTextbox", function() {
         tb.value    = "3.";
         inp.onBlur();
         assert_equal(tb.value, "3", "trailing dot removed");
+        tb.destroy();
     });
     
     
