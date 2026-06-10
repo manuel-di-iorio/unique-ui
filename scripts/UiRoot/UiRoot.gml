@@ -399,44 +399,50 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         // Check the hover/unhover events
         var _currentlyHovered = self.deepestTarget;
         // Update deepestTarget when mouse moved OR when layout changed (e.g., dropdown opened under mouse)
+        // Optimization: Only update if mouse actually moved or layout changed
         if (self.mouseChanged || self.layoutUpdated) {
-            self.deepestTarget = self.spatialTree.getTopmostAtPoint(self.mouseX, self.mouseY);
+            var _newTarget = self.spatialTree.getTopmostAtPoint(self.mouseX, self.mouseY);
             
-            // Skip hover events during scroll
-            if (!self.isScrolling) {
-                // Unhover the previous element first (before setting new hover)
-                if (_currentlyHovered != undefined && _currentlyHovered != self.deepestTarget) {
-                    if (self.draggedElement == undefined) {
-                        self.setCursor(cr_default);
-                    }
-                    
-                    _currentlyHovered.hovered = false;
-                    self.dispatchEvent(UI_EVENT.mouseleave, _currentlyHovered); 
-                    self.dispatchEvent(UI_EVENT.mouseout, _currentlyHovered);
-                    self.previousTarget = undefined;
-                    self.requestRedraw(self);
-                }
+            // Optimization: Skip hover processing if target hasn't changed
+            if (_newTarget != self.deepestTarget) {
+                self.deepestTarget = _newTarget;
                 
-                // Set hover on new element (only dispatch events if it's a new hover target)
-                if (self.deepestTarget != undefined) {
-                    var _elem = self.deepestTarget;
-                    var _wasAlreadyHovered = _elem.hovered;
-                    _elem.hovered = true;
-                    
-                    // Only dispatch enter/over if this is a NEW hover target
-                    if (!_wasAlreadyHovered) {
-                        self.dispatchEvent(UI_EVENT.mouseenter, _elem); 
-                        self.dispatchEvent(UI_EVENT.mouseover, _elem);
+                // Skip hover events during scroll
+                if (!self.isScrolling) {
+                    // Unhover the previous element first (before setting new hover)
+                    if (_currentlyHovered != undefined && _currentlyHovered != self.deepestTarget) {
+                        if (self.draggedElement == undefined) {
+                            self.setCursor(cr_default);
+                        }
+                        
+                        _currentlyHovered.hovered = false;
+                        self.dispatchEvent(UI_EVENT.mouseleave, _currentlyHovered); 
+                        self.dispatchEvent(UI_EVENT.mouseout, _currentlyHovered);
+                        self.previousTarget = undefined;
                         self.requestRedraw(self);
                     }
                     
-                    if (_elem.handpoint && self.currentCursor == cr_default && self.draggedElement == undefined) {
-                        self.setCursor(cr_handpoint);
+                    // Set hover on new element (only dispatch events if it's a new hover target)
+                    if (self.deepestTarget != undefined) {
+                        var _elem = self.deepestTarget;
+                        var _wasAlreadyHovered = _elem.hovered;
+                        _elem.hovered = true;
+                        
+                        // Only dispatch enter/over if this is a NEW hover target
+                        if (!_wasAlreadyHovered) {
+                            self.dispatchEvent(UI_EVENT.mouseenter, _elem); 
+                            self.dispatchEvent(UI_EVENT.mouseover, _elem);
+                            self.requestRedraw(self);
+                        }
+                        
+                        if (_elem.handpoint && self.currentCursor == cr_default && self.draggedElement == undefined) {
+                            self.setCursor(cr_handpoint);
+                        }
                     }
                 }
+                
+                self.previousTarget = self.deepestTarget;
             }
-            
-            self.previousTarget = self.deepestTarget;
             
             // Process drag detection if we have a potential drag element
             if (self.potentialDraggedElement != undefined && !self.potentialDraggedElement.dragging) {
@@ -620,18 +626,21 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         }
 
         // Run step handlers from a stable snapshot so handlers can safely unregister during callbacks.
+        // Optimization: Skip snapshot if no handlers registered
         var _stepHandlersLength = array_length(self.stepHandlers);
-        var _stepHandlers = [];
-        array_copy(_stepHandlers, 0, self.stepHandlers, 0, _stepHandlersLength);
-        for (var i = _stepHandlersLength - 1; i >= 0; i--) {
-            var _entry = _stepHandlers[i];
-            if (_entry == undefined) continue;
-            if (_entry[0] == undefined) continue;
+        if (_stepHandlersLength > 0) {
+            var _stepHandlers = [];
+            array_copy(_stepHandlers, 0, self.stepHandlers, 0, _stepHandlersLength);
+            for (var i = _stepHandlersLength - 1; i >= 0; i--) {
+                var _entry = _stepHandlers[i];
+                if (_entry == undefined) continue;
+                if (_entry[0] == undefined) continue;
 
-            var _owner = _entry[1];
-            if (_owner != undefined && (_owner.destroyed || _owner.hasStepEvent != true)) continue;
+                var _owner = _entry[1];
+                if (_owner != undefined && (_owner.destroyed || _owner.hasStepEvent != true)) continue;
 
-            _entry[0](self.layoutUpdated);
+                _entry[0](self.layoutUpdated);
+            }
         }
         
         self.mouseXPrev = self.mouseX;
