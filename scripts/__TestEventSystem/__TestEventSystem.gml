@@ -173,13 +173,13 @@ ui_test_suite("UiStore", function() {
         assert_equal(store.get("nonexistent", "fallback"), "fallback", "returns default value");
     });
     
-    ui_test("UiStore set method updates state values", function() {
+    ui_test("UiStore setState method updates state values", function() {
         var store = new UiStore({ count: 0 });
-        store.set("count", 42);
+        store.setState({ count: 42 });
         assert_equal(store.get("count"), 42, "updates state key");
     });
     
-    ui_test("UiStore subscribe triggers callback on set", function() {
+    ui_test("UiStore subscribe triggers callback on setState", function() {
         var store = new UiStore({ count: 10 });
         var testState = { triggeredCount: 0, receivedState: undefined };
         
@@ -188,8 +188,8 @@ ui_test_suite("UiStore", function() {
             self.receivedState = newState;
         });
         
-        store.subscribe(callback);
-        store.set("count", 20);
+        store.subscribe(function(state) { return state; }, callback);
+        store.setState({ count: 20 });
         
         assert_equal(testState.triggeredCount, 1, "subscriber was called once");
         assert_not_undefined(testState.receivedState, "received new state");
@@ -201,10 +201,10 @@ ui_test_suite("UiStore", function() {
         var tracker = { hits: 0 };
         
         var cb = method(tracker, function(s) { hits++; });
-        store.subscribe(cb);
-        store.subscribe(cb);
+        store.subscribe(function(state) { return state; }, cb);
+        store.subscribe(function(state) { return state; }, cb);
         
-        store.set("val", "B");
+        store.setState({ val: "B" });
         assert_equal(tracker.hits, 2, "both subscribers called");
     });
     

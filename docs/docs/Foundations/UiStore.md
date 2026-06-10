@@ -4,55 +4,51 @@ sidebar_position: 1
 
 # UiStore
 
-Lightweight reactive state management for UniqueUI. `UiStore` lets you share state across components and react to changes with push-based subscriptions — no polling, no per-frame `valueGetter` evaluation unless you choose to use one for display binding.
+Zustand-inspired state management for GameMaker. Minimal, fast, selector-based subscriptions.
 
-`UiStore` is lib-agnostic and can be used outside of UniqueUI. For UniqueUI integration, use `subscribeChanged()` to connect to the redraw system.
+`UiStore` is lib-agnostic and can be used outside of UniqueUI. It provides a clean API inspired by Zustand with optional middleware for advanced features like undo/redo, logging, and persistence.
 
 ## Performance Features
 
-- **Selector-based subscriptions**: Subscribe to specific values with `subscribe(selector, callback)` - powerful and scalable
-- **Update**: Unified `set()` method supports both partial state and updater functions
-- **Snapshot/undo-redo**: Built-in undo/redo support for editor-style applications
-- **Component-level binding**: Use `bind()` on components for reactive property updates
-- **Automatic cleanup**: Store subscriptions are automatically cleaned up when nodes are destroyed
-- **Lib-agnostic**: No direct dependency on UI framework - integrate via `subscribeChanged()`
-- **Change detection**: Only notifies subscribers when values actually change (not on redundant sets)
-- **UniqueUI batching**: UniqueUI batches redraws internally, so multiple state changes in a single frame result in only one redraw
+- **Selector-based subscriptions**: Subscribe to specific values with `subscribe(selector, callback)` - only notified when selected value changes
+- **No deep clone on updates**: Changed keys tracking instead of full state cloning for O(k) performance where k = changed keys
+- **Middleware system**: Composable middleware for undo/redo, logging, validation, and more
+- **Replace mode**: `setState(partial, true)` for complete state replacement
+- **Change detection**: Only notifies subscribers when values actually change
+- **Minimal API**: Core API is small and focused - advanced features via optional middleware
 
 ## Usage
 
 ```gml
 // 1. Create a store with initial state
-global.settings = new UiStore({
+var store = new UiStore({
     counter: 0,
     themeMode: "dark"
 });
 
-// 2. Integrate with UniqueUI (lib-agnostic)
-global.settings.subscribeChanged(function(state) {
-    global.UI.requestRedraw();
-});
-
-// 3. Subscribe to changes with selector
-global.settings.subscribe(
+// 2. Subscribe to changes with selector
+store.subscribe(
     function(state) { return state.counter; },
     function(count) {
         show_debug_message("Counter: " + string(count));
     }
 );
 
-// 4. Update state with partial state
-global.settings.set({ counter: 10, themeMode: "light" });
+// 3. Update state with partial state (merge)
+store.setState({ counter: 10, themeMode: "light" });
 
 // OR update with function
-global.settings.set(function(state) {
+store.setState(function(state) {
     return { counter: state.counter + 1 };
 });
 
-// 5. Bind component to store
-var label = new UiText("", {}, {});
-label.bind(global.settings, function(state) { return state.counter; }, "text", function(val) {
-    return "Count: " + string(val);
+// OR replace entire state
+store.setState({ newKey: "value" }, true);
+
+// 4. Add optional middleware
+store.use(function(changedKeys, newState, store) {
+    show_debug_message("Keys changed: " + string(changedKeys));
+    return undefined; // pass through
 });
 ```
 
@@ -64,29 +60,30 @@ label.bind(global.settings, function(state) { return state.counter; }, "text", f
 
 ## Methods
 
-### `set(arg)`
+### `setState(arg, replace = false)`
 
-Supports two signatures:
-- `set(partialState)` - Merge partial state struct
-- `set(updater)` - Function that receives state and returns partial state
+Supports four signatures:
+- `setState(partialState)` - Merge partial state struct
+- `setState(partialState, true)` - Replace entire state
+- `setState(updater)` - Function that receives state and returns partial state
+- `setState(updater, true)` - Function that receives state and replaces entire state
 
 ```gml
-// Partial state
-store.set({ counter: 10, themeMode: "light" });
+// Partial state (merge)
+store.setState({ counter: 10, themeMode: "light" });
 
-// Updater function
-store.set(function(state) {
+// Replace entire state
+store.setState({ newKey: "value" }, true);
+
+// Updater function (merge)
+store.setState(function(state) {
     return { counter: state.counter + 1 };
 });
 
-// Multiple updates in one call
-store.set(function(state) {
-    return {
-        x: state.x + 10,
-        y: state.y + 10,
-        z: state.z + 10
-    };
-});
+// Updater function (replace)
+store.setState(function(state) {
+    return { newCount: state.counter + 1 };
+}, true);
 ```
 
 ### `get(key, defaultValue?)`
@@ -160,81 +157,36 @@ var unsubscribe = store.subscribe(
 unsubscribe();
 ```
 
-### `subscribeChanged(callback)`
+### `use(middleware)`
 
-Subscribe to general state changes (lib-agnostic). Use this to integrate with UI frameworks or other systems. The callback receives the full state.
+Apply middleware to the store. Middleware receives `(changedKeys, newState, store)` and can:
+- Return `undefined` to use newState as-is
+- Return a new state to transform it
+- Return `false` to interrupt the update
 
-Returns an unsubscribe function.
+Returns `self` for chaining.
 
 ```gml
-// Integrate with UniqueUI
-var unsubscribe = store.subscribeChanged(function(state) {
-    global.UI.requestRedraw();
+// Logger middleware
+store.use(function(changedKeys, newState, store) {
+    show_debug_message("Changed keys: " + string(changedKeys));
+    show_debug_message("New state: " + string(newState));
+    return undefined;
 });
 
-// Or use for logging
-store.subscribeChanged(function(state) {
-    show_debug_message("State changed: " + json_stringify(state));
-});
-```
-
-### `snapshot()`
-
-Creates a snapshot of the current state for manual undo/redo.
-
-```gml
-var savedState = store.snapshot();
-```
-
-### `undo()`
-
-Restores the previous state from the undo stack.
-
-```gml
-store.undo();
-```
-
-### `redo()`
-
-Restores the next state from the redo stack.
-
-```gml
-store.redo();
-```
-
-### `enableUndoRedo()`
-
-Enables automatic snapshot creation on every state change for undo/redo.
-
-```gml
-store.enableUndoRedo();
-```
-
-### `disableUndoRedo()`
-
-Disables automatic snapshot creation.
-
-```gml
-store.disableUndoRedo();
-```
-
-### `setActions(actions)`
-
-Define actions for state mutations. Actions provide a clean API for state changes and enable middleware/logging. Actions are automatically bound to the store, so you don't need to pass the store parameter.
-
-```gml
-store.setActions({
-    increment: function() {
-        self.set("counter", self.get("counter") + 1);
-    },
-    reset: function() {
-        self.set("counter", 0);
+// Validation middleware
+store.use(function(changedKeys, newState, store) {
+    if (newState.count < 0) {
+        return false; // Interrupt update
     }
+    return undefined;
 });
 
-// Use actions
-store.actions.increment();
-store.actions.reset();
+// Transform middleware
+store.use(function(changedKeys, newState, store) {
+    newState.timestamp = current_time;
+    return newState;
+});
 ```
 
 ### `destroy()`
@@ -300,9 +252,9 @@ store.set(function(state) {
 ```
 
 
-### Undo/Redo for editor applications
+### Undo/Redo with middleware
 
-Enable automatic undo/redo for professional editor-style applications.
+Undo/redo is now optional via middleware instead of built-in.
 
 ```gml
 var editorStore = new UiStore({
@@ -310,10 +262,11 @@ var editorStore = new UiStore({
     cursor: { x: 0, y: 0 }
 });
 
-editorStore.enableUndoRedo();
+// Add undo/redo middleware
+editorStore.use(UiStoreMiddleware_undoRedo());
 
 // Every state change is automatically saved
-editorStore.set("document", "Hello World");
+editorStore.setState({ document: "Hello World" });
 
 // Undo the last change
 editorStore.undo();
@@ -324,10 +277,16 @@ editorStore.redo();
 
 ## How Reactivity Works
 
-1. You call `set()`, `setState()`, `update()`, `remove()`, or `reset()`.
-2. Change detection: Only notifies if the value actually changed.
-3. `__notify()` iterates registered selector-based subscribers:
+1. You call `setState()`, `remove()`, or `reset()`.
+2. Changed keys are tracked (no deep clone of prevState for performance).
+3. Middleware chain is applied - each middleware can transform or interrupt the update.
+4. `__notify()` iterates registered selector-based subscribers:
    - Only notifies subscribers when their selected value actually changed
-4. If `global.UI` exists, `requestRedraw()` is called so bound components repaint.
 
-There is no automatic two-way binding — you wire reads (`get()` / `select()` / `subscribe`) and writes (`set()` / `onChange`) explicitly, which keeps data flow predictable in GML.
+There is no automatic two-way binding — you wire reads (`get()` / `getState()` / `subscribe`) and writes (`setState()`) explicitly, which keeps data flow predictable in GML.
+
+## Performance Notes
+
+- **No deep clone on updates**: Changed keys are tracked instead of cloning the entire previous state. This makes updates O(k) where k is the number of changed keys, not O(n) where n is the total state size.
+- **Selector-based subscriptions**: Only subscribers whose selected value changed are notified, preventing unnecessary callback executions.
+- **Middleware is optional**: Core API is minimal and fast. Add middleware only when you need advanced features like undo/redo, logging, or persistence.

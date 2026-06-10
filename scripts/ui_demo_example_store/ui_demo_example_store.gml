@@ -1,7 +1,7 @@
 function ui_demo_example_store(PreviewCard) {
     // --- Intro ---
     PreviewCard.add(new UiText(
-        "UiStore is a lightweight reactive state container. When you call set() or setState(), " +
+        "UiStore is a lightweight reactive state container. When you call setState(), " +
         "all subscribers are notified immediately - no polling, no valueGetter running every step. " +
         "UiStore also calls global.UI.requestRedraw() so bound UI updates on the next frame.",
         { width: "100%", marginBottom: 16 },
@@ -9,7 +9,7 @@ function ui_demo_example_store(PreviewCard) {
     ));
 
     // --- Counter demo (subscribe) ---
-    __ui_demo_preview_section(PreviewCard, "Subscribe & set()");
+    __ui_demo_preview_section(PreviewCard, "Subscribe & setState()");
 
     var counterStore = new UiStore({ count: 0 });
 
@@ -34,12 +34,12 @@ function ui_demo_example_store(PreviewCard) {
 
     var decBtn = new UiButton("-", { width: 40, height: 36, marginRight: 8 }, { variant: "outline" });
     decBtn.onClick(method(counterStore, function() {
-        self.set("count", self.get("count") - 1);
+        self.setState({ count: self.get("count") - 1 });
     }));
 
     var incBtn = new UiButton("+", { width: 40, height: 36, marginRight: 16 }, { variant: "primary" });
     incBtn.onClick(method(counterStore, function() {
-        self.set("count", self.get("count") + 1);
+        self.setState({ count: self.get("count") + 1 });
     }));
 
     counterRow.add(counterLabel);
@@ -52,7 +52,7 @@ function ui_demo_example_store(PreviewCard) {
 
     PreviewCard.add(new UiText(
         "Multiple components can read and write the same store. Use valueGetter on inputs " +
-        "for read binding, and onChange to write back with set().",
+        "for read binding, and onChange to write back with setState().",
         { width: "100%", marginBottom: 16 },
         { color: global.UI_COL_TEXT_2, wrap: true }
     ));
@@ -84,7 +84,7 @@ function ui_demo_example_store(PreviewCard) {
     var notifSwitch = new UiSwitch({ marginBottom: 16 }, {
         label: "Enable Notifications",
         valueGetter: method(settingsStore, function() { return self.get("notifications"); }),
-        onChange: method(settingsStore, function(val) { self.set("notifications", val); })
+        onChange: method(settingsStore, function(val) { self.setState({ notifications: val }); })
     });
 
     var volumeLabel = new UiText("Volume: 80%", { marginBottom: 8 }, {
@@ -96,7 +96,7 @@ function ui_demo_example_store(PreviewCard) {
     var volumeSlider = new UiSlider({ width: "100%", marginBottom: 8 }, {
         min: 0, max: 100, step: 5,
         valueGetter: method(settingsStore, function() { return self.get("volume"); }),
-        onChange: method(settingsStore, function(val) { self.set("volume", val); })
+        onChange: method(settingsStore, function(val) { self.setState({ volume: val }); })
     });
 
     syncCard.add(statusLabel);
@@ -156,15 +156,14 @@ function ui_demo_example_store(PreviewCard) {
     __ui_demo_preview_section(PreviewCard, "API Reference", 16);
     var apiGrid = new UiNode({ flexDirection: "column", width: "100%" });
     PreviewCard.add(apiGrid);
-    __ui_demo_doc_row(apiGrid, "set(key, value)", "method", "Update one key and notify subscribers");
-    __ui_demo_doc_row(apiGrid, "setState(partial)", "method", "Batch-update multiple keys with one notification");
+    __ui_demo_doc_row(apiGrid, "setState(partial)", "method", "Update state (merge or replace with second param)");
     __ui_demo_doc_row(apiGrid, "get(key, default?)", "method", "Read a value (returns default if missing)");
     __ui_demo_doc_row(apiGrid, "getState()", "method", "Return the live state struct reference");
     __ui_demo_doc_row(apiGrid, "has(key)", "method", "Check if a key exists in state");
     __ui_demo_doc_row(apiGrid, "remove(key)", "method", "Remove a key and notify subscribers");
     __ui_demo_doc_row(apiGrid, "reset()", "method", "Restore initial state and notify subscribers");
-    __ui_demo_doc_row(apiGrid, "subscribe(cb)", "method", "Register callback(state) on every change");
-    __ui_demo_doc_row(apiGrid, "unsubscribe(cb)", "method", "Remove a previously registered callback");
+    __ui_demo_doc_row(apiGrid, "subscribe(selector, cb)", "method", "Register callback on selector value change");
+    __ui_demo_doc_row(apiGrid, "use(middleware)", "method", "Add optional middleware (undo/redo, logging, etc.)");
 
     return [
         "// Create a store with initial state",
@@ -175,11 +174,11 @@ function ui_demo_example_store(PreviewCard) {
         "    self.text = \"Count: \" + string(state.count);",
         "}));",
         "",
-        "// Update a single key",
-        "store.set(\"count\", store.get(\"count\") + 1);",
+        "// Update state (merge)",
+        "store.setState({ count: store.get(\"count\") + 1 });",
         "",
-        "// Batch-update multiple keys (one notification)",
-        "store.setState({ count: 0, enabled: false });",
+        "// Replace entire state",
+        "store.setState({ count: 0, enabled: false }, true);",
         "",
         "// Read / check / remove",
         "var val = store.get(\"count\", 0);",
@@ -189,6 +188,7 @@ function ui_demo_example_store(PreviewCard) {
         "store.reset();",
         "",
         "// Unsubscribe when done",
-        "store.unsubscribe(myCallback);",
+        "var unsubscribe = store.subscribe(selector, callback);",
+        "unsubscribe();",
     ];
 }

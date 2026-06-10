@@ -1,55 +1,86 @@
 /**
- * UiStore - Lightweight reactive UI state management store
- * Allows component state sharing and reactive UI binding
+ * UiStore - Zustand-inspired state management for GameMaker
+ * Minimal, fast, selector-based subscriptions
  * 
- * Performance features:
- * - Selector-based subscriptions
- * - Mutations (update)
- * - Snapshot/undo-redo support
- * - Actions system for state mutations
+ * Core API:
+ * - setState(partialState | updater)
+ * - getState()
+ * - subscribe(selector, callback)
+ * - use(middleware) - Add optional middleware
  */
 function UiStore(initialState = {}) constructor {
     self.state = initialState;
     self.__initialState = variable_clone(initialState);
     self.__selectorListeners = []; // Selector-based subscribers: { id, selector, callback, lastValue }
     self.__nextSubscriberId = 0; // For robust unsubscribe
-    self.__snapshotStack = []; // For undo/redo
-    self.__redoStack = [];
-    self.__autoSnapshot = false;
-    self.actions = {}; // Actions object for state mutations
-    self.__changeListeners = []; // General change listeners (lib-agnostic)
+    self.__middleware = []; // Middleware chain
     
     /**
      * Set state
-     * Two signatures:
-     * - set(partialState) - Merge partial state struct
-     * - set(updater) - Function that receives state and returns partial state
+     * Three signatures:
+     * - setState(partialState) - Merge partial state struct
+     * - setState(partialState, true) - Replace entire state
+     * - setState(updater) - Function that receives state and returns partial state
+     * - setState(updater, true) - Function that receives state and replaces entire state
      * @param {Any} arg Either a partial state struct or an updater function
+     * @param {Bool} replace If true, replace entire state instead of merging
      */
-    self.set = function(arg) {
-        // Save state for undo/redo BEFORE modification
-        if (self.__autoSnapshot) {
-            self.__saveState();
-        }
+    self.setState = function(arg, replace = false) {
+        // Track changed keys for middleware (no clone, just keys)
+        var _changedKeys = [];
         
-        // Check if arg is a function (updater) or struct (partial state)
+        // Calculate new state
+        var _newState;
         if (is_callable(arg)) {
-            // Updater function: call it and merge result
-            var _partialState = arg(self.state);
-            var _keys = variable_struct_get_names(_partialState);
-            for (var i = 0, il = array_length(_keys); i < il; i++) {
-                var _key = _keys[i];
-                self.state[$ _key] = _partialState[$ _key];
+            // Updater function: call it
+            var _result = arg(self.state);
+            if (replace) {
+                _newState = _result;
+                _changedKeys = variable_struct_get_names(_newState);
+            } else {
+                // Merge result into current state
+                _newState = variable_clone(self.state);
+                var _keys = variable_struct_get_names(_result);
+                for (var i = 0, il = array_length(_keys); i < il; i++) {
+                    var _key = _keys[i];
+                    _newState[$ _key] = _result[$ _key];
+                    array_push(_changedKeys, _key);
+                }
             }
         } else {
-            // Partial state struct: merge directly
-            var _keys = variable_struct_get_names(arg);
-            for (var i = 0, il = array_length(_keys); i < il; i++) {
-                var _key = _keys[i];
-                self.state[$ _key] = arg[$ _key];
+            // Partial state struct
+            if (replace) {
+                _newState = arg;
+                _changedKeys = variable_struct_get_names(_newState);
+            } else {
+                // Merge into current state
+                _newState = variable_clone(self.state);
+                var _keys = variable_struct_get_names(arg);
+                for (var i = 0, il = array_length(_keys); i < il; i++) {
+                    var _key = _keys[i];
+                    _newState[$ _key] = arg[$ _key];
+                    array_push(_changedKeys, _key);
+                }
             }
         }
         
+        // Apply middleware - can transform or interrupt
+        // Middleware receives (changedKeys, newState, store)
+        var _finalState = _newState;
+        for (var i = 0; i < array_length(self.__middleware); i++) {
+            var _result = self.__middleware[i](_changedKeys, _finalState, self);
+            if (_result == false) {
+                // Middleware interrupted the update
+                return;
+            }
+            if (_result != undefined) {
+                // Middleware transformed the state
+                _finalState = _result;
+            }
+        }
+        
+        // Apply final state
+        self.state = _finalState;
         self.__notify();
     };
     
@@ -75,12 +106,25 @@ function UiStore(initialState = {}) constructor {
      */
     self.remove = function(key) {
         if (variable_struct_exists(self.state, key)) {
-            // Save state for undo/redo BEFORE modification
-            if (self.__autoSnapshot) {
-                self.__saveState();
+            var _newState = variable_clone(self.state);
+            variable_struct_remove(_newState, key);
+            var _changedKeys = [key];
+            
+            // Apply middleware - can transform or interrupt
+            var _finalState = _newState;
+            for (var i = 0; i < array_length(self.__middleware); i++) {
+                var _result = self.__middleware[i](_changedKeys, _finalState, self);
+                if (_result == false) {
+                    // Middleware interrupted the update
+                    return self;
+                }
+                if (_result != undefined) {
+                    // Middleware transformed the state
+                    _finalState = _result;
+                }
             }
             
-            variable_struct_remove(self.state, key);
+            self.state = _finalState;
             self.__notify();
         }
         return self;
@@ -90,12 +134,24 @@ function UiStore(initialState = {}) constructor {
      * Reset state to the initial snapshot passed to the constructor and notify subscribers. Returns `self`.
      */
     self.reset = function() {
-        // Save state for undo/redo BEFORE modification
-        if (self.__autoSnapshot) {
-            self.__saveState();
+        var _newState = variable_clone(self.__initialState);
+        var _changedKeys = variable_struct_get_names(_newState);
+        
+        // Apply middleware - can transform or interrupt
+        var _finalState = _newState;
+        for (var i = 0; i < array_length(self.__middleware); i++) {
+            var _result = self.__middleware[i](_changedKeys, _finalState, self);
+            if (_result == false) {
+                // Middleware interrupted the update
+                return self;
+            }
+            if (_result != undefined) {
+                // Middleware transformed the state
+                _finalState = _result;
+            }
         }
         
-        self.state = variable_clone(self.__initialState);
+        self.state = _finalState;
         self.__notify();
         return self;
     };
@@ -136,83 +192,17 @@ function UiStore(initialState = {}) constructor {
     };
     
     /**
-     * Create a snapshot of the current state for undo/redo.
-     * @returns {Struct} Snapshot of current state
+     * Apply middleware to the store.
+     * Middleware receives (changedKeys, newState, store) and can:
+     * - Return undefined to use newState as-is
+     * - Return a new state to transform it
+     * - Return false to interrupt the update
+     * @param {Function} middleware Function(changedKeys, newState, store) -> newState | false | undefined
+     * @returns {Struct} self for chaining
      */
-    self.snapshot = function() {
-        return variable_clone(self.state);
-    };
-    
-    /**
-     * Save current state to undo stack.
-     */
-    self.__saveState = function() {
-        array_push(self.__snapshotStack, variable_clone(self.state));
-        self.__redoStack = []; // Clear redo stack on new action
-        // Limit stack size
-        if (array_length(self.__snapshotStack) > 50) {
-            array_delete(self.__snapshotStack, 0, 1);
-        }
-    };
-    
-    /**
-     * Undo the last state change.
-     */
-    self.undo = function() {
-        if (array_length(self.__snapshotStack) == 0) return;
-        
-        // Save current state to redo stack
-        array_push(self.__redoStack, variable_clone(self.state));
-        
-        // Restore previous state
-        var _previousState = array_pop(self.__snapshotStack);
-        self.state = _previousState;
-        self.__notify();
-    };
-    
-    /**
-     * Redo the last undone state change.
-     */
-    self.redo = function() {
-        if (array_length(self.__redoStack) == 0) return;
-        
-        // Save current state to undo stack
-        array_push(self.__snapshotStack, variable_clone(self.state));
-        
-        // Restore redo state
-        var _redoState = array_pop(self.__redoStack);
-        self.state = _redoState;
-        self.__notify();
-    };
-    
-    /**
-     * Enable auto-snapshot for undo/redo on every state change.
-     */
-    self.enableUndoRedo = function() {
-        self.__autoSnapshot = true;
-    };
-    
-    /**
-     * Disable auto-snapshot.
-     */
-    self.disableUndoRedo = function() {
-        self.__autoSnapshot = false;
-    };
-    
-    /**
-     * Define actions for state mutations.
-     * Actions provide a clean API for state changes and enable middleware/logging.
-     * Actions are bound to the store, no need to pass store parameter.
-     * @param {Struct} actions Object of action functions
-     */
-    self.setActions = function(actions) {
-        var _actionNames = variable_struct_get_names(actions);
-        for (var i = 0; i < array_length(_actionNames); i++) {
-            var _name = _actionNames[i];
-            var _action = actions[$ _name];
-            // Bind action to store
-            self.actions[$ _name] = method(self, _action);
-        }
+    self.use = function(middleware) {
+        array_push(self.__middleware, middleware);
+        return self;
     };
     
     /**
@@ -228,25 +218,6 @@ function UiStore(initialState = {}) constructor {
                 _sub.lastValue = _newValue;
             }
         }
-        
-        // Notify general change listeners (lib-agnostic)
-        for (var i = 0; i < array_length(self.__changeListeners); i++) {
-            self.__changeListeners[i](self.state);
-        }
-    };
-    
-    /**
-     * Subscribe to general state changes (lib-agnostic).
-     * Use this to integrate with UI frameworks or other systems.
-     * @param {Function} callback Callback receiving the full state
-     * @returns {Function} Unsubscribe function
-     */
-    self.subscribeChanged = function(callback) {
-        array_push(self.__changeListeners, callback);
-        return function() {
-            var _index = array_find_index(self.__changeListeners, callback);
-            if (_index != -1) array_delete(self.__changeListeners, _index, 1);
-        };
     };
     
     /**
@@ -254,9 +225,6 @@ function UiStore(initialState = {}) constructor {
      */
     self.destroy = function() {
         self.__selectorListeners = [];
-        self.__changeListeners = [];
-        self.actions = {};
-        self.__snapshotStack = [];
-        self.__redoStack = [];
+        self.__middleware = [];
     };
 }
