@@ -187,9 +187,9 @@ function ui_demo_example_introduction(PreviewCard) {
     PreviewCard.add(new UiText(
         "Every UiNode has a generic value property and a built-in push-based notification system " +
         "independent of UiStore:\n" +
-        "- self.value — stores any type (string, number, boolean, color)\n" +
-        "- setValue(newValue) — updates value, fires onChange listeners, calls requestRedraw()\n" +
-        "- onChange(cb) — registers a listener; multiple listeners are supported\n\n" +
+        "- self.value - stores any type (string, number, boolean, color)\n" +
+        "- setValue(newValue) - updates value, fires onChange listeners, calls requestRedraw()\n" +
+        "- onChange(cb) - registers a listener; multiple listeners are supported\n\n" +
         "This enables direct reactive data flow between components without polling.",
         { width: "100%", marginBottom: 16 },
         { color: global.UI_COL_TEXT_2, wrap: true }
@@ -210,12 +210,12 @@ function ui_demo_example_introduction(PreviewCard) {
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
     
-    var pushLabel = new UiText("Toggle me!", { marginRight: 16 }, {
+    var pushLabel = new UiText("Toggle me", { }, {
         color: global.UI_COL_TEXT_1,
         font: global.UI_FONTS.big
     });
     
-    var pushCheckbox = new UiCheckbox({}, {
+    var pushCheckbox = new UiCheckbox({ marginRight: 16 }, {
         label: "Push-based demo",
         onChange: method(pushLabel, function(val) {
             self.setValue(val ? "Checked!" : "Unchecked!");
