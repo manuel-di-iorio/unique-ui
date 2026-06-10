@@ -187,7 +187,7 @@ function ui_demo_example_introduction(PreviewCard) {
     PreviewCard.add(new UiText(
         "Registering handlers for events like mouse clicks or hovers is straightforward. " +
         "Use methods like onClick(callback) or addEventListener(event_type, callback). " +
-        "UiStore provides push-based reactivity: when you call store.setState(), all subscribers fire immediately",
+        "UiStore provides push-based reactivity: when you call store.set(), all subscribers fire immediately",
         { width: "100%", marginBottom: 16 },
         { color: global.UI_COL_TEXT_2, wrap: true }
     ));
@@ -222,7 +222,7 @@ function ui_demo_example_introduction(PreviewCard) {
     
     var eventBtn = new UiButton("Click to Trigger", { marginRight: 16, height: 36 }, { variant: "success" });
     eventBtn.onClick(method(clickStore, function() {
-        self.setState({ "count": self.get("count") + 1 });
+        self.set({ "count": self.get("count") + 1 });
     }));
     
     eventContainer.add(eventBtn);
@@ -318,11 +318,11 @@ function ui_demo_example_introduction(PreviewCard) {
         "",
         "// Update state - all subscribers are notified automatically",
         "myButton.onClick(function() {",
-        "    store.setState({ count: store.get(\"count\") + 1 });",
+        "    store.set({ count: store.get(\"count\") + 1 });",
         "});",
         "",
         "// Batch-update multiple keys in one notification",
-        "store.setState({ count: 0, label: \"Reset\" });",
+        "store.set({ count: 0, label: \"Reset\" });",
         "",
         "// === 6. SCROLLABLE CONTAINER ===",
         "var container = new UiNode({ width: \"100%\", height: 200, flexDirection: \"column\" });",

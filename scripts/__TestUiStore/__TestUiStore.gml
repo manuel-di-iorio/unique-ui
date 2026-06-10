@@ -29,16 +29,16 @@ ui_test_suite("UiStore", function() {
 
     ui_test("getState() returns full state", function() {
         var store = new UiStore({ x: 10, y: 20 });
-        var state = store.getState();
+        var state = store.state;
         assert_equal(state[$ "x"], 10);
         assert_equal(state[$ "y"], 20);
     });
 
     ui_test("getState() returns current state after setState", function() {
         var store = new UiStore({ val: 1 });
-        var state = store.getState();
+        var state = store.state;
         assert_equal(state[$ "val"], 1);
-        store.setState({ val: 99 });
+        store.set({ val: 99 });
         assert_equal(store.get("val"), 99);
     });
 
@@ -56,7 +56,7 @@ ui_test_suite("UiStore", function() {
 
     ui_test("setState merges partial state", function() {
         var store = new UiStore({ a: 1, b: 2 });
-        store.setState({ b: 3, c: 4 });
+        store.set({ b: 3, c: 4 });
         assert_equal(store.get("a"), 1);
         assert_equal(store.get("b"), 3);
         assert_equal(store.get("c"), 4);
@@ -64,7 +64,7 @@ ui_test_suite("UiStore", function() {
 
     ui_test("setState with replace=true replaces entire state", function() {
         var store = new UiStore({ a: 1, b: 2 });
-        store.setState({ c: 3 }, true);
+        store.set({ c: 3 }, true);
         assert_false(store.has("a"));
         assert_false(store.has("b"));
         assert_equal(store.get("c"), 3);
@@ -97,7 +97,7 @@ ui_test_suite("UiStore", function() {
 
     ui_test("reset restores initial state", function() {
         var store = new UiStore({ a: 1, b: 2 });
-        store.setState({ a: 99, c: 3 });
+        store.set({ a: 99, c: 3 });
         store.reset();
         assert_equal(store.get("a"), 1);
         assert_equal(store.get("b"), 2);
@@ -118,7 +118,7 @@ ui_test_suite("UiStore", function() {
         var store = new UiStore({ count: 10 });
         var tracker = { received: undefined };
         store.subscribe(method(tracker, function(state) { self.received = state.count; }));
-        store.setState({ count: 20 });
+        store.set({ count: 20 });
         assert_equal(tracker.received, 20);
     });
 
@@ -127,7 +127,7 @@ ui_test_suite("UiStore", function() {
         var tracker = { calls: 0 };
         var unsub = store.subscribe(method(tracker, function(state) { self.calls++; }));
         unsub();
-        store.setState({ val: 2 });
+        store.set({ val: 2 });
         assert_equal(tracker.calls, 0);
     });
 
@@ -137,7 +137,7 @@ ui_test_suite("UiStore", function() {
         var trackerB = { hits: 0 };
         store.subscribe(method(trackerA, function(state) { self.hits++; }));
         store.subscribe(method(trackerB, function(state) { self.hits++; }));
-        store.setState({ val: "B" });
+        store.set({ val: "B" });
         assert_equal(trackerA.hits, 1);
         assert_equal(trackerB.hits, 1);
     });
@@ -154,9 +154,9 @@ ui_test_suite("UiStore", function() {
             self.unsub();
         }));
         store.subscribe(method(ctx, function(state) { array_push(self.calls, "second"); }));
-        store.setState({ val: 2 });
+        store.set({ val: 2 });
         assert_equal(array_length(ctx.calls), 2);
-        store.setState({ val: 3 });
+        store.set({ val: 3 });
         assert_equal(array_length(ctx.calls), 3);
     });
 
@@ -173,7 +173,7 @@ ui_test_suite("UiStore", function() {
             _c[$ "count"] = _c[$ "count"] * 2;
             return _c;
         });
-        store.setState({ count: 5 });
+        store.set({ count: 5 });
         assert_equal(store.get("count"), 10);
     });
 
@@ -197,7 +197,7 @@ ui_test_suite("UiStore", function() {
             _c[$ "val"] = _c[$ "val"] + "2";
             return _c;
         });
-        store.setState({ val: "0" });
+        store.set({ val: "0" });
         assert_equal(store.get("val"), "012");
     });
 
@@ -205,7 +205,7 @@ ui_test_suite("UiStore", function() {
 
     ui_test("setState returns self for chaining", function() {
         var store = new UiStore({ a: 1 });
-        var result = store.setState({ b: 2 });
+        var result = store.set({ b: 2 });
         assert_equal(result, store);
     });
 
@@ -235,7 +235,7 @@ ui_test_suite("UiStore", function() {
         store.subscribe(method(tracker, function(state) { self.calls++; }));
         store.use(function(ns, s) { return undefined; });
         store.destroy();
-        store.setState({ val: 2 });
+        store.set({ val: 2 });
         assert_true(true, "destroy did not cause errors");
     });
 
