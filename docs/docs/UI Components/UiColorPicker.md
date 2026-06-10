@@ -27,7 +27,6 @@ Opening the panel reveals:
 | `value`       | `color` (real)                | `#3B82F6`      | Currently selected color.                                |
 | `label`       | `string`                      | `undefined`    | Optional label shown to the left of the trigger.         |
 | `onChange`    | `function(color, picker)`     | Empty function | Called when the color changes.                           |
-| `valueGetter` | `function`                    | `undefined`    | Optional external source of truth for `value`.           |
 | `Trigger`     | `UiNode`                      | *auto-created* | Clickable color preview button.                          |
 | `Panel`       | `UiNode`                      | `undefined`    | Popup panel (created when opened).                       |
 

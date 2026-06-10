@@ -137,6 +137,7 @@ function UiNode(style = {}, props = {}) constructor {
     // Set the value and trigger redraw + listeners
     function setValue(newValue) {
         gml_pragma("forceinline");
+        if (self.value == newValue) return self;
         self.value = newValue;
         self.requestRedraw();
         var _listeners = self.__valueChangeListeners;

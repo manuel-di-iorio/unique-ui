@@ -47,12 +47,26 @@ function ui_demo_example_store(PreviewCard) {
     counterRow.add(incBtn);
     PreviewCard.add(counterRow);
 
-    // --- Two-way sync demo ---
-    __ui_demo_preview_section(PreviewCard, "Shared State (set & valueGetter)");
+    // --- Push-based API note ---
+    __ui_demo_preview_section(PreviewCard, "Push-Based API (value / setValue / onChange)");
 
     PreviewCard.add(new UiText(
-        "Multiple components can read and write the same store. Use valueGetter on inputs " +
-        "for read binding, and onChange to write back with set().",
+        "Every UiNode supports push-based reactivity via setValue(newValue) and onChange(cb), " +
+        "independent of UiStore. Components inherit these from UiNode.\n\n" +
+        "UiStore.connect(component, keys...) is not needed: just subscribe to the store " +
+        "and call setValue() on the component to sync it.",
+        { width: "100%", marginBottom: 16 },
+        { color: global.UI_COL_TEXT_2, wrap: true }
+    ));
+
+    // --- Two-way sync demo ---
+    __ui_demo_preview_section(PreviewCard, "Shared State (subscribe & setValue)");
+
+    PreviewCard.add(new UiText(
+        "Multiple components can read and write the same store. Use subscribe + setValue " +
+        "for read binding, and onChange to write back with set().\n\n" +
+        "IMPORTANT: Pass the store's initial value via the component's value prop so the " +
+        "UI matches the store from frame one, before any state change fires.",
         { width: "100%", marginBottom: 16 },
         { color: global.UI_COL_TEXT_2, wrap: true }
     ));
@@ -75,29 +89,34 @@ function ui_demo_example_store(PreviewCard) {
     var statusLabel = new UiText("Notifications: Off", { marginBottom: 12 }, {
         color: method(settingsStore, function() {
             return self.get("notifications") ? #16A34A : global.UI_COL_TEXT_2;
-        }),
-        valueGetter: method(settingsStore, function() {
-            return self.get("notifications") ? "Notifications: On" : "Notifications: Off";
         })
     });
+    settingsStore.subscribe(method(statusLabel, function(state) {
+        self.setValue(state.notifications ? "Notifications: On" : "Notifications: Off");
+    }));
 
     var notifSwitch = new UiSwitch({ marginBottom: 16 }, {
         label: "Enable Notifications",
-        valueGetter: method(settingsStore, function() { return self.get("notifications"); }),
+        value: settingsStore.get("notifications"),
         onChange: method(settingsStore, function(val) { self.set({ notifications: val }); })
     });
+    settingsStore.subscribe(method(notifSwitch, function(state) {
+        self.setValue(state.notifications);
+    }));
 
-    var volumeLabel = new UiText("Volume: 80%", { marginBottom: 8 }, {
-        valueGetter: method(settingsStore, function() {
-            return "Volume: " + string(self.get("volume")) + "%";
-        })
-    });
+    var volumeLabel = new UiText("Volume: " + string(settingsStore.get("volume")) + "%", { marginBottom: 8 });
+    settingsStore.subscribe(method(volumeLabel, function(state) {
+        self.setValue("Volume: " + string(state.volume) + "%");
+    }));
 
     var volumeSlider = new UiSlider({ width: "100%", marginBottom: 8 }, {
         min: 0, max: 100, step: 5,
-        valueGetter: method(settingsStore, function() { return self.get("volume"); }),
+        value: settingsStore.get("volume"),
         onChange: method(settingsStore, function(val) { self.set({ volume: val }); })
     });
+    settingsStore.subscribe(method(volumeSlider, function(state) {
+        self.setValue(state.volume);
+    }));
 
     syncCard.add(statusLabel);
     syncCard.add(notifSwitch);

@@ -6,8 +6,7 @@ function UiSwitch(style = {}, props = {}) : UiNode(style, props) constructor {
     setName(props[$ "name"] ?? "UiSwitch");
     self.value = props[$ "value"] ?? false;
     self.label = props[$ "label"] ?? undefined;
-    self.onChange = props[$ "onChange"] ?? function(value, input) {};
-    self.valueGetter = props[$ "valueGetter"] ?? undefined;
+    if (props[$ "onChange"] != undefined) self.onChange(props[$ "onChange"]);
     
     self.pointerEvents = true;
     self.handpoint = true;
@@ -55,17 +54,13 @@ function UiSwitch(style = {}, props = {}) : UiNode(style, props) constructor {
     }
     
     self.onStep(function() {
-        if (self.valueGetter != undefined) self.value = self.valueGetter();
-        
         var targetPos = self.value ? 1 : 0;
         self.animThumbPos += (targetPos - self.animThumbPos) * 0.3;
         if (abs(self.animThumbPos - targetPos) > 0.01) global.UI.requestRedraw();
     });
     
     self.onClick(function() {
-        self.value = !self.value;
-        self.onChange(self.value, self);
-        global.UI.requestRedraw();
+        self.setValue(!self.value);
         return true;
     });
 }

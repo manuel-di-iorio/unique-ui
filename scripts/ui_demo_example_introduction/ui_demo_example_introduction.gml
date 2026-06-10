@@ -181,13 +181,59 @@ function ui_demo_example_introduction(PreviewCard) {
         { color: global.UI_COL_TEXT_2, wrap: true }
     ));
 
-    // --- 7. Event Handling & Reactivity ---
-    __ui_demo_preview_section(PreviewCard, "Event Handling & Reactivity");
+    // --- 7. Push-Based Reactivity (value / setValue / onChange) ---
+    __ui_demo_preview_section(PreviewCard, "Push-Based Reactivity: value, setValue, onChange");
+    
+    PreviewCard.add(new UiText(
+        "Every UiNode has a generic value property and a built-in push-based notification system " +
+        "independent of UiStore:\n" +
+        "- self.value — stores any type (string, number, boolean, color)\n" +
+        "- setValue(newValue) — updates value, fires onChange listeners, calls requestRedraw()\n" +
+        "- onChange(cb) — registers a listener; multiple listeners are supported\n\n" +
+        "This enables direct reactive data flow between components without polling.",
+        { width: "100%", marginBottom: 16 },
+        { color: global.UI_COL_TEXT_2, wrap: true }
+    ));
+    
+    // Push-based demo: checkbox controls a text label directly
+    var pushDemoRow = new UiNode({
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        padding: 16,
+        marginBottom: 12
+    });
+    pushDemoRow.onDraw = method(pushDemoRow, function() {
+        draw_set_color(global.UI_COL_SURFACE_0);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
+        draw_set_color(global.UI_COL_BORDER_1);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
+    });
+    
+    var pushLabel = new UiText("Toggle me!", { marginRight: 16 }, {
+        color: global.UI_COL_TEXT_1,
+        font: global.UI_FONTS.big
+    });
+    
+    var pushCheckbox = new UiCheckbox({}, {
+        label: "Push-based demo",
+        onChange: method(pushLabel, function(val) {
+            self.setValue(val ? "Checked!" : "Unchecked!");
+        })
+    });
+    
+    pushDemoRow.add(pushCheckbox);
+    pushDemoRow.add(pushLabel);
+    PreviewCard.add(pushDemoRow);
+    
+    // --- 8. Event Handling & UiStore Reactivity ---
+    __ui_demo_preview_section(PreviewCard, "Event Handling & UiStore Reactivity");
     
     PreviewCard.add(new UiText(
         "Registering handlers for events like mouse clicks or hovers is straightforward. " +
         "Use methods like onClick(callback) or addEventListener(event_type, callback). " +
-        "UiStore provides push-based reactivity: when you call store.set(), all subscribers fire immediately",
+        "UiStore extends the push-based pattern to shared state: when you call store.set(), " +
+        "all subscribers fire immediately.",
         { width: "100%", marginBottom: 16 },
         { color: global.UI_COL_TEXT_2, wrap: true }
     ));
@@ -307,7 +353,12 @@ function ui_demo_example_introduction(PreviewCard) {
         "    show_debug_message(\"Dropped: \" + string(draggedNode.id));",
         "};",
         "",   
-        "// === 5. REACTIVE STATE (UiStore) ===",
+        "// === 5. PUSH-BASED REACTIVITY (value / setValue / onChange) ===",
+        "// Every UiNode has a reactive value system built in:",
+        "node.setValue(newValue);  // updates value + fires onChange + requestRedraw",
+        "node.onChange(cb);        // register a value change listener",
+        "",
+        "// === 6. REACTIVE STATE (UiStore) ===",
         "// Create a store with initial state",
         "var store = new UiStore({ count: 0 });",
         "",
@@ -324,7 +375,7 @@ function ui_demo_example_introduction(PreviewCard) {
         "// Batch-update multiple keys in one notification",
         "store.set({ count: 0, label: \"Reset\" });",
         "",
-        "// === 6. SCROLLABLE CONTAINER ===",
+        "// === 7. SCROLLABLE CONTAINER ===",
         "var container = new UiNode({ width: \"100%\", height: 200, flexDirection: \"column\" });",
         "container.enableScrollbar(global.UI_COL_SCROLLBAR);",
         "for (var i = 0; i < 20; i++) {",

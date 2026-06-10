@@ -92,8 +92,7 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
     
     setName(props[$ "name"] ?? "UiColorPicker");
     self.value = props[$ "value"] ?? #3B82F6;
-    self.onChange = props[$ "onChange"] ?? function(_color, _picker) {};
-    self.valueGetter = props[$ "valueGetter"] ?? undefined;
+    if (props[$ "onChange"] != undefined) self.onChange(props[$ "onChange"]);
     
     var _hsv = __uui_rgb_to_hsv(self.value);
     self.hue = _hsv.h;
@@ -295,12 +294,6 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
     }
     
     self.onStep(function() {
-        if (self.valueGetter != undefined && !self.__syncLock) {
-            var _ext = self.valueGetter();
-            if (_ext != self.value) {
-                self.setColor(_ext, false);
-            }
-        }
         if (self.__copyCheckTimer > 0) {
             self.__copyCheckTimer -= 1;
         }
@@ -327,7 +320,11 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
             self.HexInput.value = __uui_color_to_hex(self.value);
             self.__syncLock = false;
         }
-        if (_fireChange && _changed) self.onChange(self.value, self);
+        if (_fireChange && _changed) {
+            for (var i = 0; i < array_length(self.__valueChangeListeners); i++) {
+                self.__valueChangeListeners[i](self.value, self);
+            }
+        }
         global.UI.requestRedraw();
     };
     
@@ -340,7 +337,11 @@ function UiColorPicker(style = {}, props = {}) : UiNode(style, props) constructo
                 self.HexInput.value = __uui_color_to_hex(self.value);
                 self.__syncLock = false;
             }
-            if (_fireChange) self.onChange(self.value, self);
+            if (_fireChange) {
+                for (var i = 0; i < array_length(self.__valueChangeListeners); i++) {
+                    self.__valueChangeListeners[i](self.value, self);
+                }
+            }
             global.UI.requestRedraw();
         }
     };

@@ -46,13 +46,6 @@ ui_test_suite("UiText", function() {
         t.destroy();
     });
     
-    ui_test("valueGetter stored from props", function() {
-        var getter = function() { return "Dynamic"; };
-        var t = new UiText("Initial", {}, { valueGetter: getter });
-        assert_equal(t.valueGetter, getter, "valueGetter stored");
-        t.destroy();
-    });
-    
     ui_test("isUiNode true (inherits UiNode)", function() {
         var t = new UiText("Test", {}, {});
         assert_true(t.isUiNode, "isUiNode = true");

@@ -3,19 +3,18 @@ function ui_demo_example_colorpicker(PreviewCard) {
         value: global.UI_COL_PRIMARY
     }));
 
-    var _state = { hex: __uui_color_to_hex(global.UI_COL_SUCCESS) };
+    var colorLabel = new UiText("Selected: " + __uui_color_to_hex(global.UI_COL_SUCCESS), {}, {
+        color: global.UI_COL_TEXT_2
+    });
     PreviewCard.add(new UiColorPicker({ marginBottom: 24, height: 32 }, {
         value: global.UI_COL_SUCCESS,
-        onChange: method(_state, function(_col) {
-            hex = __uui_color_to_hex(_col);
+        onChange: method(colorLabel, function(_col) {
+            self.setValue("Selected: " + __uui_color_to_hex(_col));
         })
     }));
 
     PreviewCard.add(new UiNode({ width: "100%", height: 1, marginBottom: 12 }, { backgroundColor: global.UI_COL_BORDER_1 }));
-    PreviewCard.add(new UiText("", {}, {
-        color: global.UI_COL_TEXT_2,
-        valueGetter: method(_state, function() { return "Selected: " + hex; })
-    }));
+    PreviewCard.add(colorLabel);
 
     return [
         "new UiColorPicker({ width: \"100%\", height: 32 }, {",

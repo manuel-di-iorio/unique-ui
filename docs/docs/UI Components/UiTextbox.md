@@ -31,8 +31,7 @@ UiTextbox(style = {}, props = {})
 | ------------- | ---------------------------------- | -------------- | --------------------------------------------------------- |
 | `label`       | `string`                           | `undefined`    | Optional label drawn before the textbox.                  |
 | `value`       | `string`                           | `""`           | The initial value of the textbox.                         |
-| `valueGetter` | `function`                         | `undefined`    | Function returning a dynamic external value to sync with. |
-| `onChange`    | `function(value, node)`           | `undefined`    | Called when value changes via `setValue()`. Pass as prop or register later via `onChange(cb)`. |
+| `onChange`    | `function(value, node)`            | `undefined`    | Called when value changes via `setValue()`. Pass as prop or register later via `onChange(cb)`. |
 | `onBlur`      | `function(value, input)`           | empty function | Called when textbox loses focus.                          |
 | `maxLength`   | `real`                             | `255`          | Maximum allowed text length.                              |
 | `format`      | `"string"`, `"integer"`, `"float"` | `"string"`     | Input format constraint.                                  |

@@ -6,8 +6,7 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
     setName(props[$ "name"] ?? "UiCheckbox");
     self.value = props[$ "value"] ?? false;
     self.label = props[$ "label"] ?? undefined;
-    self.onChange = props[$ "onChange"] ?? function(value, input) {};
-    self.valueGetter = props[$ "valueGetter"] ?? undefined;
+    if (props[$ "onChange"] != undefined) self.onChange(props[$ "onChange"]);
     self.variant = props[$ "variant"] ?? "checkbox";
     self.group = props[$ "group"];
     
@@ -56,14 +55,11 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
         };
     }
     
-    self.onStep(function() {
-        if (self.valueGetter != undefined) self.value = self.valueGetter();
-    });
-    
     self.onClick(function() {
         if (self.variant == "radio" && self.value) return true; 
         
-        self.value = !self.value;
+        var newValue = !self.value;
+        self.value = newValue;
         
         // Radio group logic
         if (self.variant == "radio" && self.value && self.parent != undefined) {
@@ -73,14 +69,15 @@ function UiCheckbox(style = {}, props = {}) : UiNode(style, props) constructor {
                 for (var i = 0; i < array_length(siblings); i++) {
                     var s = siblings[i];
                     if (s != self && s[$ "variant"] == "radio" && s[$ "group"] == myGroup) {
-                        s.value = false;
-                        if (s[$ "onChange"] != undefined) s.onChange(false, s);
+                        s.setValue(false);
                     }
                 }
             }
         }
         
-        self.onChange(self.value, self);
+        for (var i = 0; i < array_length(self.__valueChangeListeners); i++) {
+            self.__valueChangeListeners[i](self.value, self);
+        }
         global.UI.requestRedraw();
         return true;
     });

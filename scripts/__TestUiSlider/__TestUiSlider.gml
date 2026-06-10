@@ -19,11 +19,20 @@ ui_test_suite("UiSlider", function() {
     ui_test("onChange callback fires on value change", function() {
         var sl = new UiSlider({}, {});
         var state = { val: 0 };
-        sl.onChange = method(state, function(v) { val = v; });
+        sl.onChange(method(state, function(v) { val = v; }));
         
-        sl.value = 20;
-        sl.onChange(sl.value, sl);
+        sl.setValue(20);
         assert_equal(state.val, 20, "callback fired");
+        sl.destroy();
+    });
+    
+    ui_test("onChange prop fires on setValue", function() {
+        var state = { val: 0 };
+        var sl = new UiSlider({}, {
+            onChange: method(state, function(v) { val = v; })
+        });
+        sl.setValue(42);
+        assert_equal(state.val, 42, "prop callback fired");
         sl.destroy();
     });
     

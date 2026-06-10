@@ -13,7 +13,7 @@ UiCheckbox(style = {}, props = {})
 **Description**
 
 UiCheckbox provides an interactive checkbox element built with the UniqueUI system.
-It can display an optional text label, synchronize its value with an external variable or function, and execute callbacks when the user toggles its state.
+It can display an optional text label, synchronize its value with an external variable through `setValue()`, and execute callbacks when the user toggles its state.
 
 The component consists of two parts:
 
@@ -29,8 +29,7 @@ The component consists of two parts:
 | --------------- | ------------------------ | ----------------- | -------------------------------------------------------------------------------------- |
 | `value`         | `bool`                   | `false`           | Current state of the checkbox (checked or not).                                        |
 | `label`         | `string`                 | `undefined`       | Optional label text displayed next to the checkbox.                                    |
-| `onChange`      | `function(input, value)` | Empty function    | Callback executed when the checkbox value changes.                                     |
-| `valueGetter`   | `function`               | `undefined`       | Optional function returning an external boolean value. Used to sync with outside data. |
+| `onChange`      | `function(value, node)`  | `undefined`       | Callback on value change. Pass as prop or register later via `onChange(cb)` method.    |
 | `Input`         | `UiNode`                 | *auto-created*    | Inner node representing the clickable checkbox square.                                 |
 | `pointerEvents` | `bool`                   | `true` (on Input) | Enables click and hover detection.                                                     |
 | `handpoint`     | `bool`                   | `true` (on Input) | Shows hand cursor when hovering the checkbox.                                          |
@@ -40,7 +39,8 @@ The component consists of two parts:
 | Method               | Description                                                                      |
 | -------------------- | -------------------------------------------------------------------------------- |
 | **`onClick()`**      | Toggles the checkbox value, triggers `onChange`, and requests a UI redraw.       |
-| **`onStep()`**       | Updates the checkbox state dynamically if a `valueGetter` is defined.            |
+| **`setValue(val)`**  | Sets the value and fires `onChange` listeners. Inherited from UiNode.            |
+| **`onChange(cb)`**   | Registers a change listener. Multiple listeners supported. Inherited from UiNode.|
 | **`onDraw()`**       | Draws the label (if defined) and manages color and alignment.                    |
 | **`Input.onDraw()`** | Handles rendering of the checkbox square, hover highlight, and checkmark sprite. |
 
@@ -52,7 +52,7 @@ The checkbox value is toggled on click, and the UI is marked for redraw.
 
 - The onChange callback is invoked with the new value and reference to the node.
 
-- When valueGetter is provided, the checkbox automatically updates to match the external state every frame.
+- Use `setValue()` to synchronize the checkbox with external state (e.g., store subscription).
 
 - The checkbox uses a hover highlight effect and a tick sprite (sprUiCheckTick) when active.
 
@@ -69,14 +69,16 @@ var checkbox = new UiCheckbox({}, {
     }
 });
 
-// Checkbox with external sync
+// Checkbox with external sync (via store subscription)
 var syncBox = new UiCheckbox({}, {
     label: "Show Debug Info",
-    valueGetter: function() { return global.showDebug; },
     onChange: function(value) {
         global.showDebug = value;
     }
 });
+settingsStore.subscribe(method(syncBox, function(state) {
+    self.setValue(state.showDebug);
+}));
 ```
 
 **Visual Notes**

@@ -30,9 +30,8 @@ UiTextarea(style = {}, props = {})
 | ------------- | ------------------------ | -------------- | --------------------------------------------------------- |
 | `label`       | `string`                 | `undefined`    | Optional label drawn above the textarea.                  |
 | `value`       | `string`                 | `""`           | Initial multiline value.                                  |
-| `valueGetter` | `function`               | `undefined`    | Function returning a dynamic external value to sync with. |
-| `onChange`    | `function(value, node)`           | `undefined`    | Called when value changes via `setValue()`. Pass as prop or register later via `onChange(cb)`. |
-| `onBlur`      | `function(value, input)`           | empty function | Called when the textarea loses focus.                     |
+| `onChange`    | `function(value, node)`  | `undefined`    | Called when value changes via `setValue()`. Pass as prop or register later via `onChange(cb)`. |
+| `onBlur`      | `function(value, input)` | empty function | Called when the textarea loses focus.                     |
 | `maxLength`   | `real`                   | `4000`         | Maximum allowed text length.                              |
 | `placeholder` | `string`                 | `undefined`    | Placeholder text shown when empty.                        |
 | `lineHeight`  | `real`                   | `22`           | Pixel height used for each text line.                     |

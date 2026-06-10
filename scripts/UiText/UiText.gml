@@ -5,7 +5,6 @@ function UiText(text = "", style = {}, props = {}): UiNode(style, props) constru
     self.autoResize = props[$ "autoResize"] ?? (style[$ "width"] == undefined && style[$ "height"] == undefined) ?? true;
     self.halign = fa_left;
     self.valign = fa_top;
-    self.valueGetter = props[$ "valueGetter"];
     self.icon = props[$ "icon"];
     self.color = props[$ "color"] ?? c_white;
     self.font = props[$ "font"] ?? global.UI_FONTS.standard;
@@ -37,14 +36,6 @@ function UiText(text = "", style = {}, props = {}): UiNode(style, props) constru
     }
     
     self.onStep(function() {
-        if (self.valueGetter != undefined) {
-            var _newText = self.valueGetter();
-            if (_newText != self.value) {
-                self.value = _newText;
-                computeSize();
-            }
-        }
-        
         if (self.wrap) {
             var _currentWidth = self.x2 - self.x1;
             if (self.icon) _currentWidth -= 23;

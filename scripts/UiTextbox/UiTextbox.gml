@@ -7,7 +7,6 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
     setName(style[$ "name"] ?? "UiTextbox");
     self.label = props[$ "label"] ?? undefined;
     self.value = props[$ "value"] ?? "";
-    self.valueGetter = props[$ "valueGetter"] ?? undefined;
     if (props[$ "onChange"] != undefined) self.onChange(props[$ "onChange"]);
     self.maxLength = props[$ "maxLength"] ?? 255;
     draw_set_font(global.UI_FONTS.standard);
@@ -967,10 +966,5 @@ function UiTextbox(style = {}, props = {}): UiNode(style, props) constructor {
             if (self.parent.onBlur != undefined) self.parent.onBlur(self.parent.value, self.parent);
         }
     }
-    
-    // Update value from external source
-    self.onStep(function() {
-        if (self.valueGetter != undefined && !self.Input.focused) self.value = self.valueGetter();
-    });
     
 }

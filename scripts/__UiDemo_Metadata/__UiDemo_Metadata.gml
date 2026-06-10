@@ -87,8 +87,7 @@ function __ui_demo_get_component_metadata() {
             props: [
                 { name: "value", type: "color", desc: "Currently selected color" },
                 { name: "label", type: "string", desc: "Optional label next to the trigger swatch" },
-                { name: "onChange", type: "function", desc: "Callback: function(color, picker) on change" },
-                { name: "valueGetter", type: "function", desc: "External source for the current color" }
+                { name: "onChange", type: "function", desc: "Callback: function(color, picker) on change" }
             ]
         },
         "Badge": {

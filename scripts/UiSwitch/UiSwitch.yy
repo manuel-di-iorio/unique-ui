@@ -6,8 +6,8 @@
   "name":"UiSwitch",
   "parent":{
     "name":"UniqueUI",
-    "path":"folders/UniqueUI.yy"
+    "path":"folders/UniqueUI.yy",
   },
   "resourceType":"GMScript",
-  "resourceVersion":"2.0"
+  "resourceVersion":"2.0",
 }

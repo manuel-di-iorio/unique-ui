@@ -100,10 +100,14 @@ ui_test_suite("UiCheckbox", function() {
         cb.destroy();
     });
     
-    ui_test("valueGetter prop stored", function() {
-        var getter = function() { return true; };
-        var cb = new UiCheckbox({}, { valueGetter: getter });
-        assert_equal(cb.valueGetter, getter, "valueGetter stored");
+    ui_test("setValue updates value and fires onChange", function() {
+        var state = { received: undefined };
+        var cb = new UiCheckbox({}, {
+            onChange: method(state, function(value, input) { received = value; })
+        });
+        cb.setValue(true);
+        assert_true(cb.value, "value set to true");
+        assert_true(state.received, "onChange received true");
         cb.destroy();
     });
     

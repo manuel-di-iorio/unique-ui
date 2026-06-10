@@ -5,8 +5,7 @@ function UiSlider(style = {}, props = {}) : UiNode(style, props) constructor {
     self.valueEnd = props[$ "valueEnd"] ?? undefined;
     self.minValue = props[$ "min"] ?? 0;
     self.maxValue = props[$ "max"] ?? 100;
-    self.onChange = props[$ "onChange"] ?? function(value, input) {};
-    self.valueGetter = props[$ "valueGetter"] ?? undefined;
+    if (props[$ "onChange"] != undefined) self.onChange(props[$ "onChange"]);
     self.step = props[$ "step"] ?? 1;
     
     self.pointerEvents = true;
@@ -110,12 +109,6 @@ function UiSlider(style = {}, props = {}) : UiNode(style, props) constructor {
         }
     };
     
-    self.onStep(function() {
-        if (self.valueGetter != undefined && !self.dragging) {
-            self.value = self.valueGetter();
-        }
-    });
-    
     function updateValueFromMouse() {
         var mx = window_mouse_get_x();
         var t = clamp((mx - self.x1) / (self.x2 - self.x1), 0, 1);
@@ -128,27 +121,27 @@ function UiSlider(style = {}, props = {}) : UiNode(style, props) constructor {
         
         if (self.isRange) {
             if (self.draggingThumb == 1) {
-                // Update start thumb
                 if (rawVal > self.valueEnd) rawVal = self.valueEnd;
                 if (self.valueStart != rawVal) {
                     self.valueStart = rawVal;
-                    self.onChange([self.valueStart, self.valueEnd], self);
+                    for (var i = 0; i < array_length(self.__valueChangeListeners); i++) {
+                        self.__valueChangeListeners[i]([self.valueStart, self.valueEnd], self);
+                    }
                     global.UI.requestRedraw();
                 }
             } else if (self.draggingThumb == 2) {
-                // Update end thumb
                 if (rawVal < self.valueStart) rawVal = self.valueStart;
                 if (self.valueEnd != rawVal) {
                     self.valueEnd = rawVal;
-                    self.onChange([self.valueStart, self.valueEnd], self);
+                    for (var i = 0; i < array_length(self.__valueChangeListeners); i++) {
+                        self.__valueChangeListeners[i]([self.valueStart, self.valueEnd], self);
+                    }
                     global.UI.requestRedraw();
                 }
             }
         } else {
             if (self.value != rawVal) {
-                self.value = rawVal;
-                self.onChange(self.value, self);
-                global.UI.requestRedraw();
+                self.setValue(rawVal);
             }
         }
     }

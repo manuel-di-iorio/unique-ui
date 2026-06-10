@@ -7,7 +7,6 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
     setName(style[$ "name"] ?? "UiTextarea");
     self.label = props[$ "label"] ?? undefined;
     self.value = props[$ "value"] ?? "";
-    self.valueGetter = props[$ "valueGetter"] ?? undefined;
     if (props[$ "onChange"] != undefined) self.onChange(props[$ "onChange"]);
     self.onBlur = props[$ "onBlur"] ?? function(value, input) {};
     self.maxLength = props[$ "maxLength"] ?? 4000;
@@ -723,7 +722,4 @@ function UiTextarea(style = {}, props = {}): UiNode(style, props) constructor {
         };
     }
     
-    self.onStep(function() {
-        if (self.valueGetter != undefined && !self.Input.focused) self.value = self.valueGetter();
-    });
 }

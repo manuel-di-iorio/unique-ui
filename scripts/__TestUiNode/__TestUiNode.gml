@@ -96,13 +96,24 @@ ui_test_suite("UiNode", function() {
         n.destroy();
     });
     
-    ui_test("setValue with same value still fires listeners", function() {
+    ui_test("setValue with same value does not fire listeners", function() {
         var n = __make_node();
         var state = { count: 0 };
         n.onChange(method(state, function(v) { count++; }));
-        n.setValue("same");
-        n.setValue("same");
-        assert_equal(state.count, 2, "both setValue calls fired listeners");
+        n.setValue("first");
+        n.setValue("first");
+        assert_equal(state.count, 1, "listener fired only on actual change");
+        n.destroy();
+    });
+    
+    ui_test("setValue fires on distinct values", function() {
+        var n = __make_node();
+        var state = { count: 0 };
+        n.onChange(method(state, function(v) { count++; }));
+        n.setValue("a");
+        n.setValue("b");
+        n.setValue("a");
+        assert_equal(state.count, 3, "listener fired for each distinct value");
         n.destroy();
     });
     

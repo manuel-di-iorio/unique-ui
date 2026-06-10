@@ -24,7 +24,17 @@ ui_test_suite("UiSwitch", function() {
     ui_test("onChange callback fires", function() {
         var sw = new UiSwitch({}, {});
         var state = { val: false };
-        sw.onChange = method(state, function(v) { val = v; });
+        sw.onChange(method(state, function(v) { val = v; }));
+        sw.click();
+        assert_true(state.val, "callback fired with true");
+        sw.destroy();
+    });
+    
+    ui_test("onChange prop fires on click", function() {
+        var state = { val: false };
+        var sw = new UiSwitch({}, {
+            onChange: method(state, function(v) { val = v; })
+        });
         sw.click();
         assert_true(state.val, "callback fired with true");
         sw.destroy();
