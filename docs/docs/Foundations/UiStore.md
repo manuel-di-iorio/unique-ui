@@ -10,8 +10,10 @@ Zustand-inspired state management for GameMaker. Minimal, fast, selector-based s
 
 ## Performance Features
 
-- **Selector-based subscriptions**: Subscribe to specific values with `subscribe(selector, callback)` - only notified when selected value changes
-- **No deep clone on updates**: Changed keys tracking instead of full state cloning for O(k) performance where k = changed keys
+- **Direct mutation**: State is mutated directly instead of cloning - no variable_clone() bottleneck
+- **Selector-based subscriptions**: Subscribe to specific values with `subscribe(selector, callback, equalityFn?)` - only notified when selected value changes
+- **Custom equality functions**: Optional custom equality for struct/array selectors to avoid reference-based comparison issues
+- **Changed keys tracking**: Changed keys are passed to callbacks for optimization
 - **Middleware system**: Composable middleware for undo/redo, logging, validation, and more
 - **Replace mode**: `setState(partial, true)` for complete state replacement
 - **Change detection**: Only notifies subscribers when values actually change
@@ -90,7 +92,7 @@ store.setState(function(state) {
 
 Returns the value for `key`, or `defaultValue` if the key is not defined.
 
-**WARNING**: `get()` and `getState()` return live references to the state. Do not directly mutate arrays or structs obtained through these methods. Always use `set()` for modifications.
+**WARNING**: `get()` and `getState()` return live references to the state. Do not directly mutate arrays or structs obtained through these methods. Always use `setState()` for modifications.
 
 ```gml
 var count = store.get("counter", 0);
@@ -100,7 +102,7 @@ var count = store.get("counter", 0);
 
 Returns the live `state` struct reference. Prefer `get()` for reads unless you need the full struct.
 
-**WARNING**: Returns a live reference. Do not directly mutate arrays or structs obtained through this method. Always use `set()` for modifications.
+**WARNING**: Returns a live reference. Do not directly mutate arrays or structs obtained through this method. Always use `setState()` for modifications.
 
 ```gml
 // DON'T DO THIS - won't trigger reactivity
@@ -108,7 +110,7 @@ var items = store.get("items");
 array_push(items, "new item"); // ❌ No notification
 
 // DO THIS - will trigger reactivity
-store.set(function(state) {
+store.setState(function(state) {
     var newItems = array_copy(state.items);
     array_push(newItems, "new item");
     return { items: newItems }; // ✅ Notifies subscribers
@@ -139,9 +141,13 @@ Restores state to the initial snapshot passed to the constructor and notifies su
 store.reset();
 ```
 
-### `subscribe(selector, callback)`
+### `subscribe(selector, callback, equalityFn?)`
 
 Subscribe to state changes using a selector function. Only notified when the selected value changes.
+
+- `selector` (Function): Function(state) -> value to select
+- `callback` (Function): Callback receiving the new selected value (and optional changedKeys as second argument)
+- `equalityFn` (Function, optional): Custom equality function(a, b) -> bool for struct/array comparison
 
 Returns an unsubscribe function.
 
@@ -150,6 +156,18 @@ var unsubscribe = store.subscribe(
     function(state) { return state.counter; },
     function(count) {
         show_debug_message("Counter: " + string(count));
+    }
+);
+
+// With custom equality for struct selectors
+var unsubscribe2 = store.subscribe(
+    function(state) { return state.player; },
+    function(player) {
+        show_debug_message("Player updated");
+    },
+    function(a, b) {
+        // Custom equality for structs
+        return a.hp == b.hp && a.x == b.x && a.y == b.y;
     }
 );
 
@@ -239,10 +257,10 @@ label.bind(store, function(state) { return state.counter; }, "text", function(va
 
 ### Mutations
 
-Use `set()` with an updater function for cleaner state mutations when updating multiple related values.
+Use `setState()` with an updater function for cleaner state mutations when updating multiple related values.
 
 ```gml
-store.set(function(state) {
+store.setState(function(state) {
     return {
         x: state.x + 10,
         y: state.y + 10,
@@ -278,15 +296,20 @@ editorStore.redo();
 ## How Reactivity Works
 
 1. You call `setState()`, `remove()`, or `reset()`.
-2. Changed keys are tracked (no deep clone of prevState for performance).
-3. Middleware chain is applied - each middleware can transform or interrupt the update.
-4. `__notify()` iterates registered selector-based subscribers:
+2. State is mutated directly (no cloning for performance).
+3. Changed keys are tracked.
+4. Middleware chain is applied - each middleware can transform or interrupt the update.
+5. `__notify()` iterates registered selector-based subscribers in reverse order:
    - Only notifies subscribers when their selected value actually changed
+   - Custom equality functions can be used for struct/array comparison
+   - Changed keys are passed to callbacks as second argument
 
 There is no automatic two-way binding — you wire reads (`get()` / `getState()` / `subscribe`) and writes (`setState()`) explicitly, which keeps data flow predictable in GML.
 
 ## Performance Notes
 
-- **No deep clone on updates**: Changed keys are tracked instead of cloning the entire previous state. This makes updates O(k) where k is the number of changed keys, not O(n) where n is the total state size.
+- **Direct mutation**: State is mutated directly instead of cloning - no variable_clone() bottleneck. This is especially important for per-frame updates (mouseX, mouseY, scroll, hovered, focused).
 - **Selector-based subscriptions**: Only subscribers whose selected value changed are notified, preventing unnecessary callback executions.
+- **Custom equality functions**: Use custom equality for struct/array selectors to avoid reference-based comparison issues.
+- **Changed keys optimization**: Callbacks receive changed keys as second argument for selective filtering.
 - **Middleware is optional**: Core API is minimal and fast. Add middleware only when you need advanced features like undo/redo, logging, or persistence.

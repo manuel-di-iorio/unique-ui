@@ -1,7 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "__TestUiStore",
-  "isCompatibility": false,
-  "isDnD": false
+  "$GMScript":"v1",
+  "%Name":"__TestUiStore",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"__TestUiStore",
+  "parent":{
+    "name":"UniqueUI__Tests",
+    "path":"folders/UniqueUI__Tests.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

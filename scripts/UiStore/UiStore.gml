@@ -1,16 +1,25 @@
 /**
  * UiStore - Zustand-inspired state management for GameMaker
- * Minimal, fast, selector-based subscriptions
+ * Minimal, fast, selector-based subscriptions with direct mutation
  * 
  * Core API:
- * - setState(partialState | updater)
- * - getState()
- * - subscribe(selector, callback)
+ * - setState(partialState | updater) - Merge or replace state
+ * - getState() - Get full state
+ * - get(key, defaultValue) - Get single value
+ * - has(key) - Check if key exists
+ * - remove(key) - Delete key from state
+ * - reset() - Reset to initial state
+ * - subscribe(selector, callback, equalityFn) - Subscribe with optional custom equality
  * - use(middleware) - Add optional middleware
  */
 function UiStore(initialState = {}) constructor {
     self.state = initialState;
-    self.__initialState = variable_clone(initialState);
+    // Clone initialState to protect it from direct mutation via self.state
+    var _keys = variable_struct_get_names(initialState);
+    self.__initialState = {};
+    for (var i = 0; i < array_length(_keys); i++) {
+        self.__initialState[$ _keys[i]] = initialState[$ _keys[i]];
+    }
     self.__selectorListeners = []; // Selector-based subscribers: { id, selector, callback, lastValue }
     self.__nextSubscriberId = 0; // For robust unsubscribe
     self.__middleware = []; // Middleware chain
@@ -26,62 +35,65 @@ function UiStore(initialState = {}) constructor {
      * @param {Bool} replace If true, replace entire state instead of merging
      */
     self.setState = function(arg, replace = false) {
-        // Track changed keys for middleware (no clone, just keys)
         var _changedKeys = [];
         
-        // Calculate new state
-        var _newState;
+        // Compute pending state in temp struct (no mutation of self.state yet)
+        var _pending;
         if (is_callable(arg)) {
-            // Updater function: call it
             var _result = arg(self.state);
             if (replace) {
-                _newState = _result;
-                _changedKeys = variable_struct_get_names(_newState);
+                _pending = _result;
+                _changedKeys = variable_struct_get_names(_pending);
             } else {
-                // Merge result into current state
-                _newState = variable_clone(self.state);
+                var _curKeys = variable_struct_get_names(self.state);
+                _pending = {};
+                for (var i = 0, il = array_length(_curKeys); i < il; i++) {
+                    _pending[$ _curKeys[i]] = self.state[$ _curKeys[i]];
+                }
                 var _keys = variable_struct_get_names(_result);
                 for (var i = 0, il = array_length(_keys); i < il; i++) {
                     var _key = _keys[i];
-                    _newState[$ _key] = _result[$ _key];
+                    _pending[$ _key] = _result[$ _key];
                     array_push(_changedKeys, _key);
                 }
             }
         } else {
-            // Partial state struct
             if (replace) {
-                _newState = arg;
-                _changedKeys = variable_struct_get_names(_newState);
+                _pending = arg;
+                _changedKeys = variable_struct_get_names(_pending);
             } else {
-                // Merge into current state
-                _newState = variable_clone(self.state);
+                var _curKeys = variable_struct_get_names(self.state);
+                _pending = {};
+                for (var i = 0, il = array_length(_curKeys); i < il; i++) {
+                    _pending[$ _curKeys[i]] = self.state[$ _curKeys[i]];
+                }
                 var _keys = variable_struct_get_names(arg);
                 for (var i = 0, il = array_length(_keys); i < il; i++) {
                     var _key = _keys[i];
-                    _newState[$ _key] = arg[$ _key];
+                    _pending[$ _key] = arg[$ _key];
                     array_push(_changedKeys, _key);
                 }
             }
         }
         
         // Apply middleware - can transform or interrupt
-        // Middleware receives (changedKeys, newState, store)
-        var _finalState = _newState;
+        // Middleware receives (changedKeys, pendingState, store)
+        var _finalState = _pending;
         for (var i = 0; i < array_length(self.__middleware); i++) {
             var _result = self.__middleware[i](_changedKeys, _finalState, self);
             if (_result == false) {
-                // Middleware interrupted the update
-                return;
+                return self;
             }
             if (_result != undefined) {
-                // Middleware transformed the state
                 _finalState = _result;
             }
         }
         
-        // Apply final state
+        // Assign final state (always replace to ensure reference-based != comparison works)
         self.state = _finalState;
-        self.__notify();
+        
+        self.__notify(_changedKeys);
+        return self;
     };
     
     /**
@@ -106,26 +118,31 @@ function UiStore(initialState = {}) constructor {
      */
     self.remove = function(key) {
         if (variable_struct_exists(self.state, key)) {
-            var _newState = variable_clone(self.state);
-            variable_struct_remove(_newState, key);
             var _changedKeys = [key];
             
+            // Clone current state excluding the key
+            var _keys = variable_struct_get_names(self.state);
+            var _pending = {};
+            for (var i = 0; i < array_length(_keys); i++) {
+                if (_keys[i] != key) {
+                    _pending[$ _keys[i]] = self.state[$ _keys[i]];
+                }
+            }
+            
             // Apply middleware - can transform or interrupt
-            var _finalState = _newState;
+            var _finalState = _pending;
             for (var i = 0; i < array_length(self.__middleware); i++) {
                 var _result = self.__middleware[i](_changedKeys, _finalState, self);
                 if (_result == false) {
-                    // Middleware interrupted the update
                     return self;
                 }
                 if (_result != undefined) {
-                    // Middleware transformed the state
                     _finalState = _result;
                 }
             }
             
             self.state = _finalState;
-            self.__notify();
+            self.__notify(_changedKeys);
         }
         return self;
     };
@@ -134,25 +151,28 @@ function UiStore(initialState = {}) constructor {
      * Reset state to the initial snapshot passed to the constructor and notify subscribers. Returns `self`.
      */
     self.reset = function() {
-        var _newState = variable_clone(self.__initialState);
-        var _changedKeys = variable_struct_get_names(_newState);
+        var _changedKeys = variable_struct_get_names(self.__initialState);
+        
+        // Clone initial state into a fresh struct
+        var _freshState = {};
+        for (var i = 0; i < array_length(_changedKeys); i++) {
+            _freshState[$ _changedKeys[i]] = self.__initialState[$ _changedKeys[i]];
+        }
         
         // Apply middleware - can transform or interrupt
-        var _finalState = _newState;
+        var _finalState = _freshState;
         for (var i = 0; i < array_length(self.__middleware); i++) {
             var _result = self.__middleware[i](_changedKeys, _finalState, self);
             if (_result == false) {
-                // Middleware interrupted the update
                 return self;
             }
             if (_result != undefined) {
-                // Middleware transformed the state
                 _finalState = _result;
             }
         }
         
         self.state = _finalState;
-        self.__notify();
+        self.__notify(_changedKeys);
         return self;
     };
     
@@ -169,26 +189,35 @@ function UiStore(initialState = {}) constructor {
      * Subscribe to state updates using a selector function.
      * Only notifies when the selected value changes.
      * @param {Function} selector Function(state) -> value
-     * @param {Function} callback Callback receiving the new selected value
+     * @param {Function} callback Callback receiving the new selected value (and optional changedKeys)
+     * @param {Function} equalityFn Optional custom equality function(a, b) -> bool
      * @returns {Function} Unsubscribe function
      */
-    self.subscribe = function(selector, callback) {
+    self._unsubscribeByRef = function(sub) {
+        for (var i = array_length(self.__selectorListeners) - 1; i >= 0; i--) {
+            if (self.__selectorListeners[i] == sub) {
+                array_delete(self.__selectorListeners, i, 1);
+                break;
+            }
+        }
+    };
+    
+    self.subscribe = function(selector, callback, equalityFn = undefined) {
         var _initialValue = selector(self.state);
-        var _id = self.__nextSubscriberId++;
         var _subscriber = {
-            id: _id,
+            id: self.__nextSubscriberId,
             selector: selector,
             callback: callback,
-            lastValue: _initialValue
+            lastValue: _initialValue,
+            equalityFn: equalityFn
         };
+        self.__nextSubscriberId++;
         array_push(self.__selectorListeners, _subscriber);
         
-        return function() {
-            var _index = array_find_index(self.__selectorListeners, function(s) {
-                return s.id == _id;
-            });
-            if (_index != -1) array_delete(self.__selectorListeners, _index, 1);
-        };
+        var _storeRef = self;
+        return method({sub: _subscriber, store: _storeRef}, function() {
+            self.store._unsubscribeByRef(self.sub);
+        });
     };
     
     /**
@@ -207,13 +236,23 @@ function UiStore(initialState = {}) constructor {
     
     /**
      * Internal: notify all listeners.
+     * @param {Array} changedKeys Array of keys that changed in this update
      */
-    self.__notify = function() {
-        // Notify selector-based subscribers
-        for (var i = 0; i < array_length(self.__selectorListeners); i++) {
+    self.__notify = function(changedKeys = []) {
+        // Notify selector-based subscribers - reverse iteration to safely handle unsubscribe during callback
+        for (var i = array_length(self.__selectorListeners) - 1; i >= 0; i--) {
             var _sub = self.__selectorListeners[i];
             var _newValue = _sub.selector(self.state);
-            if (_newValue != _sub.lastValue) {
+            var _hasChanged = false;
+            
+            // Use custom equality function if provided
+            if (_sub.equalityFn != undefined) {
+                _hasChanged = !_sub.equalityFn(_newValue, _sub.lastValue);
+            } else {
+                _hasChanged = (_newValue != _sub.lastValue);
+            }
+            
+            if (_hasChanged) {
                 _sub.callback(_newValue);
                 _sub.lastValue = _newValue;
             }

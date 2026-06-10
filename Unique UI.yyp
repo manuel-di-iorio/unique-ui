@@ -87,6 +87,7 @@
     {"id":{"name":"__TestUiNode","path":"scripts/__TestUiNode/__TestUiNode.yy",},},
     {"id":{"name":"__TestUiRoot","path":"scripts/__TestUiRoot/__TestUiRoot.yy",},},
     {"id":{"name":"__TestUiSlider","path":"scripts/__TestUiSlider/__TestUiSlider.yy",},},
+    {"id":{"name":"__TestUiStore","path":"scripts/__TestUiStore/__TestUiStore.yy",},},
     {"id":{"name":"__TestUiSwitch","path":"scripts/__TestUiSwitch/__TestUiSwitch.yy",},},
     {"id":{"name":"__TestUiTabs","path":"scripts/__TestUiTabs/__TestUiTabs.yy",},},
     {"id":{"name":"__TestUiText","path":"scripts/__TestUiText/__TestUiText.yy",},},
