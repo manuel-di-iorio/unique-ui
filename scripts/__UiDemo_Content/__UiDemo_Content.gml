@@ -118,6 +118,9 @@ function __ui_demo_render_anteprima(area) {
     
     var codeLines = __ui_demo_render_component_example(global.UI_DEMO.currentPage, PreviewCard);
     
+    // Bottom spacer so the last item doesn't touch the border
+    PreviewCard.add(new UiNode({ width: "100%", height: 20, flexShrink: 0 }));
+    
     // Code Panel
     var CodePanel = new UiNode({ flexGrow: 1, height: "100%", padding: 24, flexDirection: "column" });
     CodePanel.onDraw = method(CodePanel, function() {
@@ -173,6 +176,7 @@ function __ui_demo_get_examples_map() {
         "MenuBar":     ui_demo_example_menubar,
         "Tooltip":     ui_demo_example_tooltip,
         "Treeview":    ui_demo_example_treeview,
+        "VirtualList (beta)": ui_demo_example_virtuallist,
         "Modal":       ui_demo_example_modal
     };
     return _map;

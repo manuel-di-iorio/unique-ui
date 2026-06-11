@@ -203,6 +203,21 @@ function __ui_demo_get_component_metadata() {
                 { name: "onAssetDrop", type: "function", desc: "Handles drag & drop between items" },
                 { name: "filter", type: "function", desc: "Filters items by name" }
             ]
+        },
+        "VirtualList (beta)": {
+            desc: "Virtual-scrolling list with fixed pool, lazy offset cache, and binary search. Renders only the visible window.",
+            props: [
+                { name: "value", type: "array", desc: "Array of raw data items to display" },
+                { name: "estimatedItemHeight", type: "number", desc: "Fallback height for unmeasured items (default 40)" },
+                { name: "buffer", type: "number", desc: "Extra items above/below the visible window (default 5)" },
+                { name: "renderItem", type: "function", desc: "function(index) → UiNode; called once per pool slot during construction" },
+                { name: "onBind", type: "function", desc: "function(index, node) updates an existing pool node to show value[index]" },
+                { name: "onChange", type: "function", desc: "function(newValue, node) fired when the dataset is replaced via setValue()" },
+                { name: "scrollbarColor", type: "color/function", desc: "Colour for the scrollbar thumb" },
+                { name: "getContentSize()", type: "method", desc: "Returns total virtual content height (O(1))" },
+                { name: "scrollToIndex(index)", type: "method", desc: "Scrolls so that the given data index is at the top" },
+                { name: "setValue(newValue)", type: "method", desc: "Replaces the dataset and resets scroll + cache" }
+            ]
         }
     };
 }

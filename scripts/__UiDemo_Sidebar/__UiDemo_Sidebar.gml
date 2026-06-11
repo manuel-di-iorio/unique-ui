@@ -9,7 +9,8 @@ function __ui_demo_render_sidebar() {
     __ui_demo_sidebar_item(parent, "Store");
     
     __ui_demo_sidebar_label(parent, "COMPONENTS", 20);
-    var comps = ["Button", "Textbox", "Textarea", "Select", "ColorPicker", "Checkbox", "Radio", "Switch", "Badge", "Alert", "Toast", "Card", "Tabs", "Tooltip", "Slider", "Accordion", "Sprite", "ContextMenu", "MenuBar", "Modal", "Treeview"];
+    var comps = ["Button", "Textbox", "Textarea", "Select", "ColorPicker", "Checkbox", "Radio", "Switch", "Badge", "Alert", "Toast", "Card", "Tabs", "Tooltip", "Slider", "Accordion", "Sprite", "ContextMenu", "MenuBar", "Modal", "Treeview", "VirtualList (beta)"];
+    array_sort(comps, true);
     for (var i = 0; i < array_length(comps); i++) {
         __ui_demo_sidebar_item(parent, comps[i]);
     }
@@ -96,6 +97,7 @@ function __ui_demo_sidebar_icon_name(text) {
         case "menubar": return sprUiIconMenuBar;
         case "modal": return sprUiIconModal;
         case "treeview": return sprUiIconTreeview;
+        case "virtuallist": return sprUiIconVirtualized;
         default: return sprUiIconButton;
     }
 }

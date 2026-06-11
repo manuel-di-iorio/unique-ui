@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ui_demo_example_virtuallist",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ui_demo_example_virtuallist",
+  "parent":{
+    "name":"VirtualList",
+    "path":"folders/Demo/Examples/VirtualList.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

@@ -249,10 +249,14 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
             var _treeX2 = elem.x2;
             var _treeY2 = elem.y2;
             if (!elem.isScrollbar && _scrollableParent != undefined) {
-                _treeX1 = max(_treeX1, _scrollableParent.x1);
-                _treeY1 = max(_treeY1, _scrollableParent.y1);
-                _treeX2 = min(_treeX2, _scrollableParent.x2);
-                _treeY2 = min(_treeY2, _scrollableParent.y2);
+                var _sp = _scrollableParent;
+                while (_sp != undefined) {
+                    _treeX1 = max(_treeX1, _sp.x1);
+                    _treeY1 = max(_treeY1, _sp.y1);
+                    _treeX2 = min(_treeX2, _sp.x2);
+                    _treeY2 = min(_treeY2, _sp.y2);
+                    _sp = _sp.scrollableParent;
+                }
             }
             
             // Check if element already has a valid proxy
@@ -337,10 +341,14 @@ function UiRoot(style = {}, props = {}): UiNode(style, props) constructor {
         var _x1 = elem.x1, _y1 = elem.y1, _x2 = elem.x2, _y2 = elem.y2;
         var _sp = elem[$ "scrollableParent"];
         if (!elem.isScrollbar && _sp != undefined) {
-            _x1 = max(_x1, _sp.x1);
-            _y1 = max(_y1, _sp.y1);
-            _x2 = min(_x2, _sp.x2);
-            _y2 = min(_y2, _sp.y2);
+            var _chainSP = _sp;
+            while (_chainSP != undefined) {
+                _x1 = max(_x1, _chainSP.x1);
+                _y1 = max(_y1, _chainSP.y1);
+                _x2 = min(_x2, _chainSP.x2);
+                _y2 = min(_y2, _chainSP.y2);
+                _chainSP = _chainSP.scrollableParent;
+            }
         }
         
         if (!variable_struct_exists(elem, "__spatialProxyId") || elem.__spatialProxyId == undefined) {

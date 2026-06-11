@@ -9,6 +9,7 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
     self.__maxThumbPosition = 0;
     self.__maxScroll = 0;
     self.thumbColor = props[$ "thumbColor"] ?? global.UI_COL_SCROLLBAR;
+    self.minThumbSize = props[$ "minThumbSize"] ?? 20;
     self.orientation = props[$ "orientation"] ?? "vertical";
     self.isVertical = self.orientation == "vertical";
     
@@ -101,18 +102,24 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
         self.__layoutFrames = layoutUpdated ? 2 : max(0, self.__layoutFrames - 1);
         
         if (self.__layoutFrames > 0) {
-            // Inline loop avoids function-call-per-child overhead of reduceChildren
-            var _pLayout = self.parent.layout;
             var _newContentSize = 0;
-            var _children = self.parent.children;
-            var _len = self.parent.childrenLength;
-            for (var i = 0; i < _len; i++) {
-                var _child = _children[i];
-                if (_child.isScrollbar) continue;
-                var m = _child[$ self.__marginName]();
-                if (is_undefined(m) || is_nan(m)) m = 0;
-                var childEdge = (_child.layout[$ self.__posName] + _child.layout[$ self.__propName]) - _pLayout[$ self.__posName] + m;
-                if (childEdge > _newContentSize) _newContentSize = childEdge;
+            
+            // Virtualised parents expose getContentSize() — O(1) instead of O(N).
+            if (variable_struct_exists(self.parent, "getContentSize") && self.parent.getContentSize != undefined) {
+                _newContentSize = self.parent.getContentSize();
+            } else {
+                // Inline loop avoids function-call-per-child overhead of reduceChildren
+                var _pLayout = self.parent.layout;
+                var _children = self.parent.children;
+                var _len = self.parent.childrenLength;
+                for (var i = 0; i < _len; i++) {
+                    var _child = _children[i];
+                    if (_child.isScrollbar) continue;
+                    var m = _child[$ self.__marginName]();
+                    if (is_undefined(m) || is_nan(m)) m = 0;
+                    var childEdge = (_child.layout[$ self.__posName] + _child.layout[$ self.__propName]) - _pLayout[$ self.__posName] + m;
+                    if (childEdge > _newContentSize) _newContentSize = childEdge;
+                }
             }
             
             var pPad = self.parent[$ self.__paddingName]();
@@ -122,7 +129,7 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
             if (_newContentSize != self.__contentSize || layoutUpdated) {
                 self.__contentSize = _newContentSize;
             
-                var _thumbSize = ~~(max(10, min(layoutSize, layoutSize * (layoutSize / max(1, self.__contentSize)))));
+                var _thumbSize = ~~(max(self.minThumbSize, min(layoutSize, layoutSize * (layoutSize / max(1, self.__contentSize)))));
                 
                 if (self.isVertical) {
                     if (_thumbSize != self.Thumb.getHeight()) self.Thumb.setHeight(_thumbSize);

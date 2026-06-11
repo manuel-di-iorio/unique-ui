@@ -487,18 +487,24 @@ function UiNode(style = {}, props = {}) constructor {
         var elemBottom = self.y2;
         var elemLeft = self.x1;
         var elemRight = self.x2;
-    
-        // Parent's visible area in absolute coordinates
-        var visibleTop = _scrollableParent.y1;
-        var visibleBottom = _scrollableParent.y2;
-        var visibleLeft = _scrollableParent.x1;
-        var visibleRight = _scrollableParent.x2;
 
-        // If fully outside then it is invisible
-        if (elemBottom < visibleTop || elemTop > visibleBottom || 
-            elemRight < visibleLeft || elemLeft > visibleRight) {
-            self.__scrollBoundsCachedValue = false;
-            return false;
+        // Walk the entire scrollable-parent chain.
+        // An element is only visible if it lies within EVERY ancestor's
+        // scrollable bounds (otherwise it is scissored out visually but the
+        // immediate parent check alone would still report it as visible).
+        var _sp = _scrollableParent;
+        while (_sp != undefined) {
+            var visibleTop = _sp.y1;
+            var visibleBottom = _sp.y2;
+            var visibleLeft = _sp.x1;
+            var visibleRight = _sp.x2;
+
+            if (elemBottom < visibleTop || elemTop > visibleBottom || 
+                elemRight < visibleLeft || elemLeft > visibleRight) {
+                self.__scrollBoundsCachedValue = false;
+                return false;
+            }
+            _sp = _sp.scrollableParent;
         }
     
         self.__scrollBoundsCachedValue = true;
