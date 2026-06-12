@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 64 64"
+     width="64"
+     height="64">
+
+    <path
+        fill="none"
+        stroke="#f8f8f8"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-miterlimit="10"
+        d="M 40.816496,23.305248
+           H 23.183503
+           V 9.1988541
+           c 0,-1.9396292 1.586971,-3.5265984 3.526598,-3.5265984
+           h 10.579797
+           c 1.93963,0 3.526598,1.5869692 3.526598,3.5265984
+           z" />
+
+    <path
+        fill="none"
+        stroke="#f8f8f8"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-miterlimit="10"
+        d="M 37.289897,58.571232
+           H 26.710101
+           c -1.939629,0 -3.526598,-1.586969 -3.526598,-3.526599
+           V 40.938239
+           h 17.632994
+           v 14.106394
+           c 0,1.93963 -1.586969,3.526599 -3.5266,3.526599
+           z" />
+
+    <rect
+        x="23.183504"
+        y="23.30525"
+        width="17.632992"
+        height="17.632992"
+        fill="none"
+        stroke="#f8f8f8"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-miterlimit="10" />
+
+    <polyline
+        points="28.473402,16.255452 32,12.728854 35.526599,16.255452"
+        fill="none"
+        stroke="#f8f8f8"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-miterlimit="10" />
+
+    <polyline
+        points="35.526599,47.978839 32,51.505437 28.473402,47.978839"
+        fill="none"
+        stroke="#f8f8f8"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-miterlimit="10" />
+
+</svg>

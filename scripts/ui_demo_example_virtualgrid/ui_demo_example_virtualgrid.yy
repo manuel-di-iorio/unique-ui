@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ui_demo_example_virtualgrid",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ui_demo_example_virtualgrid",
+  "parent":{
+    "name":"VirtualGrid",
+    "path":"folders/Demo/Examples/VirtualGrid.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

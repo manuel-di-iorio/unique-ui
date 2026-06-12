@@ -96,7 +96,40 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
                 return false;
             }));
         } else {
-            // Horizontal wheel
+            self.parent.onWheelUp(method(self, function(ev) {
+                if (self.parent == undefined) return;
+                var _prevTop = self.parent.scrollTop;
+                var _prevLeft = self.parent.scrollLeft;
+
+                if (!keyboard_check(vk_shift) || self.parent.__UiScrollbar == undefined) {
+                    self.parent.scrollLeft = max(0, self.parent.scrollLeft - 60);
+                    if (self.parent.scrollLeft > self.__maxScroll) self.parent.scrollLeft = self.__maxScroll;
+                }
+
+                if (self.parent.scrollTop != _prevTop || self.parent.scrollLeft != _prevLeft) {
+                    global.UI.requestUpdate();
+                    global.UI.requestRedraw();
+                    return true;
+                }
+                return false;
+            }));
+
+            self.parent.onWheelDown(method(self, function(ev) {
+                if (self.parent == undefined) return;
+                var _prevTop = self.parent.scrollTop;
+                var _prevLeft = self.parent.scrollLeft;
+
+                if (!keyboard_check(vk_shift) || self.parent.__UiScrollbar == undefined) {
+                    self.parent.scrollLeft = min(self.__maxScroll, self.parent.scrollLeft + 60);
+                }
+
+                if (self.parent.scrollTop != _prevTop || self.parent.scrollLeft != _prevLeft) {
+                    global.UI.requestUpdate();
+                    global.UI.requestRedraw();
+                    return true;
+                }
+                return false;
+            }));
         }
     }
     

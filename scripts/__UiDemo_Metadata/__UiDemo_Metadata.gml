@@ -204,6 +204,32 @@ function __ui_demo_get_component_metadata() {
                 { name: "filter", type: "function", desc: "Filters items by name" }
             ]
         },
+        "Scrollbar": {
+            desc: "Vertical or horizontal scrollbar with proportional thumb sizing, wheel support, and click-and-drag.",
+            props: [
+                { name: "thumbColor", type: "color/function", desc: "Color for the scrollbar thumb" },
+                { name: "minThumbSize", type: "number", desc: "Minimum thumb size in pixels (default 30)" },
+                { name: "orientation", type: "string", desc: "'vertical' (default) or 'horizontal'" }
+            ]
+        },
+        "VirtualGrid (WIP)": {
+            desc: "Virtual-scrolling 2D grid with row pooling, lazy offset cache, and binary search. Renders only visible rows.",
+            props: [
+                { name: "value", type: "array", desc: "2D array of data items (array of rows)" },
+                { name: "estimatedRowHeight", type: "number", desc: "Fallback height for unmeasured rows (default 40)" },
+                { name: "estimatedColumnWidth", type: "number", desc: "Fallback width for columns (default 120)" },
+                { name: "buffer", type: "number", desc: "Extra rows above/below the visible window (default 3)" },
+                { name: "numColumns", type: "number", desc: "Fixed column count (auto-detected from data if omitted)" },
+                { name: "renderCell", type: "function", desc: "function(rowIndex, colIndex) → UiNode; called once per pool slot per column" },
+                { name: "onBind", type: "function", desc: "function(rowIndex, colIndex, node) updates an existing cell node" },
+                { name: "onChange", type: "function", desc: "function(newValue, grid) fired when the dataset is replaced via setValue()" },
+                { name: "scrollbarColor", type: "color/function", desc: "Color for the vertical scrollbar thumb" },
+                { name: "scrollbarColorH", type: "color/function", desc: "Color for the horizontal scrollbar thumb (defaults to scrollbarColor)" },
+                { name: "getContentSize()", type: "method", desc: "Returns total virtual content height (O(1))" },
+                { name: "scrollToIndex(index)", type: "method", desc: "Scrolls so that the given row index is at the top" },
+                { name: "setValue(newValue)", type: "method", desc: "Replaces the dataset and resets scroll + cache" }
+            ]
+        },
         "VirtualList": {
             desc: "Virtual-scrolling list with fixed pool, lazy offset cache, and binary search. Renders only the visible window.",
             props: [

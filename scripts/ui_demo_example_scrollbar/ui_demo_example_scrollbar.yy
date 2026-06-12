@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ui_demo_example_scrollbar",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ui_demo_example_scrollbar",
+  "parent":{
+    "name":"Scrollbar",
+    "path":"folders/Demo/Examples/Scrollbar.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

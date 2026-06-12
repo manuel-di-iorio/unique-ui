@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"__TestUiVirtualGrid",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"__TestUiVirtualGrid",
+  "parent":{
+    "name":"UniqueUI__Tests",
+    "path":"folders/UniqueUI__Tests.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
