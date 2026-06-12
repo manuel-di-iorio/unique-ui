@@ -20,7 +20,8 @@ function UiVirtualContainer(_dataLength, _estimatedItemHeight) constructor {
 
         for (var i = max(0, self.__lastMeasuredIndex + 1); i <= index; i++) {
             self.__itemOffsets[i] = offset;
-            var h = (i < array_length(self.__itemHeights)) ? self.__itemHeights[i] : self.__estimatedItemHeight;
+            var h = (i < array_length(self.__itemHeights) && self.__itemHeights[i] > 0) 
+                ? self.__itemHeights[i] : self.__estimatedItemHeight;
             self.__itemHeights[i] = h;
             offset += h;
         }
@@ -62,7 +63,7 @@ function UiVirtualContainer(_dataLength, _estimatedItemHeight) constructor {
             var mid = (low + high) >> 1;
             var midOffset = self.getItemOffset(mid);
 
-            if (midOffset < offset)
+            if (midOffset <= offset)
                 low = mid + 1;
             else
                 high = mid - 1;

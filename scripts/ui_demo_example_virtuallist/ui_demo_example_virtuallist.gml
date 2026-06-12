@@ -43,7 +43,7 @@ function ui_demo_example_virtuallist(PreviewCard) {
 
     __ui_demo_preview_section(PreviewCard, "Variable height - 500 items");
     PreviewCard.add(new UiText(
-        "Items cycle through 5 distinct heights (40–120 px). Each height group has a unique left accent colour. " +
+        "Items cycle through 5 distinct heights (40-120 px). Each height group has a unique left accent colour. " +
         "The offset cache tracks measurements and binary search finds the visible window in O(log N).",
         { width: "100%", marginBottom: 16 },
         { color: global.UI_COL_TEXT_2, wrap: true }

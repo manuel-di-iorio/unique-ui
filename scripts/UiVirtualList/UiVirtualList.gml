@@ -23,14 +23,17 @@ function UiVirtualList(style = {}, props = {}) : UiNode(style, props) constructo
     if (props[$ "onChange"] != undefined) self.onChange(props[$ "onChange"]);
 
     // ── Internal state ───────────────────────────────────────────────────────
-    self.__poolSize       = 0;
-    self.__pool           = [];
-    self.__spacerTop      = undefined;
-    self.__spacerBottom   = undefined;
-    self.__visibleStart   = -1;
-    self.__visibleEnd     = -1;
-    self.__prevScrollTop  = 0;
-    self.__recyclePending = true;
+    self.__poolSize          = 0;
+    self.__pool              = [];
+    self.__spacerTop         = undefined;
+    self.__spacerBottom      = undefined;
+    self.__visibleStart      = -1;
+    self.__visibleEnd        = -1;
+    self.__prevScrollTop     = 0;
+    self.__recyclePending    = true;
+    self.__recycleCounter    = 0;
+    self.__measureScheduled  = false;
+    self.__bindingsChanged   = false;
 
     // Virtual container: lazy offset cache + binary search
     self.__virtualContainer = new UiVirtualContainer(
@@ -58,10 +61,18 @@ function UiVirtualList(style = {}, props = {}) : UiNode(style, props) constructo
 
     // Pool nodes — always present, never added / removed after construction
     for (var i = 0; i < self.__poolSize; i++) {
-        var node = (self.__renderItem != undefined)
-            ? self.__renderItem(i)
-            : new UiNode({ width: "100%", height: self.__estimatedItemHeight, flexShrink: 0 });
+        var node;
+        if (self.__renderItem != undefined) {
+            var wrapper = new UiNode({ width: "100%", flexShrink: 0 });
+            var content = self.__renderItem(i);
+            wrapper.__virtualContent = content;
+            wrapper.add(content);
+            node = wrapper;
+        } else {
+            node = new UiNode({ width: "100%", height: self.__estimatedItemHeight, flexShrink: 0 });
+        }
         node.__virtualIndex = -1;
+        node.__bindCycle = -1;
         node.hide();
         self.__pool[i] = node;
         self.add(node);
@@ -76,16 +87,32 @@ function UiVirtualList(style = {}, props = {}) : UiNode(style, props) constructo
 
     // ── Step handler ─────────────────────────────────────────────────────────
     self.onStep(function(layoutUpdated) {
-        // 1. Measure actual heights after layout settles
-        if (layoutUpdated) {
-            self.__measureHeights();
+        // Invalidate offset cache when recycle is pending (e.g. after setValue)
+        if (self.__recyclePending) {
+            self.__virtualContainer.__lastMeasuredIndex = -1;
         }
 
-        // 2. Recycle when scroll position changes or after measurement
+        // Step 1a: Measure settled layout heights from a PRIOR bind cycle.
+        // `__measureScheduled` was set true on a previous frame (see step 1b).
+        // At this point layout.height reflects the post-onBind settled geometry
+        // because a full layout recalculation happened between frames.
+        if (self.__measureScheduled && layoutUpdated) {
+            self.__measureHeights();
+            self.__measureScheduled = false;
+        }
+
+        // Step 1b: Recycle — bind pool nodes to the correct data indices.
         if (self.__recyclePending || layoutUpdated || self.__prevScrollTop != self.scrollTop) {
             self.__prevScrollTop = self.scrollTop;
             self.__recycle();
             self.__recyclePending = false;
+            // Schedule measurement for the NEXT layout-settled frame when
+            // actual bindings changed (onBind called setHeight, making layout
+            // dirty).  This assignment happens AFTER the measurement check
+            // above, creating a natural one-frame delay.
+            if (self.__bindingsChanged) {
+                self.__measureScheduled = true;
+            }
         }
     });
 
@@ -96,13 +123,18 @@ function UiVirtualList(style = {}, props = {}) : UiNode(style, props) constructo
     //  Internal methods
     // ═════════════════════════════════════════════════════════════════════════
 
-    /// Measure layout heights of currently visible pool nodes and update the
-    /// offset cache.
+    /// Measure layout heights of nodes bound in the CURRENT recycle cycle
+    /// (`__bindCycle == __recycleCounter`) and update the offset cache.
+    /// Nodes bound in prior cycles are skipped, preserving the cache across
+    /// tab switches (avoids overwriting with stale construction heights).
     static __measureHeights = function() {
         for (var i = 0; i < self.__poolSize; i++) {
             var node = self.__pool[i];
-            if (node.__virtualIndex >= 0 && node.display) {
-                self.__virtualContainer.setItemHeight(node.__virtualIndex, node.layout.height);
+            if (node.__virtualIndex >= 0 && node.display &&
+                node.__bindCycle == self.__recycleCounter && !node.__measuredThisCycle) {
+                var measured = node.__virtualContent ?? node;
+                self.__virtualContainer.setItemHeight(node.__virtualIndex, measured.layout.height);
+                node.__measuredThisCycle = true;
             }
         }
     };
@@ -125,6 +157,9 @@ function UiVirtualList(style = {}, props = {}) : UiNode(style, props) constructo
             return;
         }
 
+        self.__recycleCounter++;
+        self.__bindingsChanged = false;
+
         var scrollTop = self.scrollTop;
 
         // Find the visible window via binary search
@@ -145,15 +180,23 @@ function UiVirtualList(style = {}, props = {}) : UiNode(style, props) constructo
         var poolIdx = 0;
         for (var i = startIndex; i <= endIndex; i++) {
             var node = self.__pool[poolIdx];
+            var bindNode = node.__virtualContent ?? node;
 
-            // Sync height from cache first, then allow onBind to override.
-            // This avoids the initial-cycle bug where getItemHeight returns the
-            // estimate (e.g. 40) and overwrites the actual height set by onBind.
-            node.setHeight(self.__virtualContainer.getItemHeight(i));
+            // When a renderItem wrapper is used, skip explicit height on the
+            // wrapper — it auto-sizes to its content via flexbox (no overlap).
+            // For non-renderItem nodes, set height directly from cache.
+            if (node.__virtualContent == undefined) {
+                node.setHeight(self.__virtualContainer.getItemHeight(i));
+            }
 
             if (node.__virtualIndex != i) {
-                node.__virtualIndex = i;
-                if (self.onBind != undefined) self.onBind(i, node);
+                node.__virtualIndex    = i;
+                node.__bindCycle       = self.__recycleCounter;
+                node.__measuredThisCycle = false;
+                if (self.onBind != undefined) {
+                    self.onBind(i, bindNode);
+                    self.__bindingsChanged = true;
+                }
             }
 
             node.show();
@@ -199,10 +242,11 @@ function UiVirtualList(style = {}, props = {}) : UiNode(style, props) constructo
     };
 
     /// Replace the dataset and reset scroll + cache.
-    static setValue = function(newValue) {
+    /// NOTE: assigned to self (not static) to override UiNode.setValue.
+    self.setValue = function(newValue) {
         if (self.value == newValue) return self;
         self.value = newValue;
-        self.__virtualContainer.reset(array_length(newValue));
+        self.__virtualContainer = new UiVirtualContainer(array_length(newValue), self.__estimatedItemHeight);
         self.scrollTop = 0;
         self.__prevScrollTop = 0;
         self.__recyclePending = true;
@@ -216,7 +260,7 @@ function UiVirtualList(style = {}, props = {}) : UiNode(style, props) constructo
     };
 
     /// @deprecated Use setValue() instead.
-    static setData = function(newData) {
+    self.setData = function(newData) {
         return self.setValue(newData);
     };
 }

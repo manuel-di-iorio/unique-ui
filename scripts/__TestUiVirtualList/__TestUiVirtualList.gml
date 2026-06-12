@@ -59,8 +59,9 @@ ui_test_suite("UiVirtualList", function() {
         });
         // should not throw for out of range indices
         list.scrollToIndex(-5);
+        assert_equal(list.scrollTop, 0, "negative → 0");
         list.scrollToIndex(100);
-        assert_equal(list.scrollTop, 0, "clamped to 0");
+        assert_equal(list.scrollTop, 80, "too-large → last offset (2*40)");
         list.destroy();
     });
 
@@ -92,17 +93,17 @@ ui_test_suite("UiVirtualList", function() {
     // ── renderItem + onBind ──────────────────────────────────────────────────
 
     ui_test("renderItem is called during construction for each pool slot", function() {
-        var callCount = 0;
+        var state = { callCount: 0 };
         var list = new UiVirtualList({ width: "100%", height: 200 }, {
             value: [1, 2, 3, 4, 5],
             estimatedItemHeight: 40,
-            renderItem: method({}, function(index) {
-                callCount++;
+            renderItem: method(state, function(index) {
+                self.callCount++;
                 return new UiNode({ width: "100%", height: 40 });
             })
         });
-        assert_greater(callCount, 0, "renderItem was called");
-        assert_equal(callCount, list.__poolSize, "called once per pool slot");
+        assert_greater(state.callCount, 0, "renderItem was called");
+        assert_equal(state.callCount, list.__poolSize, "called once per pool slot");
         list.destroy();
     });
 
@@ -145,7 +146,7 @@ ui_test_suite("UiVirtualList", function() {
             estimatedItemHeight: 20,
             buffer: 50
         });
-        assert_less_equal(list.__poolSize, 200, "clamped to 200 max");
+        assert_true(list.__poolSize <= 200, "clamped to 200 max");
         list.destroy();
     });
 

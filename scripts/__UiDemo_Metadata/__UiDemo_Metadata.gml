@@ -204,7 +204,7 @@ function __ui_demo_get_component_metadata() {
                 { name: "filter", type: "function", desc: "Filters items by name" }
             ]
         },
-        "VirtualList (beta)": {
+        "VirtualList": {
             desc: "Virtual-scrolling list with fixed pool, lazy offset cache, and binary search. Renders only the visible window.",
             props: [
                 { name: "value", type: "array", desc: "Array of raw data items to display" },

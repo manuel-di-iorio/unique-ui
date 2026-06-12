@@ -71,7 +71,7 @@ ui_test_suite("UiVirtualContainer", function() {
         c.setItemHeight(3, 100);
         assert_equal(c.getItemHeight(3), 100, "stored height");
         assert_equal(c.getItemOffset(3), 3 * 40, "offset 3 still 120 (pre-invalidation)");
-        assert_equal(c.getItemOffset(5), 40+40+40+100+40+40, "recomputed from index 3");
+        assert_equal(c.getItemOffset(5), 40+40+40+100+40, "recomputed from index 3");
         assert_equal(c.getItemHeight(3), 100, "height preserved after recompute");
     });
 
@@ -147,7 +147,7 @@ ui_test_suite("UiVirtualContainer", function() {
         // 0:0@40, 1:40@80, 2:120@40, 3:160@20, 4:180@40
         assert_equal(c.findNearestItem(30), 0, "30 → 0");
         assert_equal(c.findNearestItem(40), 1, "40 → 1");
-        assert_equal(c.findNearestItem(119), 2, "119 → 2");
+        assert_equal(c.findNearestItem(119), 1, "119 → 1 (still within item 1 [40,120))");
         assert_equal(c.findNearestItem(120), 2, "120 → 2 (offset of idx 2)");
         assert_equal(c.findNearestItem(160), 3, "160 → 3");
         assert_equal(c.findNearestItem(179), 3, "179 → 3");

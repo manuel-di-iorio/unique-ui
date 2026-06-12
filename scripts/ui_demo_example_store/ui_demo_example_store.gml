@@ -1,73 +1,75 @@
 function ui_demo_example_store(PreviewCard) {
-    // --- Intro ---
+    // --- Intro: value / setValue / onChange (push-based) ---
     PreviewCard.add(new UiText(
-        "UiStore is a lightweight reactive state container. When you call set(), " +
-        "all subscribers are notified immediately. " +
-        "UiStore also calls global.UI.requestRedraw() so bound UI updates on the next frame.",
+        "Every UiNode supports push-based reactive state via value, setValue(), and onChange(). " +
+        "Components like UiText, UiSwitch, UiSlider, UiVirtualList all inherit these from UiNode.",
         { width: "100%", marginBottom: 16 },
         { color: global.UI_COL_TEXT_2, wrap: true }
     ));
 
-    // --- Counter demo (subscribe) ---
-    __ui_demo_preview_section(PreviewCard, "Subscribe & set()");
+    // --- Demo A: direct setValue() ---
+    __ui_demo_preview_section(PreviewCard, "Direct setValue() — no store needed");
 
-    var counterStore = new UiStore({ count: 0 });
-
-    var counterRow = new UiNode({
+    var dirRow = new UiNode({
         width: "100%",
         flexDirection: "row",
         alignItems: "center",
         padding: 16,
         marginBottom: 28
     });
-    counterRow.onDraw = method(counterRow, function() {
+    dirRow.onDraw = method(dirRow, function() {
         draw_set_color(global.UI_COL_SURFACE_0);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
         draw_set_color(global.UI_COL_BORDER_1);
         draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
     });
 
-    var counterLabel = new UiText("Count: 0", { marginRight: 16 }, { color: global.UI_COL_TEXT_1, font: global.UI_FONTS.big });
-    counterStore.subscribe(method(counterLabel, function(state) {
-        self.value = "Count: " + string(state.count);
+    var state = { count: 0 };
+    var dirLabel = new UiText("Clicks: 0", { marginRight: 16 }, { color: global.UI_COL_TEXT_1, font: global.UI_FONTS.big });
+    var dirBtn = new UiButton("Click me", { height: 36 }, { variant: "primary" });
+    dirBtn.onClick(method({ label: dirLabel, s: state }, function() {
+        self.s.count++;
+        self.label.setValue("Clicks: " + string(self.s.count));
     }));
 
-    var decBtn = new UiButton("-", { width: 40, height: 36, marginRight: 8 }, { variant: "outline" });
-    decBtn.onClick(method(counterStore, function() {
-        self.set({ count: self.get("count") - 1 });
-    }));
+    dirRow.add(dirLabel);
+    dirRow.add(dirBtn);
+    PreviewCard.add(dirRow);
 
-    var incBtn = new UiButton("+", { width: 40, height: 36, marginRight: 16 }, { variant: "primary" });
-    incBtn.onClick(method(counterStore, function() {
-        self.set({ count: self.get("count") + 1 });
-    }));
+    // --- Demo B: onChange listener ---
+    __ui_demo_preview_section(PreviewCard, "onChange() listener");
 
-    counterRow.add(counterLabel);
-    counterRow.add(decBtn);
-    counterRow.add(incBtn);
-    PreviewCard.add(counterRow);
+    var onChangeRow = new UiNode({
+        width: "100%",
+        flexDirection: "column",
+        padding: 16,
+        marginBottom: 28
+    });
+    onChangeRow.onDraw = method(onChangeRow, function() {
+        draw_set_color(global.UI_COL_SURFACE_0);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
+        draw_set_color(global.UI_COL_BORDER_1);
+        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
+    });
 
-    // --- Push-based API note ---
-    __ui_demo_preview_section(PreviewCard, "Push-Based API (value / setValue / onChange)");
+    var echoLabel = new UiText("Waiting…", { marginBottom: 8 }, { color: global.UI_COL_TEXT_2 });
+    var echoInput = new UiTextbox({ width: 200, height: 32 }, {
+        placeholder: "Type something…",
+        onChange: method(echoLabel, function(val, _comp) {
+            self.setValue(val != "" ? "You typed: " + val : "Waiting…");
+        })
+    });
+    onChangeRow.add(echoInput);
+    onChangeRow.add(echoLabel);
+    PreviewCard.add(onChangeRow);
+
+    // --- Demo C: UiStore with subscribe + setValue ---
+    __ui_demo_preview_section(PreviewCard, "UiStore — subscribe() + setValue()");
 
     PreviewCard.add(new UiText(
-        "Every UiNode supports push-based reactivity via setValue(newValue) and onChange(cb), " +
-        "independent of UiStore. Components inherit these from UiNode.\n\n" +
-        "UiStore.connect(component, keys...) is not needed: just subscribe to the store " +
-        "and call setValue() on the component to sync it.",
-        { width: "100%", marginBottom: 16 },
-        { color: global.UI_COL_TEXT_2, wrap: true }
-    ));
-
-    // --- Two-way sync demo ---
-    __ui_demo_preview_section(PreviewCard, "Shared State (subscribe & setValue)");
-
-    PreviewCard.add(new UiText(
-        "Multiple components can read and write the same store. Use subscribe + setValue " +
-        "for read binding, and onChange to write back with set().\n\n" +
-        "IMPORTANT: Pass the store's initial value via the component's value prop so the " +
-        "UI matches the store from frame one, before any state change fires.",
-        { width: "100%", marginBottom: 16 },
+        "UiStore is a lightweight reactive state container. Subscribe to changes and sync " +
+        "components via setValue(). Write back via onChange.",
+        { width: "100%", marginBottom: 12 },
         { color: global.UI_COL_TEXT_2, wrap: true }
     ));
 
@@ -124,90 +126,43 @@ function ui_demo_example_store(PreviewCard) {
     syncCard.add(volumeSlider);
     PreviewCard.add(syncCard);
 
-    // --- Batch & reset demo ---
-    __ui_demo_preview_section(PreviewCard, "set(), reset() & Side Effects");
-
-    PreviewCard.add(new UiText(
-        "set() merges multiple keys in a single notification. reset() restores the initial " +
-        "state snapshot. subscribe() is ideal for side effects, logging, or audio updates.",
-        { width: "100%", marginBottom: 16 },
-        { color: global.UI_COL_TEXT_2, wrap: true }
-    ));
-
-    var batchStore = new UiStore({ label: "Ready", level: 1 });
-
-    var batchRow = new UiNode({
-        width: "100%",
-        flexDirection: "row",
-        alignItems: "center",
-        flexWrap: "wrap",
-        padding: 16,
-        marginBottom: 12
-    });
-    batchRow.onDraw = method(batchRow, function() {
-        draw_set_color(global.UI_COL_SURFACE_0);
-        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, false);
-        draw_set_color(global.UI_COL_BORDER_1);
-        draw_roundrect_ext(self.x1, self.y1, self.x2, self.y2, 8, 8, true);
-    });
-
-    var batchLabel = new UiText("Ready - Level 1", { marginRight: 40, marginBottom: 8 }, { color: global.UI_COL_TEXT_1 });
-    batchStore.subscribe(method(batchLabel, function(state) {
-        self.value = state.label + " - Level " + string(state.level);
-    }));
-
-    var levelUpBtn = new UiButton("Level Up", { height: 34, marginRight: 8, marginBottom: 8 }, { variant: "primary" });
-    levelUpBtn.onClick(method(batchStore, function() {
-        self.set({ label: "Level Up!", level: self.get("level") + 1 });
-    }));
-
-    var resetBtn = new UiButton("Reset", { height: 34, marginBottom: 8 }, { variant: "outline" });
-    resetBtn.onClick(method(batchStore, function() {
-        self.reset();
-    }));
-
-    batchRow.add(batchLabel);
-    batchRow.add(levelUpBtn);
-    batchRow.add(resetBtn);
-    PreviewCard.add(batchRow);
-
     // --- API reference table ---
-    __ui_demo_preview_section(PreviewCard, "API Reference", 16);
+    __ui_demo_preview_section(PreviewCard, "UiStore API", 16);
     var apiGrid = new UiNode({ flexDirection: "column", width: "100%" });
     PreviewCard.add(apiGrid);
-    __ui_demo_doc_row(apiGrid, "set(partial)", "method", "Update state (merge or replace with second param)");
+    __ui_demo_doc_row(apiGrid, "set(partial, replace?)", "method", "Merge or replace state, notify subscribers");
     __ui_demo_doc_row(apiGrid, "get(key, default?)", "method", "Read a value (returns default if missing)");
+    __ui_demo_doc_row(apiGrid, "subscribe(cb)", "method", "Register callback on every state change");
+    __ui_demo_doc_row(apiGrid, "reset()", "method", "Restore initial state snapshot");
     __ui_demo_doc_row(apiGrid, "has(key)", "method", "Check if a key exists in state");
     __ui_demo_doc_row(apiGrid, "remove(key)", "method", "Remove a key and notify subscribers");
-    __ui_demo_doc_row(apiGrid, "reset()", "method", "Restore initial state and notify subscribers");
-    __ui_demo_doc_row(apiGrid, "subscribe(cb)", "method", "Register callback on state changes");
     __ui_demo_doc_row(apiGrid, "use(middleware)", "method", "Add custom middleware (undo/redo, logging, etc.)");
-    __ui_demo_doc_row(apiGrid, ".state", "variable", "Return the live state struct reference");
 
     return [
-        "// Create a store with initial state",
-        "var store = new UiStore({ count: 0, enabled: true });",
+        "// Push-based API: value / setValue / onChange",
+        "var label = new UiText(\"Hello\", {});",
+        "label.setValue(\"World\");",
         "",
-        "// Subscribe - fires when state changes",
-        "store.subscribe(function(state) {",
-        "    self.value = \"Count: \" + string(state.count);",
+        "label.onChange(function(val, component) {",
+        "    show_debug_message(\"label changed to \" + val);",
         "});",
         "",
-        "// Update state (merge)",
-        "store.set({ count: store.get(\"count\") + 1 });",
+        "// UiStore — lightweight reactive state",
+        "var store = new UiStore({ count: 0 });",
         "",
-        "// Replace entire state",
-        "store.set({ count: 0, enabled: false }, true);",
+        "// Subscribe → setValue (store to component)",
+        "store.subscribe(function(state) {",
+        "    self.setValue(\"Count: \" + string(state.count));",
+        "});",
         "",
-        "// Read / check / remove",
-        "var val = store.get(\"count\", 0);",
-        "if (store.has(\"enabled\")) store.remove(\"enabled\");",
+        "// onChange → store.set() (component to store)",
+        "var slider = new UiSlider({}, {",
+        "    value: store.get(\"count\", 0),",
+        "    onChange: function(val) {",
+        "        store.set({ count: val });",
+        "    }",
+        "});",
         "",
-        "// Reset to initial snapshot",
-        "store.reset();",
-        "",
-        "// Unsubscribe when done",
-        "var unsubscribe = store.subscribe(callback);",
-        "unsubscribe();",
+        "store.set({ count: 5 });",
     ];
 }

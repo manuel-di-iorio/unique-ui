@@ -9,13 +9,27 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
     self.__maxThumbPosition = 0;
     self.__maxScroll = 0;
     self.thumbColor = props[$ "thumbColor"] ?? global.UI_COL_SCROLLBAR;
-    self.minThumbSize = props[$ "minThumbSize"] ?? 20;
+    self.minThumbSize = props[$ "minThumbSize"] ?? 30;
     self.orientation = props[$ "orientation"] ?? "vertical";
     self.isVertical = self.orientation == "vertical";
     
     // Cache orientation-dependent property names (never change after construction)
     self.__propName = self.isVertical ? "height" : "width";
     self.__posName = self.isVertical ? "top" : "left";
+
+    // Track background drawn behind the thumb
+    self.onDraw = method(self, function() {
+        if (self.__maxScroll <= 0) return;
+        var col = (typeof(self.thumbColor) == "method") ? self.thumbColor() : self.thumbColor;
+        draw_set_color(col);
+        draw_set_alpha(0.12);
+        if (self.isVertical) {
+            draw_roundrect_ext(self.x1 + 3, self.y1 + 2, self.x2 - 3, self.y2 - 2, 4, 4, false);
+        } else {
+            draw_roundrect_ext(self.x1 + 2, self.y1 + 3, self.x2 - 2, self.y2 - 3, 4, 4, false);
+        }
+        draw_set_alpha(1);
+    });
     self.__marginName = self.isVertical ? "getMarginBottom" : "getMarginRight";
     self.__paddingName = self.isVertical ? "getPaddingBottom" : "getPaddingRight";
     self.__scrollName = self.isVertical ? "scrollTop" : "scrollLeft";
@@ -217,15 +231,15 @@ function UiScrollbarThumb(style = {}, props = {}): UiNode(style, props) construc
     
     function onDraw() {
         if (self.parent.__maxScroll <= 0) return;
-        
-        var layoutSize = self.parent.isVertical ? self.parent.layout.height : self.parent.layout.width;
         var col = (typeof(self.thumbColor) == "method") ? self.thumbColor() : self.thumbColor;
+        
+        // Thumb fill
         draw_set_color(col);
-        draw_set_alpha(0.4);
+        draw_set_alpha(0.5);
         if (self.parent.isVertical) {
-            draw_roundrect_ext(self.x1 + 3, self.y1 + 4, self.x2 - 3, self.y2 - 4, 4, 4, false);
+            draw_roundrect_ext(self.x1 + 3, self.y1 + 1, self.x2 - 3, self.y2 - 1, 4, 4, false);
         } else {
-            draw_roundrect_ext(self.x1 + 4, self.y1 + 3, self.x2 - 4, self.y2 - 3, 4, 4, false);
+            draw_roundrect_ext(self.x1 + 1, self.y1 + 3, self.x2 - 1, self.y2 - 3, 4, 4, false);
         }
         draw_set_alpha(1);
     }

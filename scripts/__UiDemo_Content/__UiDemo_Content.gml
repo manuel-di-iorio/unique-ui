@@ -176,7 +176,7 @@ function __ui_demo_get_examples_map() {
         "MenuBar":     ui_demo_example_menubar,
         "Tooltip":     ui_demo_example_tooltip,
         "Treeview":    ui_demo_example_treeview,
-        "VirtualList (beta)": ui_demo_example_virtuallist,
+        "VirtualList": ui_demo_example_virtuallist,
         "Modal":       ui_demo_example_modal
     };
     return _map;
