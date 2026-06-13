@@ -212,7 +212,7 @@ function __ui_demo_get_component_metadata() {
                 { name: "orientation", type: "string", desc: "'vertical' (default) or 'horizontal'" }
             ]
         },
-        "VirtualGrid (WIP)": {
+        "VirtualGrid": {
             desc: "Virtual-scrolling 2D grid with row pooling, lazy offset cache, and binary search. Renders only visible rows.",
             props: [
                 { name: "value", type: "array", desc: "2D array of data items (array of rows)" },

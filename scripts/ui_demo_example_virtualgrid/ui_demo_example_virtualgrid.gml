@@ -1,4 +1,6 @@
 function ui_demo_example_virtualgrid(PreviewCard) {
+    var ROW_GAP = 4;
+
     __ui_demo_preview_section(PreviewCard, "Basic grid - 1000 x 6 cells");
     PreviewCard.add(new UiText(
         "A UiVirtualGrid with 1000 rows and 6 columns. Only a small pool of rows exists in the tree; " +
@@ -18,18 +20,20 @@ function ui_demo_example_virtualgrid(PreviewCard) {
 
     var HEADERS = ["ID", "Name", "Category", "Status", "Price", "Date"];
 
-    var _renderCell = method({}, function(rowIndex, colIndex) {
+    var _renderCell = method({ ROW_GAP: ROW_GAP }, function(rowIndex, colIndex) {
         var cell = new UiNode({ width: 120, height: "100%", flexShrink: 0, justifyContent: "center", alignItems: "center" });
+        cell.__ROW_GAP = self.ROW_GAP;
         cell.onDraw = method(cell, function() {
+            var cy2 = self.y2 - self.__ROW_GAP;
             if (self.parent.hovered) {
                 draw_set_color(global.UI_COL_HOVER);
-                draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
+                draw_rectangle(self.x1, self.y1, self.x2, cy2, false);
             }
             draw_set_color(global.UI_COL_TEXT_2);
             draw_set_font(global.UI_FONTS.small);
             draw_set_halign(fa_center);
             draw_set_valign(fa_middle);
-            draw_text(~~mean(self.x1, self.x2), ~~mean(self.y1, self.y2), self.__label ?? "");
+            draw_text(~~mean(self.x1, self.x2), ~~((self.y1 + cy2) / 2), self.__label ?? "");
         });
         return cell;
     });
@@ -40,7 +44,7 @@ function ui_demo_example_virtualgrid(PreviewCard) {
 
     var grid = new UiVirtualGrid({ width: "100%", height: 360, marginBottom: 28 }, {
         value: dataBasic,
-        estimatedRowHeight: 40,
+        estimatedRowHeight: 40 + ROW_GAP,
         estimatedColumnWidth: 120,
         numColumns: 6,
         renderCell: _renderCell,
@@ -78,24 +82,46 @@ function ui_demo_example_virtualgrid(PreviewCard) {
     for (var r = 0; r < 200; r++) {
         var row = [];
         for (var c = 0; c < 4; c++) {
-            array_push(row, { label: "Item " + string(r + 1) + "-" + string(c + 1), height: 40 + (r % 3) * 20 });
+            array_push(row, { label: "Item " + string(r + 1) + "-" + string(c + 1), height: 40 + irandom(80) });
         }
         array_push(dataVar, row);
     }
 
-    var _bindVar = method({ data: dataVar }, function(rowIndex, colIndex, node) {
+    var _renderVar = method({ ROW_GAP: ROW_GAP }, function(rowIndex, colIndex) {
+        var cell = new UiNode({ width: 150, height: "100%", flexShrink: 0, justifyContent: "center", alignItems: "center" });
+        cell.__bg = colIndex % 2 == 0 ? global.UI_COL_SURFACE_2 : global.UI_COL_SURFACE_3;
+        cell.__ROW_GAP = self.ROW_GAP;
+        cell.onDraw = method(cell, function() {
+            var cy2 = self.y2 - self.__ROW_GAP;
+            draw_set_color(self.__bg);
+            draw_rectangle(self.x1, self.y1, self.x2, cy2, false);
+            if (self.parent.hovered) {
+                draw_set_color(global.UI_COL_HOVER);
+                draw_rectangle(self.x1, self.y1, self.x2, cy2, false);
+            }
+            draw_set_color(global.UI_COL_TEXT_2);
+            draw_set_font(global.UI_FONTS.small);
+            draw_set_halign(fa_center);
+            draw_set_valign(fa_middle);
+            draw_text(~~mean(self.x1, self.x2), ~~((self.y1 + cy2) / 2), self.__label ?? "");
+        });
+        return cell;
+    });
+
+    var _bindVar = method({ data: dataVar, ROW_GAP: ROW_GAP }, function(rowIndex, colIndex, node) {
         node.__label = self.data[rowIndex][colIndex].label;
         if (colIndex == 0) {
             var h = self.data[rowIndex][0].height;
-            node.parent.setHeight(h);
+            node.parent.setHeight(h + self.ROW_GAP);
         }
     });
 
     var gridVar = new UiVirtualGrid({ width: "100%", height: 260, marginBottom: 28 }, {
         value: dataVar,
-        estimatedRowHeight: 40,
+        estimatedRowHeight: 40 + ROW_GAP,
         estimatedColumnWidth: 150,
         numColumns: 4,
+        renderCell: _renderVar,
         onBind: _bindVar,
         scrollbarColor: function() { return global.UI_COL_SCROLLBAR; }
     });
@@ -121,6 +147,7 @@ function ui_demo_example_virtualgrid(PreviewCard) {
 
     return [
         "// UiVirtualGrid - virtual scrolling grid",
+        "var ROW_GAP = 4;",
         "var data = [];",
         "for (var r = 0; r < 1000; r++) {",
         "    var row = [];",
@@ -132,7 +159,7 @@ function ui_demo_example_virtualgrid(PreviewCard) {
         "",
         "var grid = new UiVirtualGrid({ width: \"100%\", height: 360 }, {",
         "    value: data,",
-        "    estimatedRowHeight: 40,",
+        "    estimatedRowHeight: 40 + ROW_GAP,",
         "    estimatedColumnWidth: 120,",
         "    numColumns: 6,",
         "    renderCell: function(rowIndex, colIndex) {",
@@ -140,6 +167,7 @@ function ui_demo_example_virtualgrid(PreviewCard) {
         "    },",
         "    onBind: function(rowIndex, colIndex, node) {",
         "        node.__label = data[rowIndex][colIndex].label;",
+        "        if (colIndex == 0) node.parent.marginBottom = ROW_GAP;",
         "    },",
         "    scrollbarColor: #818CF8",
         "});",
