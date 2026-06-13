@@ -42,7 +42,10 @@ UniqueUI ships with a curated "Modern Premium" design system. Components feature
 ## QUICK START
 
 ### Initialization
-Define the container in your controller object's Create event.
+
+- Import the `uui.yymps` in your GameMaker project
+
+- Define the container in your controller object's Create event.
 
 ```javascript
 // Create a centered panel with a button
@@ -79,13 +82,15 @@ global.UI.render();
 
 ## COMPONENT ECOSYSTEM
 
-The framework includes a wide array of production-ready components:
+The framework includes a wide array of production-ready components (26+):
 
-*   **Layout Controls**: UiNode, UiScrollbar, UiTabs, UiAccordion.
-*   **Inputs**: UiTextbox, UiTextarea, UiCheckbox, UiRadio, UiSwitch, UiSlider, UiDropdown.
-*   **Display**: UiText, UiSprite, UiBadge, UiTooltip.
-*   **Feedback**: UiAlert, UiModal, UiContextMenu.
-*   **Navigation**: UiTreeview, UiTabs.
+*   **Layout**: UiAccordion, UiScrollbar, UiTabs.
+*   **Inputs**: UiButton, UiCheckbox, UiColorPicker, UiDropdown, UiRadio, UiSlider, UiSwitch, UiTextarea, UiTextbox.
+*   **Display**: UiBadge, UiSprite, UiText, UiTooltip.
+*   **Overlays & Feedback**: UiAlert, UiContextMenu, UiModal, UiToast.
+*   **Navigation**: UiMenuBar, UiTreeview, UiVirtualTreeview.
+*   **Virtual Scrolling**: UiVirtualGrid, UiVirtualList.
+*   **State**: UiStore.
 
 ---
 
@@ -94,15 +99,7 @@ The framework includes a wide array of production-ready components:
 UniqueUI is optimized for high-refresh-rate applications:
 *   **Batched Updates**: Layout calculations are only performed when nodes are "dirty."
 *   **Spatial Queries**: Hover detection is offloaded to the Dynamic AABB Tree, bypassing the need to iterate through the entire node list.
-*   **Surface Caching**: The Root UI can be configured to render to surfaces, reducing draw calls for static interface sections.
-
----
-
-## INSTALLATION
-
-1. Import the `uui.yymps` package into your GameMaker project.
-2. Ensure the `scripts` directory is correctly placed.
-3. Access components via the `Ui*` constructor functions.
+*   **Surface Caching**: The UI renders to the main surface only when something changed, reducing draw calls.
 
 ---
 
