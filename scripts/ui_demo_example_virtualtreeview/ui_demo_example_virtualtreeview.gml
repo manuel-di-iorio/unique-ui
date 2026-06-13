@@ -149,7 +149,7 @@ function ui_demo_example_virtualtreeview(PreviewCard) {
     PreviewCard.add(grid);
 
     // Controls
-    var Controls = new UiNode({ flexDirection: "row", width: "100%", alignItems: "center", gap: 8, marginBottom: 12 });
+    var Controls = new UiNode({ flexDirection: "row", width: "100%", alignItems: "center", gap: 8, marginBottom: 24 });
     PreviewCard.add(Controls);
 
     var expandAllBtn = new UiButton("Expand All", { height: 32 }, { variant: "outline" });
@@ -171,12 +171,6 @@ function ui_demo_example_virtualtreeview(PreviewCard) {
 
     return [
         "// UiVirtualTreeview - 3600+ items, 7 root folders, 5 levels deep",
-        "var treeData = [];",
-        "var FOLDERS = [\"src\", \"assets\", \"scripts\", \"docs\", \"config\", \"tests\", \"tools\"];",
-        "for (var f = 0; f < array_length(FOLDERS); f++) {",
-        "    array_push(treeData, buildTree(FOLDERS[f], 1, 5, 6));",
-        "}",
-        "",
         "var tree = new UiVirtualTreeview({ width: \"100%\", height: 320 }, {",
         "    value: treeData,",
         "    estimatedRowHeight: 32,",

@@ -246,7 +246,7 @@ function __ui_demo_get_component_metadata() {
             ]
         },
         "VirtualTreeview": {
-            desc: "A high-performance treeview that virtualizes row rendering through pooling and viewport-based recycling. Supports large datasets, variable row heights, custom item templates, and expand/collapse hierarchies.",
+            desc: "A high-performance treeview that virtualizes row rendering through pooling and viewport-based recycling. Supports large datasets, variable row heights, custom item templates, and expand/collapse hierarchies. This new component may eventually fully replace UiTreeview in the V6.0 release",
             props: [
                 { name: "value", type: "array", desc: "Array of tree-node structs (each: { children, collapsed, name, ... })" },
                 { name: "estimatedRowHeight", type: "number", desc: "Fallback height for unmeasured rows (default 32)" },

@@ -13,7 +13,7 @@ function __ui_demo_refresh(preserveScroll = false) {
     var metadata = __ui_demo_get_component_metadata();
     var componentData = metadata[$ global.UI_DEMO.currentPage];
     var desc = (componentData != undefined ? componentData.desc : "Explore the capabilities of the component " + global.UI_DEMO.currentPage);
-    Hero.add(new UiText(desc, {}, { color: global.UI_COL_TEXT_2 }));
+    Hero.add(new UiText(desc, { width: "100%" }, { color: global.UI_COL_TEXT_2, wrap: true }));
     
     // Tabs - Documentation tab is hidden for foundation pages (Colors, Typography, Introduction)
     var _isFoundation = (global.UI_DEMO.currentPage == "Colors" || global.UI_DEMO.currentPage == "Typography" || global.UI_DEMO.currentPage == "Store" || global.UI_DEMO.currentPage == "Introduction");
