@@ -42,7 +42,7 @@ function UiMenuBar(menus = [], style = {}, props = {}) : UiNode(style, props) co
         draw_set_color(merge_color(global.UI_COL_SURFACE_3, global.UI_COL_BORDER_1, 0.14));
         draw_rectangle(self.x1, self.y1, self.x2, self.y2, false);
 
-        // Top & bottom edges — both use theme border color
+        // Top & bottom edges - both use theme border color
         draw_set_color(global.UI_COL_BORDER_1);
         draw_line(self.x1, self.y1, self.x2, self.y1);
         draw_line(self.x1, self.y2 - 1, self.x2, self.y2 - 1);

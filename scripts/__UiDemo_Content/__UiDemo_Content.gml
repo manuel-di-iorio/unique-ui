@@ -178,8 +178,9 @@ function __ui_demo_get_examples_map() {
         "Treeview":    ui_demo_example_treeview,
         "Scrollbar":   ui_demo_example_scrollbar,
         "VirtualList": ui_demo_example_virtuallist,
-        "VirtualGrid": ui_demo_example_virtualgrid,
-        "Modal":       ui_demo_example_modal
+        "VirtualGrid":     ui_demo_example_virtualgrid,
+        "VirtualTreeview": ui_demo_example_virtualtreeview,
+        "Modal":           ui_demo_example_modal
     };
     return _map;
 }

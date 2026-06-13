@@ -13,7 +13,7 @@ UniqueUI is a state-of-the-art UI system designed for GameMaker, bridging the ga
 ## CORE PILLARS
 
 ### 1. DECLARATIVE FLEXBOX LAYOUT
-UniqueUI integrates directly with GameMaker’s native Flexpanel (Yoga) implementation. This allows for complex, responsive layouts using standard Flexbox properties—align-items, justify-content, flex-grow, and more—all handled through a high-level GML API.
+UniqueUI integrates directly with GameMaker’s native Flexpanel (Yoga) implementation. This allows for complex, responsive layouts using standard Flexbox properties-align-items, justify-content, flex-grow, and more-all handled through a high-level GML API.
 
 ### 2. ADVANCED SPATIAL PARTITIONING
 To handle thousands of interactive elements without performance degradation, UniqueUI utilizes a custom **Dynamic AABB Tree 2D**. This spatial partitioning system ensures that mouse interaction and hover detection remain O(log N), regardless of interface complexity.

@@ -8,7 +8,7 @@ function ui_demo_example_store(PreviewCard) {
     ));
 
     // --- Demo A: direct setValue() ---
-    __ui_demo_preview_section(PreviewCard, "Direct setValue() — no store needed");
+    __ui_demo_preview_section(PreviewCard, "Direct setValue() - no store needed");
 
     var dirRow = new UiNode({
         width: "100%",
@@ -64,7 +64,7 @@ function ui_demo_example_store(PreviewCard) {
     PreviewCard.add(onChangeRow);
 
     // --- Demo C: UiStore with subscribe + setValue ---
-    __ui_demo_preview_section(PreviewCard, "UiStore — subscribe() + setValue()");
+    __ui_demo_preview_section(PreviewCard, "UiStore - subscribe() + setValue()");
 
     PreviewCard.add(new UiText(
         "UiStore is a lightweight reactive state container. Subscribe to changes and sync " +
@@ -147,7 +147,7 @@ function ui_demo_example_store(PreviewCard) {
         "    show_debug_message(\"label changed to \" + val);",
         "});",
         "",
-        "// UiStore — lightweight reactive state",
+        "// UiStore - lightweight reactive state",
         "var store = new UiStore({ count: 0 });",
         "",
         "// Subscribe → setValue (store to component)",

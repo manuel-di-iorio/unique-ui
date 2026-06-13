@@ -1,4 +1,4 @@
-global.UI_VERSION = "5.1.0";
+global.UI_VERSION = "5.2.0";
 
 /** Colors */
 

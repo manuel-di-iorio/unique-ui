@@ -151,7 +151,7 @@ function UiScrollbar(style = {}, props = {}): UiNode(style, props) constructor {
         if (self.__layoutFrames > 0) {
             var _newContentSize = 0;
             
-            // Virtualised parents expose getContentSize() — O(1) instead of O(N).
+            // Virtualised parents expose getContentSize() - O(1) instead of O(N).
             if (variable_struct_exists(self.parent, "getContentSize") && self.parent.getContentSize != undefined) {
                 _newContentSize = self.parent.getContentSize();
             } else {

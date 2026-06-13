@@ -220,7 +220,7 @@ function __ui_demo_get_component_metadata() {
                 { name: "estimatedColumnWidth", type: "number", desc: "Fallback width for columns (default 120)" },
                 { name: "buffer", type: "number", desc: "Extra rows above/below the visible window (default 3)" },
                 { name: "numColumns", type: "number", desc: "Fixed column count (auto-detected from data if omitted)" },
-                { name: "renderCell", type: "function", desc: "function(rowIndex, colIndex) → UiNode; called once per pool slot per column" },
+                { name: "renderCell", type: "function", desc: "function(rowIndex, colIndex) -> UiNode; called once per pool slot per column" },
                 { name: "onBind", type: "function", desc: "function(rowIndex, colIndex, node) updates an existing cell node" },
                 { name: "onChange", type: "function", desc: "function(newValue, grid) fired when the dataset is replaced via setValue()" },
                 { name: "scrollbarColor", type: "color/function", desc: "Color for the vertical scrollbar thumb" },
@@ -236,13 +236,34 @@ function __ui_demo_get_component_metadata() {
                 { name: "value", type: "array", desc: "Array of raw data items to display" },
                 { name: "estimatedItemHeight", type: "number", desc: "Fallback height for unmeasured items (default 40)" },
                 { name: "buffer", type: "number", desc: "Extra items above/below the visible window (default 5)" },
-                { name: "renderItem", type: "function", desc: "function(index) → UiNode; called once per pool slot during construction" },
+                { name: "renderItem", type: "function", desc: "function(index) -> UiNode; called once per pool slot during construction" },
                 { name: "onBind", type: "function", desc: "function(index, node) updates an existing pool node to show value[index]" },
                 { name: "onChange", type: "function", desc: "function(newValue, node) fired when the dataset is replaced via setValue()" },
                 { name: "scrollbarColor", type: "color/function", desc: "Colour for the scrollbar thumb" },
                 { name: "getContentSize()", type: "method", desc: "Returns total virtual content height (O(1))" },
                 { name: "scrollToIndex(index)", type: "method", desc: "Scrolls so that the given data index is at the top" },
                 { name: "setValue(newValue)", type: "method", desc: "Replaces the dataset and resets scroll + cache" }
+            ]
+        },
+        "VirtualTreeview": {
+            desc: "A high-performance treeview that virtualizes row rendering through pooling and viewport-based recycling. Supports large datasets, variable row heights, custom item templates, and expand/collapse hierarchies.",
+            props: [
+                { name: "value", type: "array", desc: "Array of tree-node structs (each: { children, collapsed, name, ... })" },
+                { name: "estimatedRowHeight", type: "number", desc: "Fallback height for unmeasured rows (default 32)" },
+                { name: "buffer", type: "number", desc: "Extra rows above/below the visible window (default 5)" },
+                { name: "renderItem", type: "function", desc: "function(index) -> UiNode; called once per pool slot during construction" },
+                { name: "onBind", type: "function", desc: "function(index, flatEntry, node) updates an existing pool node" },
+                { name: "onToggle", type: "function", desc: "function(index, flatEntry) called when a node is expanded/collapsed" },
+                { name: "onItemSelected", type: "function", desc: "function(treeItem) called when a row is clicked" },
+                { name: "scrollbarColor", type: "color/function", desc: "Colour for the scrollbar thumb" },
+                { name: "setValue(value)", type: "method", desc: "Replaces the tree dataset and rebuilds" },
+                { name: "expandAll()",    type: "method", desc: "Expands all collapsible nodes" },
+                { name: "collapseAll()",  type: "method", desc: "Collapses all expandable nodes" },
+                { name: "expand(node)",   type: "method", desc: "Expand a single tree node" },
+                { name: "collapse(node)", type: "method", desc: "Collapse a single tree node" },
+                { name: "select(node)",   type: "method", desc: "Select a tree node (expands ancestors if needed)" },
+                { name: "getSelected()",  type: "method", desc: "Returns the selected tree node or undefined" },
+                { name: "scrollToNode(node)", type: "method", desc: "Scroll to make a node visible" }
             ]
         }
     };

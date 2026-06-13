@@ -122,7 +122,7 @@ ui_test_suite("UiVirtualList", function() {
         });
         list.destroy();
         // onBind is called during recycle (step). During construction only renderItem runs.
-        // So bindCalls may be empty at this point — just verify no crash.
+        // So bindCalls may be empty at this point - just verify no crash.
         assert_not_undefined(list, "list created without error");
     });
 

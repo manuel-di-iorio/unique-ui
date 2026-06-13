@@ -23,12 +23,12 @@ UiVirtualGrid(style = {}, props = {})
 | `estimatedRowHeight`    | `number`                | `40`     | Fallback height for unmeasured rows.                             |
 | `estimatedColumnWidth`  | `number`                | `120`    | Fallback width for each column (determines total grid width).    |
 | `buffer`                | `number`                | `3`      | Extra rows rendered above/below the visible window.              |
-| `numColumns`            | `number`                | —        | Fixed column count (auto-detected from `value[0]` if omitted).   |
-| `renderCell`            | `function(rowIndex, colIndex)` | — | Called once per pool slot per column during construction; must return a UiNode. |
-| `onBind`                | `function(rowIndex, colIndex, node)` | — | Called when a cell is rebound to a different data index. |
-| `onChange`              | `function(newValue, grid)` | —      | Fired when the dataset is replaced via `setValue()`.             |
-| `scrollbarColor`        | `color` or `function`   | —        | Passed through to `enableScrollbar()`.                           |
-| `scrollbarColorH`       | `color` or `function`   | —        | Color for the horizontal scrollbar (defaults to `scrollbarColor`). |
+| `numColumns`            | `number`                | -        | Fixed column count (auto-detected from `value[0]` if omitted).   |
+| `renderCell`            | `function(rowIndex, colIndex)` | - | Called once per pool slot per column during construction; must return a UiNode. |
+| `onBind`                | `function(rowIndex, colIndex, node)` | - | Called when a cell is rebound to a different data index. |
+| `onChange`              | `function(newValue, grid)` | -      | Fired when the dataset is replaced via `setValue()`.             |
+| `scrollbarColor`        | `color` or `function`   | -        | Passed through to `enableScrollbar()`.                           |
+| `scrollbarColorH`       | `color` or `function`   | -        | Color for the horizontal scrollbar (defaults to `scrollbarColor`). |
 
 **Methods**
 
@@ -67,7 +67,7 @@ Where `minRowHeight = max(20, estimatedRowHeight * 0.5)`.
 
 **Key Design Points**
 
-- **No add/remove**: Pool rows are created once and kept in the flexpanel for the component's lifetime. Only `show()`/`hide()` and `setHeight()` are called during scrolling — zero tree churn.
+- **No add/remove**: Pool rows are created once and kept in the flexpanel for the component's lifetime. Only `show()`/`hide()` and `setHeight()` are called during scrolling - zero tree churn.
 - **Lazy offset cache**: Row heights are measured post-layout and stored in `UiVirtualContainer`. Offsets are computed lazily only up to the requested index.
 - **Binary search**: Finding the first visible row is O(log N) instead of O(N).
 - **Horizontal scrollbar**: The grid content width equals `numColumns * estimatedColumnWidth`, enabling a horizontal scrollbar for wide datasets.

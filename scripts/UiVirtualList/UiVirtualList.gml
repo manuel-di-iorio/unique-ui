@@ -1,13 +1,13 @@
-/// UiVirtualList — virtual scrolling list with pooling, lazy offsets, and binary search.
+/// UiVirtualList - virtual scrolling list with pooling, lazy offsets, and binary search.
 ///
 /// Props:
-///   value               — array of raw data items
-///   estimatedItemHeight — fallback height for unmeasured items (default 40)
-///   buffer              — extra items rendered above / below the visible window (default 5)
-///   renderItem          — function(index) returns a new UiNode (called once per pool slot)
-///   onBind              — function(index, node) updates an existing node to show value[index]
-///   onChange            — function(newValue, node) fired when the dataset is replaced via setValue()
-///   scrollbarColor      — passed through to enableScrollbar()
+///   value               - array of raw data items
+///   estimatedItemHeight - fallback height for unmeasured items (default 40)
+///   buffer              - extra items rendered above / below the visible window (default 5)
+///   renderItem          - function(index) returns a new UiNode (called once per pool slot)
+///   onBind              - function(index, node) updates an existing node to show value[index]
+///   onChange            - function(newValue, node) fired when the dataset is replaced via setValue()
+///   scrollbarColor      - passed through to enableScrollbar()
 ///
 /// Style: standard UiNode flexbox. `flexDirection: "column"` is assumed for V1.
 ///
@@ -55,11 +55,11 @@ function UiVirtualList(style = {}, props = {}) : UiNode(style, props) constructo
 
     // ── Build children: spacerTop + pool nodes + spacerBottom ────────────────
 
-    // Spacer top — pushes the visible window down to the correct scroll offset
+    // Spacer top - pushes the visible window down to the correct scroll offset
     self.__spacerTop = new UiNode({ width: "100%", height: 0, flexShrink: 0 }, { pointerEvents: false });
     self.add(self.__spacerTop);
 
-    // Pool nodes — always present, never added / removed after construction
+    // Pool nodes - always present, never added / removed after construction
     for (var i = 0; i < self.__poolSize; i++) {
         var node;
         if (self.__renderItem != undefined) {
@@ -78,7 +78,7 @@ function UiVirtualList(style = {}, props = {}) : UiNode(style, props) constructo
         self.add(node);
     }
 
-    // Spacer bottom — fills the remaining content height
+    // Spacer bottom - fills the remaining content height
     self.__spacerBottom = new UiNode({ width: "100%", height: 0, flexShrink: 0 }, { pointerEvents: false });
     self.add(self.__spacerBottom);
 
@@ -101,7 +101,7 @@ function UiVirtualList(style = {}, props = {}) : UiNode(style, props) constructo
             self.__measureScheduled = false;
         }
 
-        // Step 1b: Recycle — bind pool nodes to the correct data indices.
+        // Step 1b: Recycle - bind pool nodes to the correct data indices.
         if (self.__recyclePending || layoutUpdated || self.__prevScrollTop != self.scrollTop) {
             self.__prevScrollTop = self.scrollTop;
             self.__recycle();
@@ -183,7 +183,7 @@ function UiVirtualList(style = {}, props = {}) : UiNode(style, props) constructo
             var bindNode = node.__virtualContent ?? node;
 
             // When a renderItem wrapper is used, skip explicit height on the
-            // wrapper — it auto-sizes to its content via flexbox (no overlap).
+            // wrapper - it auto-sizes to its content via flexbox (no overlap).
             // For non-renderItem nodes, set height directly from cache.
             if (node.__virtualContent == undefined) {
                 node.setHeight(self.__virtualContainer.getItemHeight(i));

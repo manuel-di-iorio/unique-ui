@@ -22,10 +22,10 @@ UiVirtualList(style = {}, props = {})
 | `value`               | `array`               | `[]`     | Array of raw data items to display.                              |
 | `estimatedItemHeight` | `number`              | `40`     | Fallback height for unmeasured items.                            |
 | `buffer`              | `number`              | `5`      | Extra items rendered above/below the visible window.             |
-| `renderItem`          | `function(index)`     | —        | Called once per pool slot during construction; must return a UiNode. |
-| `onBind`              | `function(index, node)`| —        | Called when a pool slot is rebound to a different data index.    |
-| `onChange`            | `function(newValue, node)`| —     | Fired when the dataset is replaced via `setValue()`.             |
-| `scrollbarColor`      | `color` or `function` | —        | Passed through to `enableScrollbar()`.                           |
+| `renderItem`          | `function(index)`     | -        | Called once per pool slot during construction; must return a UiNode. |
+| `onBind`              | `function(index, node)`| -        | Called when a pool slot is rebound to a different data index.    |
+| `onChange`            | `function(newValue, node)`| -     | Fired when the dataset is replaced via `setValue()`.             |
+| `scrollbarColor`      | `color` or `function` | -        | Passed through to `enableScrollbar()`.                           |
 
 **Methods**
 
@@ -65,7 +65,7 @@ Where `minItemHeight = max(20, estimatedItemHeight * 0.5)`.
 
 **Key Design Points**
 
-- **No add/remove**: Pool nodes are created once and kept in the flexpanel for the component's lifetime. Only `show()`/`hide()` and `setHeight()` are called during scrolling — zero tree churn.
+- **No add/remove**: Pool nodes are created once and kept in the flexpanel for the component's lifetime. Only `show()`/`hide()` and `setHeight()` are called during scrolling - zero tree churn.
 - **Lazy offset cache**: Heights are measured post-layout and stored in `UiVirtualContainer`. Offsets are computed lazily only up to the requested index.
 - **Binary search**: Finding the first visible item is O(log N) instead of O(N).
 - **Scrollbar integration**: `getContentSize()` is detected by `UiScrollbar` via `variable_struct_exists` check, avoiding O(N) child iteration for virtual lists.

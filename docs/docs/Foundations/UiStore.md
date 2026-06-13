@@ -4,17 +4,17 @@ sidebar_position: 1
 
 # UiStore
 
-Simple push-based state management for GameMaker. Minimal, fast, no selectors — just set and notify.
+Simple push-based state management for GameMaker. Minimal, fast, no selectors - just set and notify.
 
 `UiStore` is lib-agnostic and can be used outside of UniqueUI. It provides a clean API with optional middleware for advanced features like undo/redo, logging, and persistence.
 
 ## Performance Features
 
-- **Direct mutation**: State is mutated directly instead of cloning — no `variable_clone()` bottleneck
-- **Simple subscriptions**: Subscribe with a callback that receives the full state — no selectors, no equality checks
+- **Direct mutation**: State is mutated directly instead of cloning - no `variable_clone()` bottleneck
+- **Simple subscriptions**: Subscribe with a callback that receives the full state - no selectors, no equality checks
 - **Middleware system**: Composable middleware for undo/redo, logging, validation, and more
 - **Replace mode**: `set(partial, true)` for complete state replacement
-- **Minimal API**: Core API is small and focused — advanced features via optional middleware
+- **Minimal API**: Core API is small and focused - advanced features via optional middleware
 
 ## Usage
 
@@ -80,11 +80,11 @@ Returns the live `state` struct reference. Prefer `get()` for reads unless you n
 **WARNING**: Returns a live reference. Do not directly mutate arrays or structs obtained through this method. Always use `set()` for modifications.
 
 ```gml
-// DON'T DO THIS — won't trigger reactivity
+// DON'T DO THIS - won't trigger reactivity
 var items = store.get("items");
 array_push(items, "new item"); // ❌ No notification
 
-// DO THIS — will trigger reactivity
+// DO THIS - will trigger reactivity
 var newItems = array_copy(store.get("items"));
 array_push(newItems, "new item");
 store.set({ items: newItems }); // ✅ Notifies subscribers
@@ -163,13 +163,13 @@ store.destroy();
 
 1. You call `set()`, `remove()`, or `reset()`.
 2. State is mutated directly (no cloning for performance).
-3. Middleware chain is applied — each middleware can transform the update.
+3. Middleware chain is applied - each middleware can transform the update.
 4. `__notify()` iterates registered subscribers in reverse order and calls each callback with the full state.
 
-There is no automatic two-way binding — you wire reads (`get()` / `state` / `subscribe`) and writes (`set()`) explicitly, which keeps data flow predictable in GML.
+There is no automatic two-way binding - you wire reads (`get()` / `state` / `subscribe`) and writes (`set()`) explicitly, which keeps data flow predictable in GML.
 
 ## Performance Notes
 
-- **Direct mutation**: State is mutated directly instead of cloning — no `variable_clone()` bottleneck. This is especially important for per-frame updates (mouseX, mouseY, scroll, hovered, focused).
+- **Direct mutation**: State is mutated directly instead of cloning - no `variable_clone()` bottleneck. This is especially important for per-frame updates (mouseX, mouseY, scroll, hovered, focused).
 - **Simple callbacks**: Every subscriber receives the full state on each change. Keep callbacks lightweight for best performance.
 - **Middleware is optional**: Core API is minimal and fast. Add middleware only when you need advanced features like undo/redo, logging, or persistence.

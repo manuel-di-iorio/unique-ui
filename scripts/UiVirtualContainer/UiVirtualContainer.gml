@@ -1,4 +1,4 @@
-/// UiVirtualContainer — lazy offset cache + binary search for virtual scrolling.
+/// UiVirtualContainer - lazy offset cache + binary search for virtual scrolling.
 /// NOT a UiNode. Pure logic helper struct.
 function UiVirtualContainer(_dataLength, _estimatedItemHeight) constructor {
     self.__dataLength = _dataLength;
@@ -81,7 +81,19 @@ function UiVirtualContainer(_dataLength, _estimatedItemHeight) constructor {
         }
     };
 
-    /// Reset for a new dataset.
+    /// Resize to a new data length, preserving existing height measurements.
+    /// Items at indices beyond the new length are discarded.
+    /// The offset cache is invalidated (will be rebuilt lazily via getItemOffset).
+    static resize = function(newLength) {
+        if (newLength < array_length(self.__itemHeights)) {
+            array_resize(self.__itemHeights, newLength);
+        }
+        self.__dataLength = newLength;
+        self.__itemOffsets = [];
+        self.__lastMeasuredIndex = -1;
+    };
+
+    /// Reset for a new dataset (discards all measurements).
     static reset = function(newDataLength, newEstimatedHeight = undefined) {
         self.__dataLength = newDataLength;
         self.__itemHeights = [];

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ui_demo_example_virtualtreeview",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ui_demo_example_virtualtreeview",
+  "parent":{
+    "name":"VirtualTreeview",
+    "path":"folders/Demo/Examples/VirtualTreeview.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
